@@ -41,6 +41,7 @@
             android:text="@string/dark_theme"/>
 
         <Switch
+            android:id="@+id/switch_nightmode"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="bottom"
@@ -49,6 +50,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/button_share"
         style="@style/settings_linear_layout">
 
         <TextView
@@ -62,6 +64,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/button_help"
         style="@style/settings_linear_layout">
 
         <TextView
@@ -75,6 +78,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/button_user_agreements"
         style="@style/settings_linear_layout">
 
         <TextView
