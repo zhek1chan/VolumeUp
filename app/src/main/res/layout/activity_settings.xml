@@ -14,8 +14,9 @@
         android:orientation="horizontal">
 
         <ImageView
+            android:color="#1A1B22"
             android:id="@+id/arrow_back"
-            style="@style/settings_image_view"
+            style="@style/settings_back_icon"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="4dp"
             android:foreground="?attr/selectableItemBackground"

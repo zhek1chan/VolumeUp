@@ -4,7 +4,7 @@
     <dimen name="small_text">16sp</dimen>
     <dimen name="large_text">32sp</dimen>
     <dimen name="icon_padding">8dp</dimen>
-    <dimen name="corner_radius">18dp</dimen>
+    <dimen name="corner_radius">16dp</dimen>
     <dimen name="layouts_padding">14dp</dimen>
     <dimen name="common_padding">16dp</dimen>
     <dimen name="vertical_padding">28dp</dimen>
