@@ -1,18 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white"
-    android:orientation="vertical"
-    android:paddingHorizontal="@dimen/common_padding">
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/search_background">
 
     <TextView
+        android:id="@+id/search"
+        style="@style/search_header_text"
+        tools:ignore="RtlSymmetry"/>
+    <FrameLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="@string/search_screen"
-        android:textColor="@color/black_text"
-        android:textSize="@dimen/large_text"
-        android:textStyle="bold" />
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/common_padding"
+        android:layout_marginTop="24dp"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/input_edit_text"
+            style="@style/search_edit_text"
+            tools:ignore="RtlSymmetry" />
+
+        <ImageView
+            android:id="@+id/search_icon"
+            style="@style/search_edit_text_icon"
+            tools:ignore="ObsoleteLayoutParam,RtlSymmetry" />
+
+        <ImageView
+            android:id="@+id/clear_icon"
+            style="@style/search_clear_icon"
+            app:tint="@color/black_text"
+            tools:ignore="ObsoleteLayoutParam,RtlSymmetry" />
+    </FrameLayout>
+    <LinearLayout
+        android:id="@+id/empty_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical" />
+
+    <LinearLayout
+        android:id="@+id/bottom_linearlayout"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_gravity="bottom"
+        android:gravity="bottom"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            style="@style/search_bottom_layout"
+            android:clickable="false">
+
+            <ImageView
+                style="@style/search_bottom_icon"
+                android:src="@drawable/search"
+                app:tint="@color/background_color" />
+
+            <TextView
+                style="@style/search_bottom_text"
+                android:text="@string/search"
+                android:textColor="@color/background_color" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/media_layout"
+            style="@style/search_bottom_layout">
+
+            <ImageView
+                style="@style/search_bottom_icon"
+                android:src="@drawable/media"/>
+
+            <TextView
+                style="@style/search_bottom_text"
+                android:text="@string/media"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/settings_layout"
+            style="@style/search_bottom_layout">
+
+            <ImageView
+                style="@style/search_bottom_icon"
+                android:src="@drawable/settings"/>
+
+            <TextView
+                style="@style/search_bottom_text"
+                android:text="@string/settings" />
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>

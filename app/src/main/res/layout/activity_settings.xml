@@ -56,7 +56,8 @@
 
         <TextView
             style="@style/settings_text_view"
-            android:text="@string/share_app"/>
+            android:layout_width="356dp"
+            android:text="@string/share_app" />
 
         <ImageView
             style="@style/settings_image_view"
