@@ -23,12 +23,6 @@ class Settings : AppCompatActivity() {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
         }
-        /*nightmodeButton.setOnCheckedChangeListener{
-            isChecked ->
-            if (isChecked) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            }
-        }*/
         val arrowBackButton = findViewById<ImageView>(R.id.arrow_back)
         arrowBackButton.setOnClickListener {
             finish()
@@ -37,20 +31,18 @@ class Settings : AppCompatActivity() {
         shareButton.setOnClickListener {
             var shareIntent = Intent().apply{
                 this.action=Intent.ACTION_SEND
-                this.putExtra(Intent.EXTRA_TEXT,"https://practicum.yandex.ru/android-developer/")
+                this.putExtra(Intent.EXTRA_TEXT,getString(R.string.settings_url))
                 this.type="text/plain"
             }
             startActivity(shareIntent)
         }
         val helpButton = findViewById<LinearLayout>(R.id.button_help)
         helpButton.setOnClickListener {
-            val message = "Привет, Android разработка — это круто!"
-            val title = "Сообщение разработчикам и разработчицам приложения Playlist Maker"
             val shareIntent = Intent(Intent.ACTION_SENDTO)
             shareIntent.data = Uri.parse("mailto:")
-            shareIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf("evg.ermolov@ya.ru"))
-            shareIntent.putExtra(Intent.EXTRA_SUBJECT, title)
-            shareIntent.putExtra(Intent.EXTRA_TEXT, message)
+            shareIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.settings_email)))
+            shareIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.settings_title))
+            shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.settings_message))
             startActivity(shareIntent)
         }
         val urlButton = findViewById<LinearLayout>(R.id.button_user_agreements)

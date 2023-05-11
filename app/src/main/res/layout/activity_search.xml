@@ -1,13 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     style="@style/search_background">
-
-    <TextView
-        android:id="@+id/search"
-        style="@style/search_header_text"
-        tools:ignore="RtlSymmetry"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <ImageView
+            android:color="@color/black_text"
+            android:id="@+id/arrow_back"
+            style="@style/settings_back_icon"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="20dp"
+            android:foreground="?attr/selectableItemBackground"
+            android:src="@drawable/back" />
+        <TextView
+            android:gravity="top"
+            style="@style/search_header_text"
+            android:fontFamily="@font/ys_display_medium"/>
+    </LinearLayout>
     <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
@@ -18,20 +29,18 @@
 
         <EditText
             android:id="@+id/input_edit_text"
-            style="@style/search_edit_text"
-            tools:ignore="RtlSymmetry" />
+            style="@style/search_edit_text"/>
 
         <ImageView
             android:id="@+id/search_icon"
-            style="@style/search_edit_text_icon"
-            tools:ignore="ObsoleteLayoutParam,RtlSymmetry" />
+            style="@style/search_edit_text_icon"/>
 
         <ImageView
             android:id="@+id/clear_icon"
             style="@style/search_clear_icon"
-            app:tint="@color/black_text"
-            tools:ignore="ObsoleteLayoutParam,RtlSymmetry" />
+            app:tint="@color/black_text"/>
     </FrameLayout>
+    <!--
     <LinearLayout
         android:id="@+id/empty_layout"
         android:layout_width="match_parent"
@@ -88,4 +97,5 @@
                 android:text="@string/settings" />
         </LinearLayout>
     </LinearLayout>
+    -->
 </LinearLayout>

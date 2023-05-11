@@ -27,7 +27,7 @@
             android:id="@+id/button_search"
             style="@style/main_button"
             android:text="@string/search"
-            app:icon="@drawable/search"/>
+            app:icon="@drawable/search" />
 
         <Button
             android:id="@+id/button_media"
@@ -39,7 +39,7 @@
             android:id="@+id/button_settings"
             style="@style/main_button"
             android:text="@string/settings"
-            app:icon="@drawable/settings"/>
+            app:icon="@drawable/settings" />
 
     </LinearLayout>
 

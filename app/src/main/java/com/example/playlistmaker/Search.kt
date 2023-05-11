@@ -1,43 +1,42 @@
 package com.example.playlistmaker
 
+import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.LinearLayout
+import androidx.fragment.app.Fragment
 
 class Search : AppCompatActivity() {
     companion object {
         const val SEARCH_KEY = "SEARCH_KEY"
     }
-
+    private lateinit var inputEditText: EditText
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-//        val mediaButton = findViewById<LinearLayout>(R.id.media_layout) // Домашнее задание на разных этапах спринта сильно отличается, поэтому был разработан footer и соответствующие обработчики
-//        val settingsButton = findViewById<LinearLayout>(R.id.settings_layout)
+        fun Context.hideKeyboard() {
+            val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
+        }
+
         val inputEditText = findViewById<EditText>(R.id.input_edit_text)
         val clearButton = findViewById<ImageView>(R.id.clear_icon)
 
-//        arrowBackButton.setOnClickListener { finish() }
-
-//        mediaButton.setOnClickListener {
-//            val mediaIntent = Intent(this, Media::class.java)
-//            startActivity(mediaIntent)
-//        }
-//
-//        settingsButton.setOnClickListener {
-//            val settingsIntent = Intent(this, Settings::class.java)
-//            startActivity(settingsIntent)
-//        }
-
+        val arrowBackButton = findViewById<ImageView>(R.id.arrow_back)
+        arrowBackButton.setOnClickListener {
+            finish()
+        }
         clearButton.setOnClickListener {
             inputEditText.setText("")
+            hideKeyboard()
         }
 
         val textWatcher = object : TextWatcher {
@@ -55,7 +54,6 @@ class Search : AppCompatActivity() {
         }
         inputEditText.addTextChangedListener(textWatcher)
     }
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         val inputEditText = findViewById<EditText>(R.id.input_edit_text)

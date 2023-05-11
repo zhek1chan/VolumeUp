@@ -37,8 +37,8 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingStart">0dp</item>
-        <item name="android:paddingLeft">14dp</item>
-        <item name="android:paddingTop">14dp</item>
+        <item name="android:paddingLeft">28dp</item>
+        <item name="android:paddingTop">0dp</item>
         <item name="android:layout_marginStart">@dimen/common_padding</item>
         <item name="android:textColor">@color/black_text</item>
         <item name="android:text">@string/search</item>
@@ -64,7 +64,7 @@
         <item name="android:maxLines">1</item>
         <item name="android:paddingLeft">36dp</item>
         <item name="android:singleLine">true</item>
-        <item name="android:textColor">@color/icon_color</item>
+        <item name="android:textColor">@color/black_text</item>
     </style>
     <style name="search_edit_text_icon">
         <item name="android:tint">@color/icon_color</item>
@@ -109,7 +109,7 @@
         <item name="android:layout_marginBottom">8dp</item>
         <item name="android:textColor">@color/black_text</item>
     </style>
-    <style name="main_button">
+    <style name="main_button" parent="Widget.MaterialComponents.Button.UnelevatedButton">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_weight">1</item>
