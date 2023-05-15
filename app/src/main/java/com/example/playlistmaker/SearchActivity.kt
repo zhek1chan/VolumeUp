@@ -2,7 +2,6 @@ package com.example.playlistmaker
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -11,9 +10,9 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
-import androidx.fragment.app.Fragment
+import android.widget.Toast
 
-class Search : AppCompatActivity() {
+class SearchActivity : AppCompatActivity() {
     companion object {
         const val SEARCH_KEY = "SEARCH_KEY"
     }
@@ -49,7 +48,7 @@ class Search : AppCompatActivity() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                // empty
+                //empty
             }
         }
         inputEditText.addTextChangedListener(textWatcher)
@@ -62,9 +61,8 @@ class Search : AppCompatActivity() {
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        savedInstanceState.getString(SEARCH_KEY, "")
+        inputEditText.setText(savedInstanceState.getString(SEARCH_KEY, ""))
     }
-
     private fun clearButtonVisibility(s: CharSequence?): Int {
         return if (s.isNullOrEmpty()) {
             View.GONE

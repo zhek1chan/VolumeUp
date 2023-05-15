@@ -33,6 +33,11 @@
         <item name="android:orientation">horizontal</item>
         <item name="android:paddingVertical">@dimen/options_padding</item>
     </style>
+    <style name="search_back_icon">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="tint">@color/black_text</item>
+    </style>
     <style name="search_header_text">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -77,7 +82,6 @@
         <item name="android:layout_gravity">start</item>
         <item name="android:src">@drawable/search_small</item>
     </style>
-    app:tint="@color/black_text"
     <style name="search_clear_icon">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">match_parent</item>
@@ -86,6 +90,7 @@
         <item name="android:visibility">gone</item>
         <item name="android:paddingEnd">12dp</item>
         <item name="android:src">@drawable/is_baseline_clear</item>
+        <item name="android:tint">@color/icon_color</item>
     </style>
     <style name="search_bottom_layout">
         <item name="android:layout_width">match_parent</item>

@@ -19,6 +19,11 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="tint">@color/white</item>
     </style>
+    <style name="settings_back_icon">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="tint">@color/white</item>
+    </style>
     <style name="settings_linear_layout">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -41,5 +46,63 @@
         <item name="iconGravity">textStart</item>
         <item name="iconPadding">@dimen/icon_padding</item>
         <item name="iconTint">@color/black_text</item>
+    </style>
+    <style name="search_back_icon">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="tint">@color/white</item>
+    </style>
+    <style name="search_background">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:background">@color/black_text</item>
+        <item name="android:paddingTop">@dimen/layouts_padding</item>
+    </style>
+    <style name="search_edit_text">
+        <item name="android:textColorHint">@color/black_text</item>
+        <item name="android:background">@drawable/search_field_night_mode</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">36dp</item>
+        <item name="android:drawablePadding">8dp</item>
+        <item name="android:hint">@string/search</item>
+        <item name="android:inputType">text</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:paddingLeft">36dp</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">@color/black_text</item>
+    </style>
+    <style name="search_header_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingStart">0dp</item>
+        <item name="android:paddingLeft">28dp</item>
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:layout_marginStart">@dimen/common_padding</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:text">@string/search</item>
+        <item name="android:textSize">@dimen/main_text_size</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+    </style>
+    <style name="search_edit_text_icon">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:paddingTop">11dp</item>
+        <item name="android:paddingBottom">11dp</item>
+        <item name="android:paddingStart">13dp</item>
+        <item name="android:layout_alignParentEnd">true</item>
+        <item name="android:layout_gravity">start</item>
+        <item name="android:src">@drawable/search_small</item>
+        <item name="android:tint">@color/black_text</item>
+    </style>
+    <style name="search_clear_icon">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_gravity">end</item>
+        <item name="android:clickable">true</item>
+        <item name="android:visibility">gone</item>
+        <item name="android:paddingEnd">12dp</item>
+        <item name="android:src">@drawable/is_baseline_clear</item>
+        <item name="android:tint">@color/black_text</item>
     </style>
 </resources>

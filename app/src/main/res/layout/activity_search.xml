@@ -9,7 +9,7 @@
         <ImageView
             android:color="@color/black_text"
             android:id="@+id/arrow_back"
-            style="@style/settings_back_icon"
+            style="@style/search_back_icon"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="20dp"
             android:foreground="?attr/selectableItemBackground"
@@ -37,8 +37,7 @@
 
         <ImageView
             android:id="@+id/clear_icon"
-            style="@style/search_clear_icon"
-            app:tint="@color/black_text"/>
+            style="@style/search_clear_icon"/>
     </FrameLayout>
     <!--
     <LinearLayout
