@@ -10,12 +10,12 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.Toast
-
+import kotlin.properties.Delegates.notNull
 class SearchActivity : AppCompatActivity() {
     companion object {
         const val SEARCH_KEY = "SEARCH_KEY"
     }
+    private var searchQuery by notNull<String>()
     private lateinit var inputEditText: EditText
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,6 +54,7 @@ class SearchActivity : AppCompatActivity() {
         inputEditText.addTextChangedListener(textWatcher)
     }
     override fun onSaveInstanceState(outState: Bundle) {
+        searchQuery = inputEditText.text.toString()
         super.onSaveInstanceState(outState)
         val inputEditText = findViewById<EditText>(R.id.input_edit_text)
         outState.putString(SEARCH_KEY, inputEditText.text.toString())
