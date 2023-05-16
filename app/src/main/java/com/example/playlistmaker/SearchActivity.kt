@@ -10,7 +10,9 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
-import kotlin.properties.Delegates.notNull
+import android.widget.LinearLayout
+import kotlin.system.exitProcess
+
 class SearchActivity : AppCompatActivity() {
     companion object {
         const val SEARCH_KEY = "SEARCH_KEY"
@@ -45,6 +47,11 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 clearButton.visibility = clearButtonVisibility(s)
+                //записали в переменнную вводимый текст
+                searchText = s.toString()
+                //if (searchText=="test"){
+                //   exitProcess(0)
+                //}
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -59,7 +66,6 @@ class SearchActivity : AppCompatActivity() {
         outState.putString(SEARCH_KEY, inputEditText.text.toString())
         searchText = inputEditText.text.toString()
     }
-
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         savedInstanceState.getString(SEARCH_KEY, "")
