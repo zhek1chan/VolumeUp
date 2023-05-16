@@ -15,6 +15,7 @@ class SearchActivity : AppCompatActivity() {
     companion object {
         const val SEARCH_KEY = "SEARCH_KEY"
     }
+    private var searchText= ""
     private lateinit var inputEditText: EditText
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +57,7 @@ class SearchActivity : AppCompatActivity() {
         super.onSaveInstanceState(outState)
         val inputEditText = findViewById<EditText>(R.id.input_edit_text)
         outState.putString(SEARCH_KEY, inputEditText.text.toString())
+        searchText = inputEditText.text.toString()
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
