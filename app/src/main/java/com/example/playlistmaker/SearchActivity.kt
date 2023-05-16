@@ -15,7 +15,6 @@ class SearchActivity : AppCompatActivity() {
     companion object {
         const val SEARCH_KEY = "SEARCH_KEY"
     }
-    private var searchQuery by notNull<String>()
     private lateinit var inputEditText: EditText
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +53,6 @@ class SearchActivity : AppCompatActivity() {
         inputEditText.addTextChangedListener(textWatcher)
     }
     override fun onSaveInstanceState(outState: Bundle) {
-        searchQuery = inputEditText.text.toString()
         super.onSaveInstanceState(outState)
         val inputEditText = findViewById<EditText>(R.id.input_edit_text)
         outState.putString(SEARCH_KEY, inputEditText.text.toString())
@@ -62,7 +60,7 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        inputEditText.setText(savedInstanceState.getString(SEARCH_KEY, ""))
+        savedInstanceState.getString(SEARCH_KEY, "")
     }
     private fun clearButtonVisibility(s: CharSequence?): Int {
         return if (s.isNullOrEmpty()) {
