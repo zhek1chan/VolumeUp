@@ -10,8 +10,8 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.LinearLayout
-import kotlin.system.exitProcess
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 class SearchActivity : AppCompatActivity() {
     companion object {
@@ -27,6 +27,11 @@ class SearchActivity : AppCompatActivity() {
             val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager.hideSoftInputFromWindow(currentFocus!!.windowToken, 0)
         }
+
+        val recyclerView = findViewById<RecyclerView>(R.id.search_results_recycler_view)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        val trackAdapter = TrackAdapter(tracks)
+        recyclerView.adapter = trackAdapter
 
         val inputEditText = findViewById<EditText>(R.id.input_edit_text)
         val clearButton = findViewById<ImageView>(R.id.clear_icon)
@@ -47,11 +52,7 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 clearButton.visibility = clearButtonVisibility(s)
-                //записали в переменнную вводимый текст
                 searchText = s.toString()
-                //if (searchText=="test"){
-                //   exitProcess(0)
-                //}
             }
 
             override fun afterTextChanged(s: Editable?) {

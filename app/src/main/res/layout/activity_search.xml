@@ -38,7 +38,20 @@
         <ImageView
             android:id="@+id/clear_icon"
             style="@style/search_clear_icon"/>
+
     </FrameLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/search_results_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="24dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+    </LinearLayout>
     <!--
     <LinearLayout
         android:id="@+id/empty_layout"

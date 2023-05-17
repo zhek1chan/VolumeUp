@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="main_linear_view">
-        <item name="android:background">@color/background_color</item>
-    </style>
+    <!-- Settings -->
     <style name="settings_background">
         <item name="android:background">@color/white</item>
     </style>
@@ -33,6 +31,7 @@
         <item name="android:orientation">horizontal</item>
         <item name="android:paddingVertical">@dimen/options_padding</item>
     </style>
+    <!-- Search -->
     <style name="search_back_icon">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -114,6 +113,7 @@
         <item name="android:layout_marginBottom">8dp</item>
         <item name="android:textColor">@color/black_text</item>
     </style>
+    <!-- Main -->
     <style name="main_button" parent="Widget.MaterialComponents.Button.UnelevatedButton">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
@@ -129,5 +129,35 @@
         <item name="iconGravity">textStart</item>
         <item name="iconPadding">@dimen/icon_padding</item>
         <item name="iconTint">@color/black_text</item>
+    </style>
+    <style name="main_linear_view">
+        <item name="android:background">@color/background_color</item>
+    </style>
+    <!-- Search Result-->
+    <style name="search_element_main_layout_style">
+        <item name="android:background">@color/white</item>
+        <item name="android:clickable">true</item>
+        <item name="android:padding">@dimen/search_screen_element_layout_padding</item>
+    </style>
+
+    <style name="search_element_song_title_style">
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textSize">@dimen/search_screen_song_text_size</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:fontWeight">400</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="android:textStyle">normal</item>
+    </style>
+    <style name="search_element_artist_name_style">
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textSize">@dimen/search_screen_artist_text_size</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:fontWeight">400</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="android:textStyle">normal</item>
     </style>
 </resources>
