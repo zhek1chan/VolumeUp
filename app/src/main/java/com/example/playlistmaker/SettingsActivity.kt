@@ -11,8 +11,6 @@ import androidx.appcompat.app.AppCompatDelegate
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        if (getSupportActionBar() != null)
-            getSupportActionBar()?.hide();
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 

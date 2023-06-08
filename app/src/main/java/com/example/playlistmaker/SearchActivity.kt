@@ -20,8 +20,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import network.client.ITunesApi
-import network.client.SearchResponse
+import com.example.playlistmaker.network.ITunesApi
+import com.example.playlistmaker.network.client.SearchResponse
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -30,7 +30,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 typealias TrackList = ArrayList<Track>
 
-enum class ResponseState {
+private enum class ResponseState {
     SUCCESS,
     NOTHING_FOUND,
     ERROR
@@ -48,13 +48,13 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var trackAdapter: TrackAdapter
 
     companion object {
-        const val SEARCH_QUERY = "SEARCH_QUERY"
-        const val TRACKS = "TRACKS"
-        const val API_URL = "https://itunes.apple.com"
-        const val PREFS = "my_prefs"
-        const val QUERY = "searchQuery"
-        const val TRACKS_LIST = "TRACKS_LIST"
-        const val RESPONSE_STATE = "responseState"
+        private const val SEARCH_QUERY = "SEARCH_QUERY"
+        private const val TRACKS = "TRACKS"
+        private const val API_URL = "https://itunes.apple.com"
+        private const val PREFS = "my_prefs"
+        private const val QUERY = "searchQuery"
+        private const val TRACKS_LIST = "TRACKS_LIST"
+        private const val RESPONSE_STATE = "responseState"
     }
 
     //Retrofit конвертер
@@ -64,8 +64,6 @@ class SearchActivity : AppCompatActivity() {
         .build()
     private val itunesService = retrofit.create(ITunesApi::class.java)
     override fun onCreate(savedInstanceState: Bundle?) {
-        if (getSupportActionBar() != null)
-            getSupportActionBar()?.hide();
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
         val backButton = findViewById<ImageView>(R.id.arrow_back)
@@ -80,6 +78,7 @@ class SearchActivity : AppCompatActivity() {
         problemsIcon = findViewById(R.id.problems_image)
         refreshButton = findViewById(R.id.refresh_button)
         loadingIndicator = findViewById(R.id.loading_indicator)
+
         searchEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 if (searchEditText.text.isNotEmpty()) {
@@ -126,24 +125,20 @@ class SearchActivity : AppCompatActivity() {
         }
         searchEditText.setText(searchQuery)
         //GSON
-        if (json.isNullOrEmpty()) {
-            hideProblemsLayout()
-        } else {
-            val gson = Gson()
-            val type = object : TypeToken<TrackList>() {}.type
+        val gson = Gson()
+        val type = object : TypeToken<TrackList>() {}.type
+        if (json != null) {
             if (json.startsWith("[")) {
                 val restoredTracks: TrackList = gson.fromJson(json, type)
                 trackAdapter.setTracks(restoredTracks)
-                hideProblemsLayout()
             } else {
                 showProblemsLayout(responseState = ResponseState.NOTHING_FOUND)
             }
         }
+
         //логика вывода ошибок
         if (state != ResponseState.SUCCESS) {
             showProblemsLayout(state)
-        } else {
-            hideProblemsLayout()
         }
 
         searchEditText.addTextChangedListener(simpleTextWatcher)
@@ -159,7 +154,6 @@ class SearchActivity : AppCompatActivity() {
             val editor = sharedPreferences.edit()
             editor.putString(RESPONSE_STATE, ResponseState.SUCCESS.name)
             editor.apply()
-            hideProblemsLayout()
         }
 
         //логика кнопки назад
@@ -185,6 +179,8 @@ class SearchActivity : AppCompatActivity() {
 
     private fun makeClearButtonVisible() {
         clearButton.visibility = View.VISIBLE
+        clearButton.background = getDrawable(R.drawable.is_baseline_clear)
+        searchEditText.background = getDrawable(R.drawable.search_field)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -209,7 +205,6 @@ class SearchActivity : AppCompatActivity() {
     private fun search(searchQuery: String) {
         trackAdapter.setTracks(null)
         loadingIndicator.visibility = View.VISIBLE
-        hideProblemsLayout()
         recyclerView.visibility = View.GONE
         val call = itunesService.search(searchQuery)
         call.enqueue(object : Callback<SearchResponse> {
@@ -253,6 +248,11 @@ class SearchActivity : AppCompatActivity() {
         recyclerView.visibility = View.GONE
         problemsLayout.visibility = View.VISIBLE
         when (responseState.name) {
+            ResponseState.SUCCESS.name -> {
+                recyclerView.visibility = View.VISIBLE
+                problemsLayout.visibility = View.GONE
+                refreshButton.visibility = View.GONE
+            }
             ResponseState.ERROR.name -> {
                 recyclerView.visibility = View.GONE
                 loadingIndicator.visibility = View.GONE
@@ -272,11 +272,4 @@ class SearchActivity : AppCompatActivity() {
             }
         }
     }
-
-    private fun hideProblemsLayout() {
-        recyclerView.visibility = View.VISIBLE
-        problemsLayout.visibility = View.GONE
-        refreshButton.visibility = View.GONE
-    }
-
 }

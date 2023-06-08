@@ -4,7 +4,7 @@
     <style name="Theme.PlaylistMaker" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/black_text</item>
-        <item name="colorPrimaryVariant">@color/icon_color</item>
+        <item name="colorPrimaryVariant">@color/search_field</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorOnSecondary">@color/white</item>

@@ -53,13 +53,13 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         trackArtist.text = track.artistName
         trackTime.text =
             SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
-        val corner_pixel_size =
+        val cornerPixelSize =
             itemView.resources.getDimensionPixelSize(R.dimen.album_cover_corner_radius)
         Glide.with(trackCover.context)
             .load(track.artworkUrl100)
             .centerCrop()
             .placeholder(R.drawable.song_cover)
-            .transform(RoundedCorners(corner_pixel_size))
+            .transform(RoundedCorners(cornerPixelSize))
             .into(trackCover)
 
     }

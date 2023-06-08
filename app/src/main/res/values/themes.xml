@@ -1,10 +1,10 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.PlaylistMaker" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.PlaylistMaker" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="android:windowNoTitle">true</item>
         <item name="colorPrimary">@color/white</item>
-        <item name="colorPrimaryVariant">@color/icon_color</item>
+        <item name="colorPrimaryVariant">@color/search_field</item>
         <item name="colorOnPrimary">@color/black_text</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>
