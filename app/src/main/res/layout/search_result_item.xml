@@ -47,13 +47,13 @@
                 tools:ignore="TextContrastCheck" />
 
             <ImageView
+                style="@style/search_dot"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="0"
                 android:padding="@dimen/search_screen_dot_padding"
-                android:src="@drawable/dot"
-                app:tint="?attr/colorOnSecondary" />
+                android:src="@drawable/dot" />
 
             <TextView
                 android:id="@+id/track_time"

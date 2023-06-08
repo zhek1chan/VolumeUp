@@ -11,11 +11,13 @@ import androidx.appcompat.app.AppCompatDelegate
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        if (getSupportActionBar() != null)
+            getSupportActionBar()?.hide();
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
 
-        val nightmodeButton:Switch = findViewById<Switch>(R.id.switch_nightmode)
+        val nightmodeButton: Switch = findViewById<Switch>(R.id.switch_nightmode)
         nightmodeButton.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
