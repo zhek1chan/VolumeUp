@@ -15,7 +15,7 @@ class SettingsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_settings)
 
 
-        val nightmodeButton:Switch = findViewById<Switch>(R.id.switch_nightmode)
+        val nightmodeButton: Switch = findViewById<Switch>(R.id.switch_nightmode)
         nightmodeButton.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
