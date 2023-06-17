@@ -48,8 +48,9 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(shareIntent)
         }
         val urlButton = findViewById<LinearLayout>(R.id.button_user_agreements)
-        urlButton.setOnClickListener{
-            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://yandex.ru/legal/practicum_offer/"))
+        urlButton.setOnClickListener {
+            val browserIntent =
+                Intent(Intent.ACTION_VIEW, Uri.parse("https://yandex.ru/legal/practicum_offer/"))
             startActivity(browserIntent)
         }
     }

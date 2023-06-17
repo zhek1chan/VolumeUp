@@ -3,7 +3,6 @@ package com.example.playlistmaker
 import TrackAdapter
 import android.annotation.SuppressLint
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -16,14 +15,15 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.history.LinkedRepository
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.example.playlistmaker.network.ITunesApi
 import com.example.playlistmaker.network.client.SearchResponse
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -356,6 +356,7 @@ class SearchActivity : AppCompatActivity() {
                 problemsLayout.visibility = View.GONE
                 refreshButton.visibility = View.GONE
             }
+
             ResponseState.ERROR.name -> {
                 recyclerView.visibility = View.GONE
                 loadingIndicator.visibility = View.GONE
@@ -366,6 +367,7 @@ class SearchActivity : AppCompatActivity() {
                     search(searchEditText.text.toString())
                 }
             }
+
             ResponseState.NOTHING_FOUND.name -> {
                 recyclerView.visibility = View.GONE
                 loadingIndicator.visibility = View.GONE
