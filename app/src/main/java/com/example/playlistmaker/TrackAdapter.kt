@@ -1,26 +1,33 @@
 
+import android.content.Context
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.R
-import com.example.playlistmaker.Track
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.google.android.material.resources.MaterialResources.getDimensionPixelSize
+import com.example.playlistmaker.R
+import com.example.playlistmaker.Track
+import com.example.playlistmaker.history.LinkedRepository
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class TrackAdapter(
+    private val historyRepository: LinkedRepository<Track>,
     private val tracks: MutableList<Track> = mutableListOf<Track>()
 ) : RecyclerView.Adapter<TrackViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
         val view =
             LayoutInflater.from(parent.context).inflate(R.layout.search_result_item, parent, false)
-        return TrackViewHolder(view)
+        return TrackViewHolder(view).listen() { pos, type ->
+            val track = tracks[pos]
+            historyRepository.add(track as Track)
+        }
     }
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
@@ -63,4 +70,11 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             .into(trackCover)
 
     }
+}
+
+fun <T : RecyclerView.ViewHolder> T.listen(event: (position: Int, type: Int) -> Unit): T {
+    itemView.setOnClickListener {
+        event.invoke(getAdapterPosition(), getItemViewType())
+    }
+    return this
 }

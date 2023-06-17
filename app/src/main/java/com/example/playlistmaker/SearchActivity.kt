@@ -16,8 +16,10 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.history.LinkedRepository
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.example.playlistmaker.network.ITunesApi
@@ -46,6 +48,11 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var loadingIndicator: ProgressBar
     private lateinit var trackAdapter: TrackAdapter
+    private lateinit var cleanHistoryButton: Button
+    private lateinit var historyLayout: LinearLayout
+    private lateinit var historyRecyclerView: RecyclerView
+    private lateinit var historyAdapter: TrackAdapter
+    private lateinit var linkedRepository: LinkedRepository<Track>
 
     companion object {
         private const val SEARCH_QUERY = "SEARCH_QUERY"
@@ -55,6 +62,8 @@ class SearchActivity : AppCompatActivity() {
         private const val QUERY = "searchQuery"
         private const val TRACKS_LIST = "TRACKS_LIST"
         private const val RESPONSE_STATE = "responseState"
+        private const val MAX_HISTORY_SIZE = 10
+        private const val HISTORY = "history"
     }
 
     //Retrofit конвертер
@@ -63,14 +72,33 @@ class SearchActivity : AppCompatActivity() {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
     private val itunesService = retrofit.create(ITunesApi::class.java)
+
+    override fun onPause() {
+        super.onPause()
+        linkedRepository.saveToSharedPreferences(PREFS, HISTORY, this)
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        linkedRepository.saveToSharedPreferences(PREFS, HISTORY, this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        linkedRepository.saveToSharedPreferences(PREFS, HISTORY, this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        linkedRepository.restoreFromSharedPreferences(PREFS, HISTORY, this)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
         val backButton = findViewById<ImageView>(R.id.arrow_back)
         recyclerView = findViewById(R.id.search_results_recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(this)
-        trackAdapter = TrackAdapter()
-        recyclerView.adapter = trackAdapter
         searchEditText = findViewById(R.id.input_edit_text)
         clearButton = findViewById(R.id.clear_icon)
         problemsLayout = findViewById(R.id.problems_layout)
@@ -78,6 +106,22 @@ class SearchActivity : AppCompatActivity() {
         problemsIcon = findViewById(R.id.problems_image)
         refreshButton = findViewById(R.id.refresh_button)
         loadingIndicator = findViewById(R.id.loading_indicator)
+        cleanHistoryButton = findViewById(R.id.clear_button)
+
+        // История поиска
+        historyLayout = findViewById(R.id.history_layout)
+        hideHistoryLayout()
+        historyRecyclerView = findViewById(R.id.search_history_recycler_view)
+        historyRecyclerView.layoutManager = LinearLayoutManager(this)
+        linkedRepository = LinkedRepository(MAX_HISTORY_SIZE)
+        linkedRepository.restoreFromSharedPreferences(PREFS, HISTORY, this)
+
+        // ADAPTERS
+        historyAdapter = TrackAdapter(linkedRepository)
+        trackAdapter = TrackAdapter(linkedRepository)
+        recyclerView.adapter = trackAdapter
+        historyRecyclerView.adapter = historyAdapter
+
 
         searchEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -127,13 +171,16 @@ class SearchActivity : AppCompatActivity() {
         //GSON
         val gson = Gson()
         val type = object : TypeToken<TrackList>() {}.type
-        if (json != null) {
-            if (json.startsWith("[")) {
-                val restoredTracks: TrackList = gson.fromJson(json, type)
-                trackAdapter.setTracks(restoredTracks)
+        if (json.isNullOrEmpty()) {
+            showProblemsLayout(responseState = ResponseState.NOTHING_FOUND)
+        } else {
+            if (searchEditText.text.isNullOrEmpty()) {
+                showHistoryLayout()
             } else {
-                showProblemsLayout(responseState = ResponseState.NOTHING_FOUND)
+                hideHistoryLayout()
             }
+            val gson = Gson()
+            val type = object : TypeToken<TrackList>() {}.type
         }
 
         //логика вывода ошибок
@@ -143,17 +190,42 @@ class SearchActivity : AppCompatActivity() {
 
         searchEditText.addTextChangedListener(simpleTextWatcher)
 
+        searchEditText.addTextChangedListener { text ->
+            if ((text.isNullOrEmpty()) && (linkedRepository.getSize() > 0)) {
+                showHistoryLayout()
+            } else {
+                hideHistoryLayout()
+                trackAdapter.setTracks(null)
+            }
+        }
+
+        searchEditText.setOnFocusChangeListener { view, hasFocus ->
+            if ((hasFocus) && (searchEditText.text.isEmpty()) && (linkedRepository.getSize() > 0)) {
+                showHistoryLayout()
+            } else {
+                hideHistoryLayout()
+            }
+        }
+
+        // прослушиватель нажатия на кнопку "очистить историю"
+        cleanHistoryButton.setOnClickListener {
+            linkedRepository.clear()
+            linkedRepository.clearSharedPreferences(PREFS, HISTORY, this)
+            hideHistoryLayout()
+        }
+
         //логика кнопки очистить текст
         clearButton.setOnClickListener {
             searchEditText.setText("")
             val keyboard = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             keyboard.hideSoftInputFromWindow(searchEditText.windowToken, 0) // скрыть клавиатуру
-            searchEditText.clearFocus()
             trackAdapter.setTracks(null)
             val sharedPreferences = getSharedPreferences(PREFS, Context.MODE_PRIVATE)
             val editor = sharedPreferences.edit()
             editor.putString(RESPONSE_STATE, ResponseState.SUCCESS.name)
             editor.apply()
+            searchEditText.requestFocus()
+            showHistoryLayout()
         }
 
         //логика кнопки назад
@@ -185,26 +257,36 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        // TODO сохранять еще и errorState
         outState.putString(SEARCH_QUERY, searchEditText.text.toString())
         outState.putParcelableArrayList(TRACKS, trackAdapter.getTracks())
+        outState.putParcelableArrayList(HISTORY, historyAdapter.getTracks())
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        // Вторым параметром мы передаём значение по умолчанию
         val searchQuery = savedInstanceState.getString(SEARCH_QUERY, "")
         searchEditText.setText(searchQuery)
+        linkedRepository.restoreFromSharedPreferences(PREFS, HISTORY, this)
+        historyAdapter = TrackAdapter(linkedRepository)
+        trackAdapter = TrackAdapter(linkedRepository)
+        // TODO когда метод getParcelableArrayList уберут, надо будет использвать сериализацию в json и восстоновление из json
         val restoredTracks = savedInstanceState.getParcelableArrayList<Track>(TRACKS)
         if (restoredTracks != null) {
             trackAdapter.setTracks(restoredTracks)
         }
+        val restoredHistory = savedInstanceState.getParcelableArrayList<Track>(HISTORY)
+        if (restoredHistory != null) {
+            historyAdapter.setTracks(restoredHistory)
+        }
+        historyRecyclerView.adapter = historyAdapter
+        recyclerView.adapter = trackAdapter
     }
 
     //логика поиска
     private fun search(searchQuery: String) {
         trackAdapter.setTracks(null)
         loadingIndicator.visibility = View.VISIBLE
+        hideHistoryLayout()
         recyclerView.visibility = View.GONE
         val call = itunesService.search(searchQuery)
         call.enqueue(object : Callback<SearchResponse> {
@@ -223,6 +305,7 @@ class SearchActivity : AppCompatActivity() {
                 editor.apply()
                 when (responseState) {
                     ResponseState.SUCCESS -> {
+                        hideHistoryLayout()
                         loadingIndicator.visibility = View.GONE
                         recyclerView.visibility = View.VISIBLE
                         val sharedPreferences =
@@ -242,6 +325,26 @@ class SearchActivity : AppCompatActivity() {
                 showProblemsLayout(responseState)
             }
         })
+    }
+
+    private fun showHistoryLayout() {
+        historyLayout.visibility = View.VISIBLE
+        recyclerView.visibility = View.GONE
+        problemsLayout.visibility = View.GONE
+        cleanHistoryButton.visibility = View.VISIBLE
+        val gson = Gson()
+        val json = gson.toJson(linkedRepository.get(reversed = true))
+        val type = object : TypeToken<TrackList>() {}.type
+        val restoredTracks: TrackList = gson.fromJson(json, type)
+        historyAdapter.setTracks(restoredTracks)
+    }
+
+    private fun hideHistoryLayout() {
+        recyclerView.visibility = View.VISIBLE
+        historyLayout.visibility = View.GONE
+        cleanHistoryButton.visibility = View.VISIBLE
+
+
     }
 
     private fun showProblemsLayout(responseState: ResponseState) {

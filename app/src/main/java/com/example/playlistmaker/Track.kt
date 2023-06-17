@@ -5,12 +5,22 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class Track(
+    val trackID: Int,
     val trackName: String,
     val artistName: String,
     val trackTimeMillis: Int,
     val artworkUrl100: String
-) : Parcelable
+) : Parcelable {
+    override fun hashCode(): Int {
+        return this.trackID.hashCode()
+    }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Track) return false
+        return this.trackID == other.trackID
+    }
+}
 //val tracks: ArrayList<Track> = arrayListOf(
 //    Track(
 //        "Smells Like Teen Spirit",
