@@ -28,7 +28,7 @@ class TrackViewHolder(parent: ViewGroup) :
             .load(item.artworkUrl100)
             .placeholder(R.drawable.song_cover)
             .centerCrop()
-            .transform(RoundedCorners(2))
+            .transform(RoundedCorners(R.dimen.album_cover_corner_radius))
             .into(albumsCover)
     }
 }

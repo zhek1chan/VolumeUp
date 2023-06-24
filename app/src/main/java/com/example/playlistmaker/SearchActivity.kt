@@ -12,10 +12,9 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.history.SearchHistory
-import com.example.playlistmaker.history.SearchHistotyAdapter
+import com.example.playlistmaker.history.SearchHistoryAdapter
 import com.example.playlistmaker.network.ITunesApi
 import com.google.gson.Gson
-import com.practicum.playlistmaker.TrackAdapter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -52,7 +51,7 @@ class SearchActivity : AppCompatActivity(), TrackAdapter.TrackClickListener {
 
     private val tracksInHistory = ArrayList<Track>()
 
-    private val searchHistoryAdapter = SearchHistotyAdapter()
+    private val searchHistoryAdapter = SearchHistoryAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -185,13 +184,14 @@ class SearchActivity : AppCompatActivity(), TrackAdapter.TrackClickListener {
                             tracks.addAll(response.body()?.results!!) // добавляем все найденные треки в спсиок addAll() для отображения их на экране
                             trackAdapter.notifyDataSetChanged() // уведомляем адаптер об изменении набора данных, перерисовавается весь набор, это не оптимально
                         } else {
-                            tracks.clear()
+                            trackAdapter.notifyDataSetChanged()
                             rvSearchTrack.visibility = View.GONE
                             nothingFoundPlaceholder.visibility =
                                 View.VISIBLE// показываем placeholder nothing_found
                         }
                     } else {
                         tracks.clear()
+                        trackAdapter.notifyDataSetChanged()
                         rvSearchTrack.visibility = View.GONE
                         loadingProblemPlaceholder.visibility =
                             View.VISIBLE// показываем loading_problem
@@ -203,6 +203,7 @@ class SearchActivity : AppCompatActivity(), TrackAdapter.TrackClickListener {
                     t: Throwable
                 ) { // метод вызывается если не получилось установить соединение с сервером
                     tracks.clear()
+                    trackAdapter.notifyDataSetChanged()
                     rvSearchTrack.visibility = View.GONE
                     loadingProblemPlaceholder.visibility = View.VISIBLE
                 }

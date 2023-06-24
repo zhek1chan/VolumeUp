@@ -18,13 +18,11 @@ class SearchHistory(val sharedPreferences: SharedPreferences) {
     }
 
     fun addNewTrack(track: Track) {
-
         if (searchedTrackList.contains(track)) searchedTrackList.remove(track)
-
         searchedTrackList.add(0, track)
-
-        if (searchedTrackList.size == 11) searchedTrackList.removeAt(10)
-
+        while (searchedTrackList.size > 10) {
+            searchedTrackList.removeAt(10)
+        }
         sharedPreferences.edit()
             .putString(
                 TRACKS_LIST_KEY,
