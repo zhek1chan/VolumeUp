@@ -1,26 +1,13 @@
 package com.example.playlistmaker
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
-
-@Parcelize
 data class Track(
-    val trackID: Int,
     val trackName: String,
     val artistName: String,
-    val trackTimeMillis: Int,
-    val artworkUrl100: String
-) : Parcelable {
-    override fun hashCode(): Int {
-        return this.trackID.hashCode()
-    }
+    val trackTimeMillis: Long,
+    val artworkUrl100: String,
+    var trackID: String
+)
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is Track) return false
-        return this.trackID == other.trackID
-    }
-}
 //val tracks: ArrayList<Track> = arrayListOf(
 //    Track(
 //        "Smells Like Teen Spirit",
