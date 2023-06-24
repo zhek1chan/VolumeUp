@@ -76,7 +76,7 @@ class SearchActivity : AppCompatActivity(), TrackAdapter.TrackClickListener {
 
         if (tracksInHistory.isEmpty()) {
             searchHistoryLayout.visibility = View.GONE
-        }
+        } else searchHistoryLayout.visibility = View.VISIBLE
 
         listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
             if (key == TRACKS_LIST_KEY) {
@@ -163,6 +163,9 @@ class SearchActivity : AppCompatActivity(), TrackAdapter.TrackClickListener {
             clearButton.windowToken,
             0
         )  //убираем клавиатуру
+        if (tracksInHistory.isEmpty()) {
+            searchHistoryLayout.visibility = View.GONE
+        } else searchHistoryLayout.visibility = View.VISIBLE
     }
 
     private fun sendRequestToServer() {
