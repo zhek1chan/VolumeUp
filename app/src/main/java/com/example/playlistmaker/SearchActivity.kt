@@ -145,6 +145,8 @@ class SearchActivity : AppCompatActivity(), TrackAdapter.TrackClickListener {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 clearButton.visibility = clearButtonVisibility(s)
+                loadingProblemPlaceholder.visibility = View.GONE
+                nothingFoundPlaceholder.visibility = View.GONE
                 searchHistoryLayout.visibility =
                     if ((searchEditText.hasFocus()) && (tracksInHistory.size == 0)) View.GONE else View.VISIBLE
             }

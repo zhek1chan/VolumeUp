@@ -23,12 +23,14 @@ class TrackViewHolder(parent: ViewGroup) :
         trackName.text = item.trackName
         bandName.text = item.artistName
         trackID = item.trackID
+        val cornerPixelSize =
+            itemView.resources.getDimensionPixelSize(R.dimen.album_cover_corner_radius)
         trackTime.text = DateUtils.formatTime(item.trackTimeMillis)
         Glide.with(itemView)
             .load(item.artworkUrl100)
             .placeholder(R.drawable.song_cover)
             .centerCrop()
-            .transform(RoundedCorners(R.dimen.album_cover_corner_radius))
+            .transform(RoundedCorners(cornerPixelSize))
             .into(albumsCover)
     }
 }
