@@ -73,9 +73,9 @@ class SearchActivity : AppCompatActivity(), TrackAdapter.TrackClickListener {
         tracksInHistory.addAll(searchHistory.searchedTrackList)
 
 
-        if (tracksInHistory.isEmpty()) {
+        if (tracksInHistory.size == 0) {
             searchHistoryLayout.visibility = View.GONE
-        } else searchHistoryLayout.visibility = View.VISIBLE
+        }
 
         listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
             if (key == TRACKS_LIST_KEY) {
@@ -146,7 +146,7 @@ class SearchActivity : AppCompatActivity(), TrackAdapter.TrackClickListener {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 clearButton.visibility = clearButtonVisibility(s)
                 searchHistoryLayout.visibility =
-                    if (searchEditText.hasFocus() && s?.isEmpty() == true) View.VISIBLE else View.GONE
+                    if ((searchEditText.hasFocus()) && (tracksInHistory.size == 0)) View.GONE else View.VISIBLE
             }
 
             override fun afterTextChanged(s: Editable?) {}
@@ -162,9 +162,6 @@ class SearchActivity : AppCompatActivity(), TrackAdapter.TrackClickListener {
             clearButton.windowToken,
             0
         )  //убираем клавиатуру
-        if (tracksInHistory.isEmpty()) {
-            searchHistoryLayout.visibility = View.GONE
-        } else searchHistoryLayout.visibility = View.VISIBLE
     }
 
     private fun sendRequestToServer() {

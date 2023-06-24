@@ -87,8 +87,7 @@
         android:orientation="vertical"
         android:gravity="center_horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone">
+        android:layout_height="wrap_content">
 
         <TextView
             style="@style/search_error_text"
@@ -96,7 +95,6 @@
             android:layout_width="match_parent"
             android:layout_height="52dp"
             android:gravity="center"
-            android:visibility="visible"
             android:text="@string/search_history" />
 
         <androidx.core.widget.NestedScrollView
@@ -111,7 +109,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/black_text"
-                android:visibility="visible"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
         </androidx.core.widget.NestedScrollView>
@@ -122,8 +119,7 @@
             android:layout_width="wrap_content"
             android:gravity="center"
             android:text="@string/clear_history_button"
-            android:layout_marginBottom="25dp"
-            android:visibility="visible" />
+            android:layout_marginBottom="25dp" />
     </LinearLayout>
 
     <LinearLayout
