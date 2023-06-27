@@ -152,4 +152,12 @@
     <style name="search_clear_icon">
         <item name="android:tint">@color/black_text</item>
     </style>
+
+    <style name="primary_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="android:textSize">@dimen/small_text</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+    </style>
 </resources>

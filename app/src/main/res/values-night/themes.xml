@@ -111,7 +111,7 @@
         <item name="android:tint">@color/black_text</item>
     </style>
     <style name="search_element_main_layout_style">
-        <item name="android:background">@color/black</item>
+        <item name="android:backgroundTint">@color/black_text</item>
         <item name="android:clickable">true</item>
         <item name="android:padding">@dimen/search_screen_element_layout_padding</item>
     </style>
