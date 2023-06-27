@@ -70,7 +70,12 @@ class SearchActivity : AppCompatActivity(), TrackAdapter.TrackClickListener {
 
         sharedPreferences = getSharedPreferences(TRACKS_PREFERENCES, MODE_PRIVATE)
         searchHistory = SearchHistory(sharedPreferences)
+        trackAdapter.tracks = tracks
+        searchHistoryAdapter.searchHistory = tracksInHistory
+        rvSearchTrack.adapter = trackAdapter
+        rvSearchHistory.adapter = searchHistoryAdapter
         tracksInHistory.addAll(searchHistory.searchedTrackList)
+        searchHistoryAdapter.notifyDataSetChanged()
 
 
         if (tracksInHistory.size == 0) {
@@ -111,17 +116,12 @@ class SearchActivity : AppCompatActivity(), TrackAdapter.TrackClickListener {
             closeKeyboard()
             tracks.clear()
             rvSearchTrack.visibility = View.GONE
-            nothingFoundPlaceholder.visibility = View.GONE
-            loadingProblemPlaceholder.visibility = View.GONE
+            if ((nothingFoundPlaceholder.visibility == View.VISIBLE) || (loadingProblemPlaceholder.visibility == View.VISIBLE)) {
+                nothingFoundPlaceholder.visibility = View.GONE
+                loadingProblemPlaceholder.visibility = View.GONE
+                rvSearchHistory.visibility = View.GONE
+            }
         }
-
-        trackAdapter.tracks = tracks
-
-        searchHistoryAdapter.searchHistory = tracksInHistory
-
-        rvSearchTrack.adapter = trackAdapter
-
-        rvSearchHistory.adapter = searchHistoryAdapter
 
 
         // обработчик нажатия для кнопки выпадающей клавиатуры
@@ -145,10 +145,10 @@ class SearchActivity : AppCompatActivity(), TrackAdapter.TrackClickListener {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 clearButton.visibility = clearButtonVisibility(s)
+                searchHistoryLayout.visibility =
+                    if ((searchEditText.hasFocus()) && (tracksInHistory.size == 0) || (loadingProblemPlaceholder.visibility == View.VISIBLE) || (nothingFoundPlaceholder.visibility == View.VISIBLE)) View.GONE else View.VISIBLE
                 loadingProblemPlaceholder.visibility = View.GONE
                 nothingFoundPlaceholder.visibility = View.GONE
-                searchHistoryLayout.visibility =
-                    if ((searchEditText.hasFocus()) && (tracksInHistory.size == 0)) View.GONE else View.VISIBLE
             }
 
             override fun afterTextChanged(s: Editable?) {}
