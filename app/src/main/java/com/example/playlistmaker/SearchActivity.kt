@@ -1,6 +1,7 @@
 package com.example.playlistmaker
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
@@ -14,13 +15,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.history.SearchHistory
 import com.example.playlistmaker.history.SearchHistoryAdapter
 import com.example.playlistmaker.network.ITunesApi
+import com.example.playlistmaker.player.PlayerActivity
 import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import kotlin.properties.Delegates.notNull
 
 class SearchActivity : AppCompatActivity(), TrackAdapter.TrackClickListener {
 
@@ -51,7 +52,7 @@ class SearchActivity : AppCompatActivity(), TrackAdapter.TrackClickListener {
 
     private val tracksInHistory = ArrayList<Track>()
 
-    private val searchHistoryAdapter = SearchHistoryAdapter()
+    private val searchHistoryAdapter = SearchHistoryAdapter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -224,6 +225,18 @@ class SearchActivity : AppCompatActivity(), TrackAdapter.TrackClickListener {
 
     override fun onTrackClick(track: Track) {
         searchHistory.addNewTrack(track)
+        val displayIntent = Intent(this, PlayerActivity::class.java)
+        displayIntent
+            .putExtra("album cover", track.artworkUrl100.replaceAfterLast('/', "512x512bb.jpg"))
+            .putExtra("name song", track.trackName)
+            .putExtra("band", track.artistName)
+            .putExtra("duration", DateUtils.formatTime(track.trackTimeMillis))
+            .putExtra("album", track.collectionName)
+            .putExtra("year", DateUtils.formatDate(track.releaseDate))
+            .putExtra("genre", track.primaryGenreName)
+            .putExtra("country", track.country)
+
+        startActivity(displayIntent)
     }
 
     // метод дессириализует массив объектов Fact (в Shared Preference они хранятся в виде json строки)
@@ -243,10 +256,7 @@ class SearchActivity : AppCompatActivity(), TrackAdapter.TrackClickListener {
         super.onRestoreInstanceState(savedInstanceState)
         searchQuery = savedInstanceState.getString(SEARCH_USER_INPUT, "")
     }
-
-    // данный конструкт помогает отложить реализацию переменной
-    // переменная searchQuery хранит пользовательский ввод в edittext
-    private var searchQuery by notNull<String>()
+    private lateinit var searchQuery: String
 
     companion object {
         const val SEARCH_USER_INPUT = "SEARCH_USER_INPUT"
