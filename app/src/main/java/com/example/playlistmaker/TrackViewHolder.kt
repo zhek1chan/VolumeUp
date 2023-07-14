@@ -19,12 +19,13 @@ class TrackViewHolder(parent: ViewGroup) :
     private val trackTime: TextView = itemView.findViewById(R.id.track_time)
     private var trackID: String = ""
     private var country: String = ""
-
+    private var url: String = ""
     fun bind(item: Track) {
         trackName.text = item.trackName
         bandName.text = item.artistName
         trackID = item.trackId
         country = item.country
+        url = item.previewUrl
         val cornerPixelSize =
             itemView.resources.getDimensionPixelSize(R.dimen.album_cover_corner_radius)
         trackTime.text = DateUtils.formatTime(item.trackTimeMillis)

@@ -57,7 +57,11 @@ class SearchActivity : AppCompatActivity(), TrackAdapter.TrackClickListener {
 
     private val searchHistoryAdapter = SearchHistoryAdapter(this)
 
-    private val searchRunnable = Runnable { sendRequestToServer() }
+    private val searchRunnable = Runnable {
+        if (searchEditText.text.toString() != "") { //условие на запуск процесса поиска, если пользователь набрал символ и затем стёр его
+            sendRequestToServer()
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -151,12 +155,12 @@ class SearchActivity : AppCompatActivity(), TrackAdapter.TrackClickListener {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                searchDebounce()
                 clearButton.visibility = clearButtonVisibility(s)
                 searchHistoryLayout.visibility =
                     if ((searchEditText.hasFocus()) && (tracksInHistory.size == 0) || (loadingProblemPlaceholder.visibility == View.VISIBLE) || (nothingFoundPlaceholder.visibility == View.VISIBLE)) View.GONE else View.VISIBLE
                 loadingProblemPlaceholder.visibility = View.GONE
                 nothingFoundPlaceholder.visibility = View.GONE
+                searchDebounce()
             }
 
             override fun afterTextChanged(s: Editable?) {}
@@ -266,6 +270,7 @@ class SearchActivity : AppCompatActivity(), TrackAdapter.TrackClickListener {
                 .putExtra("year", DateUtils.formatDate(track.releaseDate))
                 .putExtra("genre", track.primaryGenreName)
                 .putExtra("country", track.country)
+                .putExtra("url", track.previewUrl)
 
             startActivity(displayIntent)
         }
