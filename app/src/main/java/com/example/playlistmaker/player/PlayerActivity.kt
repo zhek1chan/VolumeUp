@@ -30,7 +30,7 @@ class PlayerActivity : AppCompatActivity() {
     private var mediaPlayer = MediaPlayer()
     private var playerState = STATE_DEFAULT
     private lateinit var handler: Handler
-    private lateinit var trackTime: TextView
+    private lateinit var trackTimer: TextView
     private var updateTimeRunnable: Runnable = Runnable { }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,7 +48,7 @@ class PlayerActivity : AppCompatActivity() {
         backButton = findViewById(R.id.back_button_player_activity)
         playButton = findViewById(R.id.play_button_player_activity)
         pauseButton = findViewById(R.id.pause_button_player_activity)
-        trackTime = findViewById(R.id.track_time_player_activity)
+        trackTimer = findViewById(R.id.track_time_player_activity)
         transferDateFromSearchActivity()
         handler = Handler(Looper.getMainLooper())
         preparePlayer()
@@ -132,12 +132,19 @@ class PlayerActivity : AppCompatActivity() {
                 startPlayer()
             }
         }
+        mediaPlayer.setOnCompletionListener {
+            pauseButton.visibility = View.GONE
+            playButton.visibility = View.VISIBLE
+            playerState = STATE_PREPARED
+            trackTimer.text = resources.getString(R.string.timing)
+            handler.removeCallbacks(updateTimeRunnable)
+        }
     }
 
     private fun updateTime() {
         val text =
             SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer.currentPosition)
-        trackTime.text = text
+        trackTimer.text = text
         updateTimeRunnable = Runnable { updateTime() }
         handler.postDelayed(updateTimeRunnable, 300)
     }

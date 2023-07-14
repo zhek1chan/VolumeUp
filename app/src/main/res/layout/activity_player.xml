@@ -111,7 +111,7 @@
         app:layout_constraintTop_toBottomOf="@id/band_name_player_activity"
         android:layout_marginTop="134dp"
         style="@style/primary_text"
-        android:text="0:00" />
+        android:text="@string/timing" />
 
     <TextView
         android:id="@+id/duration_track_player_activity"
