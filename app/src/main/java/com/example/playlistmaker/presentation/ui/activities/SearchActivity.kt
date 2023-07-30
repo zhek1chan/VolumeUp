@@ -1,9 +1,11 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation.ui.activities
 
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -12,10 +14,14 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.history.SearchHistory
-import com.example.playlistmaker.history.SearchHistoryAdapter
-import com.example.playlistmaker.network.ITunesApi
-import com.example.playlistmaker.player.PlayerActivity
+import com.example.playlistmaker.presentation.ui.DateUtils
+import com.example.playlistmaker.R
+import com.example.playlistmaker.data.dto.TrackResponse
+import com.example.playlistmaker.domain.SearchHistory
+import com.example.playlistmaker.presentation.ui.adapters.SearchHistoryAdapter
+import com.example.playlistmaker.data.network.ITunesApi
+import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.presentation.ui.adapters.TrackAdapter
 import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
@@ -38,6 +44,7 @@ class SearchActivity : AppCompatActivity(), TrackAdapter.TrackClickListener {
     private lateinit var listener: SharedPreferences.OnSharedPreferenceChangeListener
     private lateinit var clearSearchHistoryButton: Button
     private lateinit var searchHistory: SearchHistory
+    private lateinit var loadingIndicator: ProgressBar
 
     private val retrofit = Retrofit.Builder()
         .baseUrl(ITUNES_BASE_URL)
@@ -54,6 +61,12 @@ class SearchActivity : AppCompatActivity(), TrackAdapter.TrackClickListener {
 
     private val searchHistoryAdapter = SearchHistoryAdapter(this)
 
+    private val searchRunnable = Runnable {
+        if (searchEditText.text.toString() != "") { //условие на запуск процесса поиска, если пользователь набрал символ и затем стёр его
+            sendRequestToServer()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -68,6 +81,7 @@ class SearchActivity : AppCompatActivity(), TrackAdapter.TrackClickListener {
         rvSearchHistory = findViewById(R.id.search_history_recycler_view)
         searchHistoryLayout = findViewById(R.id.history_layout)
         clearSearchHistoryButton = findViewById(R.id.clear_button)
+        loadingIndicator = findViewById(R.id.loading_indicator)
 
         sharedPreferences = getSharedPreferences(TRACKS_PREFERENCES, MODE_PRIVATE)
         searchHistory = SearchHistory(sharedPreferences)
@@ -126,7 +140,7 @@ class SearchActivity : AppCompatActivity(), TrackAdapter.TrackClickListener {
 
 
         // обработчик нажатия для кнопки выпадающей клавиатуры
-        // IME_ACTION_SEARCH - кнопка поиск (добавляется на клавиатуру
+        // IME_ACTION_SEARCH - кнопка поиск (добавляется на клавиатуру)
         searchEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 closeKeyboard()
@@ -150,6 +164,7 @@ class SearchActivity : AppCompatActivity(), TrackAdapter.TrackClickListener {
                     if ((searchEditText.hasFocus()) && (tracksInHistory.size == 0) || (loadingProblemPlaceholder.visibility == View.VISIBLE) || (nothingFoundPlaceholder.visibility == View.VISIBLE)) View.GONE else View.VISIBLE
                 loadingProblemPlaceholder.visibility = View.GONE
                 nothingFoundPlaceholder.visibility = View.GONE
+                searchDebounce()
             }
 
             override fun afterTextChanged(s: Editable?) {}
@@ -171,6 +186,8 @@ class SearchActivity : AppCompatActivity(), TrackAdapter.TrackClickListener {
         rvSearchTrack.visibility = View.VISIBLE
         nothingFoundPlaceholder.visibility = View.GONE
         loadingProblemPlaceholder.visibility = View.GONE
+        loadingIndicator.visibility =
+            View.VISIBLE //Меняем видимость элементов перед выполнением запроса
         if (searchEditText.text.isNotEmpty()) { // проверяем, чтобы edittext не был пустым
             iTunesService.findTrack(searchEditText.text.toString()).enqueue(object :
                 Callback<TrackResponse> { // вызываем метод findTrack() у iTunesService, и передаем туда текст из edittext
@@ -178,6 +195,8 @@ class SearchActivity : AppCompatActivity(), TrackAdapter.TrackClickListener {
                     call: Call<TrackResponse>,//метод retrofit
                     response: Response<TrackResponse>
                 ) { // метод onResponse() вызывается, когда сервер дал ответ на запрос
+                    loadingIndicator.visibility =
+                        View.GONE //прячем индикатор загрузки после успешного выполнения запроса
                     if (response.code() == 200) { // code() вызывает код http-статуса, 200 - успех, запрос корректен, сервер вернул ответ
                         tracks.clear() // clear() отчищвет recyclerview от предъидущего списка, без этой строчки отображение нового списка не происходит
                         if (response.body()?.results?.isNotEmpty() == true) { // если ответ(response)  в виде объекта, который указали в Call (body() возвращает) не пустой
@@ -223,20 +242,42 @@ class SearchActivity : AppCompatActivity(), TrackAdapter.TrackClickListener {
         }
     }
 
-    override fun onTrackClick(track: Track) {
-        searchHistory.addNewTrack(track)
-        val displayIntent = Intent(this, PlayerActivity::class.java)
-        displayIntent
-            .putExtra("album cover", track.artworkUrl100.replaceAfterLast('/', "512x512bb.jpg"))
-            .putExtra("name song", track.trackName)
-            .putExtra("band", track.artistName)
-            .putExtra("duration", DateUtils.formatTime(track.trackTimeMillis))
-            .putExtra("album", track.collectionName)
-            .putExtra("year", DateUtils.formatDate(track.releaseDate))
-            .putExtra("genre", track.primaryGenreName)
-            .putExtra("country", track.country)
+    //Debounce method
+    //если ввод юзера не будет меняться больше двух секунд, то начнётся отправка запроса на сервер
+    private fun searchDebounce() {
+        handler.removeCallbacks(searchRunnable)
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+    }
 
-        startActivity(displayIntent)
+    //Разрешает юзеру нажимать на элементы списка не чаще одного раза в секунду
+    private var isClickAllowed = true
+    private val handler = Handler(Looper.getMainLooper())
+    private fun clickDebounce(): Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
+    }
+
+    override fun onTrackClick(track: Track) {
+        if (clickDebounce()) {
+            searchHistory.addNewTrack(track)
+            val displayIntent = Intent(this, PlayerActivity::class.java)
+            displayIntent
+                .putExtra("album cover", track.artworkUrl100.replaceAfterLast('/', "512x512bb.jpg"))
+                .putExtra("name song", track.trackName)
+                .putExtra("band", track.artistName)
+                .putExtra("duration", DateUtils.formatTime(track.trackTimeMillis))
+                .putExtra("album", track.collectionName)
+                .putExtra("year", DateUtils.formatDate(track.releaseDate))
+                .putExtra("genre", track.primaryGenreName)
+                .putExtra("country", track.country)
+                .putExtra("url", track.previewUrl)
+
+            startActivity(displayIntent)
+        }
     }
 
     // метод дессириализует массив объектов Fact (в Shared Preference они хранятся в виде json строки)
@@ -261,6 +302,8 @@ class SearchActivity : AppCompatActivity(), TrackAdapter.TrackClickListener {
     companion object {
         const val SEARCH_USER_INPUT = "SEARCH_USER_INPUT"
         const val ITUNES_BASE_URL = "https://itunes.apple.com"
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
 }
 
