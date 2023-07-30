@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".player.PlayerActivity">
+    tools:context=".presentation.ui.activities.PlayerActivity">
 
     <ImageView
         android:id="@+id/back_button_player_activity"

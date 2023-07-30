@@ -7,11 +7,13 @@
     android:orientation="vertical"
     android:paddingTop="20dp"
     android:paddingBottom="0dp"
-    tools:context=".SearchActivity">
+    tools:context=".presentation.ui.activities.SearchActivity">
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
         <ImageView
             android:color="@color/black_text"
             android:id="@+id/arrow_back"

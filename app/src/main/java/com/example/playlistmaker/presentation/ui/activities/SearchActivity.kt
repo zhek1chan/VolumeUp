@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation.ui.activities
 
 import android.content.Context
 import android.content.Intent
@@ -14,10 +14,14 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.history.SearchHistory
-import com.example.playlistmaker.history.SearchHistoryAdapter
-import com.example.playlistmaker.network.ITunesApi
-import com.example.playlistmaker.player.PlayerActivity
+import com.example.playlistmaker.presentation.ui.DateUtils
+import com.example.playlistmaker.R
+import com.example.playlistmaker.data.dto.TrackResponse
+import com.example.playlistmaker.domain.SearchHistory
+import com.example.playlistmaker.presentation.ui.adapters.SearchHistoryAdapter
+import com.example.playlistmaker.data.network.ITunesApi
+import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.presentation.ui.adapters.TrackAdapter
 import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback

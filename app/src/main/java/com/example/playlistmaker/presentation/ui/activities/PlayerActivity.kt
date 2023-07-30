@@ -1,6 +1,5 @@
-package com.example.playlistmaker.player
+package com.example.playlistmaker.presentation.ui.activities
 
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -10,11 +9,14 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
-import java.text.SimpleDateFormat
-import java.util.Locale
+import com.example.playlistmaker.domain.PlayerState
+import com.example.playlistmaker.domain.api.PlayerInteractor
+import com.example.playlistmaker.presentation.creators.Creator
 
 class PlayerActivity : AppCompatActivity() {
 
+    lateinit var playerInteractor: PlayerInteractor
+    lateinit var playerState: PlayerState
     private lateinit var albumCover: ImageView
     private lateinit var nameSong: TextView
     private lateinit var bandName: TextView
@@ -27,11 +29,8 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var playButton: ImageView
     private lateinit var pauseButton: ImageView
     private lateinit var url: String
-    private var mediaPlayer = MediaPlayer()
-    private var playerState = STATE_DEFAULT
     private lateinit var handler: Handler
     private lateinit var trackTimer: TextView
-    private var updateTimeRunnable: Runnable = Runnable { }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,30 +49,33 @@ class PlayerActivity : AppCompatActivity() {
         pauseButton = findViewById(R.id.pause_button_player_activity)
         trackTimer = findViewById(R.id.track_time_player_activity)
         transferDateFromSearchActivity()
+        playerInteractor = Creator.providePlayerInteractor()
+        playerState = PlayerState.STATE_PAUSED
+        if (!url.isEmpty()) playerInteractor.createPlayer(url) {
+        }
         handler = Handler(Looper.getMainLooper())
         preparePlayer()
         backButton.setOnClickListener {
             finish()
         }
         playButton.setOnClickListener {
-            playbackControl()
+            playerInteractor.play()
         }
         pauseButton.setOnClickListener {
-            playbackControl()
+            playerInteractor.pause()
         }
-
-
+        handler.post(updateButton())
+        handler.post(updateTimer())
     }
 
     override fun onPause() {
         super.onPause()
-        pausePlayer()
+        playerInteractor.pause()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mediaPlayer.release()
-        handler.removeCallbacks(updateTimeRunnable)
+        playerInteractor.destroy()
     }
 
     private fun transferDateFromSearchActivity() {
@@ -95,64 +97,55 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun preparePlayer() {
-        mediaPlayer.setDataSource(url)
-        mediaPlayer.prepareAsync()
-        mediaPlayer.setOnPreparedListener {
-            playButton.isEnabled = true
-            playerState = STATE_PREPARED
-        }
-        mediaPlayer.setOnCompletionListener {
-            playerState = STATE_PREPARED
-        }
-    }
-
-    private fun startPlayer() {
-        mediaPlayer.start()
-        playerState = STATE_PLAYING
-        playButton.visibility = View.GONE
-        pauseButton.visibility = View.VISIBLE
-        updateTime()
-    }
-
-    private fun pausePlayer() {
-        mediaPlayer.pause()
-        playerState = STATE_PAUSED
-        pauseButton.visibility = View.GONE
+        playButton.isEnabled = true
         playButton.visibility = View.VISIBLE
-        handler.removeCallbacks(updateTimeRunnable)
+        pauseButton.visibility = View.GONE
     }
 
-    private fun playbackControl() {
+    private fun updateTimer(): Runnable {
+        val updatedTimer = Runnable {
+            trackTimer.text = playerInteractor.getTime()
+            handler.postDelayed(updateTimer(), DELAY_MILLIS_Activity)
+        }
+        return updatedTimer
+    }
+
+    //логика смены кнопок Pause & Play
+    private fun playerButtonChanger() {
+        playerState = playerInteractor.playerStateGetter()
         when (playerState) {
-            STATE_PLAYING -> {
-                pausePlayer()
+            PlayerState.STATE_DEFAULT -> {
+                playButton.visibility = View.VISIBLE
+                pauseButton.visibility = View.GONE
             }
 
-            STATE_PREPARED, STATE_PAUSED -> {
-                startPlayer()
+            PlayerState.STATE_PREPARED -> {
+                playButton.visibility = View.VISIBLE
+                pauseButton.visibility = View.GONE
             }
-        }
-        mediaPlayer.setOnCompletionListener {
-            pauseButton.visibility = View.GONE
-            playButton.visibility = View.VISIBLE
-            playerState = STATE_PREPARED
-            trackTimer.text = resources.getString(R.string.timing)
-            handler.removeCallbacks(updateTimeRunnable)
+
+            PlayerState.STATE_PAUSED -> {
+                playButton.visibility = View.VISIBLE
+                pauseButton.visibility = View.GONE
+            }
+
+            PlayerState.STATE_PLAYING -> {
+                pauseButton.visibility = View.VISIBLE
+                playButton.visibility = View.GONE
+            }
         }
     }
 
-    private fun updateTime() {
-        val text =
-            SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer.currentPosition)
-        trackTimer.text = text
-        updateTimeRunnable = Runnable { updateTime() }
-        handler.postDelayed(updateTimeRunnable, 300)
+    private fun updateButton(): Runnable {
+        val updatedButton = Runnable {
+            playerButtonChanger()
+            handler.postDelayed(updateButton(), DELAY_MILLIS_Activity)
+        }
+        return updatedButton
     }
 
     companion object {
-        private const val STATE_DEFAULT = 0
-        private const val STATE_PREPARED = 1
-        private const val STATE_PLAYING = 2
-        private const val STATE_PAUSED = 3
+        const val DELAY_MILLIS_Activity = 100L
     }
 }
+
