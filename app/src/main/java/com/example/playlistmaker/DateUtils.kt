@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui
+package com.example.playlistmaker
 
 import java.text.SimpleDateFormat
 import java.util.Date

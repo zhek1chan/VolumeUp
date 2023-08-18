@@ -1,4 +1,4 @@
-package com.example.playlistmaker.data.search.network
+package com.example.playlistmaker.search
 
 //заготовка для clean architecture под SearchActivity
 open class Response() {

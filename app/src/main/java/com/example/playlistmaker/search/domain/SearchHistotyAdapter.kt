@@ -4,7 +4,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.player.domain.TrackAdapter
 import com.example.playlistmaker.player.domain.Track
-import com.example.playlistmaker.ui.viewHolders.TrackViewHolder
+import com.example.playlistmaker.player.TrackViewHolder
 
 class SearchHistoryAdapter(val clickListener: TrackAdapter.TrackClickListener) :
     RecyclerView.Adapter<TrackViewHolder>() {

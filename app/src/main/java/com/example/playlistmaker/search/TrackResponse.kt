@@ -1,4 +1,4 @@
-package com.example.playlistmaker.data.search.network
+package com.example.playlistmaker.search
 
 import com.example.playlistmaker.player.domain.Track
 

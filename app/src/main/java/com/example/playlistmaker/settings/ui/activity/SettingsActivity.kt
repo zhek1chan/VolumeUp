@@ -1,60 +1,49 @@
 package com.example.playlistmaker.settings.ui.activity
 
-import android.content.Intent
-import android.content.res.Configuration
-import android.net.Uri
 import android.os.Bundle
-import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
-import com.example.playlistmaker.R
-import com.example.playlistmaker.ui.App
-import com.example.playlistmaker.main.ui.MainActivity
-import com.google.android.material.switchmaterial.SwitchMaterial
+import androidx.lifecycle.ViewModelProvider
+import com.example.playlistmaker.databinding.ActivitySettingsBinding
+import com.example.playlistmaker.settings.ui.view_model.SettingsViewModel
 
 class SettingsActivity : AppCompatActivity() {
+    private lateinit var settingsViewModel: SettingsViewModel
+    private lateinit var binding: ActivitySettingsBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings)
+        binding = ActivitySettingsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        settingsViewModel = ViewModelProvider(
+            this,
+            SettingsViewModel.getViewModelFactory()
+        )[SettingsViewModel::class.java]
 
-        val nightModeSwitch = findViewById<SwitchMaterial>(R.id.themeSwitcher)
-        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        nightModeSwitch.isChecked = currentNightMode == Configuration.UI_MODE_NIGHT_YES
-        nightModeSwitch.setOnCheckedChangeListener { switcher, checked ->
-            (applicationContext as App).switchTheme(checked)
-
-            with(getSharedPreferences(MainActivity.PREFS, MODE_PRIVATE).edit()) {
-                putBoolean(MainActivity.THEME_PREF, checked)
-                apply()
-            }
+        binding.themeSwitcher.isChecked = !(settingsViewModel.getThemeLiveData().value!!)
+        binding.themeSwitcher.setOnClickListener {
+            settingsViewModel.themeSwitch()
+            binding.themeSwitcher.isChecked = !(settingsViewModel.getThemeLiveData().value!!)
         }
-        val arrowBackButton = findViewById<ImageView>(R.id.arrow_back)
-        arrowBackButton.setOnClickListener {
+
+        binding.arrowBack.setOnClickListener {
+            settingsViewModel.onBackClick()
+        }
+        settingsViewModel.getOnBackLiveData()
+            .observe(this) { onBackLiveData -> onBackClick(onBackLiveData) }
+
+        binding.buttonShare.setOnClickListener {
+            settingsViewModel.shareApp()
+        }
+        binding.buttonHelp.setOnClickListener {
+            settingsViewModel.writeSupport()
+        }
+        binding.buttonUserAgreements.setOnClickListener {
+            settingsViewModel.readAgreement()
+        }
+    }
+
+    private fun onBackClick(back: Boolean) {
+        if (back) {
             finish()
-        }
-        val shareButton = findViewById<LinearLayout>(R.id.button_share)
-        shareButton.setOnClickListener {
-            val shareIntent = Intent().apply {
-                this.action = Intent.ACTION_SEND
-                this.putExtra(Intent.EXTRA_TEXT, getString(R.string.settings_url))
-                this.type = "text/plain"
-            }
-            startActivity(shareIntent)
-        }
-        val helpButton = findViewById<LinearLayout>(R.id.button_help)
-        helpButton.setOnClickListener {
-            val shareIntent = Intent(Intent.ACTION_SENDTO)
-            shareIntent.data = Uri.parse("mailto:")
-            shareIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.settings_email)))
-            shareIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.settings_title))
-            shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.settings_message))
-            startActivity(shareIntent)
-        }
-        val urlButton = findViewById<LinearLayout>(R.id.button_user_agreements)
-        urlButton.setOnClickListener {
-            val browserIntent =
-                Intent(Intent.ACTION_VIEW, Uri.parse("https://yandex.ru/legal/practicum_offer/"))
-            startActivity(browserIntent)
         }
     }
 }

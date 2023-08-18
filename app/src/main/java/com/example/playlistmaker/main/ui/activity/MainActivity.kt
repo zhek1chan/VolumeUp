@@ -1,16 +1,13 @@
-package com.example.playlistmaker.main.ui
+package com.example.playlistmaker.main.ui.activity
 
-import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.example.playlistmaker.R
-import com.example.playlistmaker.ui.App
+import com.example.playlistmaker.search.MediaActivity
 import com.example.playlistmaker.search.ui.activity.SearchActivity
 import com.example.playlistmaker.settings.ui.activity.SettingsActivity
-import com.example.playlistmaker.ui.activities.MediaActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,12 +15,6 @@ class MainActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        val sharedPref = getSharedPreferences(PREFS, Context.MODE_PRIVATE)
-        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        val isDarkTheme =
-            sharedPref.getBoolean(THEME_PREF, currentNightMode == Configuration.UI_MODE_NIGHT_YES)
-        (applicationContext as App).switchTheme(isDarkTheme)
 
         val searchButton = findViewById<Button>(R.id.button_search)
         val mediaButton = findViewById<Button>(R.id.button_media)

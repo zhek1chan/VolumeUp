@@ -14,12 +14,12 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.ui.DateUtils
+import com.example.playlistmaker.DateUtils
 import com.example.playlistmaker.R
-import com.example.playlistmaker.data.search.network.TrackResponse
+import com.example.playlistmaker.search.TrackResponse
 import com.example.playlistmaker.search.domain.SearchHistory
 import com.example.playlistmaker.search.domain.SearchHistoryAdapter
-import com.example.playlistmaker.data.search.network.ITunesApi
+import com.example.playlistmaker.search.ITunesApi
 import com.example.playlistmaker.player.domain.Track
 import com.example.playlistmaker.player.ui.activity.PlayerActivity
 import com.example.playlistmaker.player.domain.TrackAdapter
