@@ -1,6 +1,8 @@
-package com.example.playlistmaker.player.domain
+package com.example.playlistmaker.player.data
 
 import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.player.domain.PlayerInteractor
+import com.example.playlistmaker.player.domain.PlayerState
 
 class PlayerInteractorImpl : PlayerInteractor {
     private var repository = Creator.providePlayerRepository()

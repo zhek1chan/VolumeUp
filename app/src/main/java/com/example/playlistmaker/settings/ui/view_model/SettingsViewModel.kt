@@ -30,14 +30,14 @@ class SettingsViewModel(
     private var themeLiveData = MutableLiveData(settingsInteractor.isAppThemeDark())
     fun getThemeLiveData(): LiveData<Boolean> {
         val getting = if (themeLiveData.value!!) "day" else "night"
-        Log.d("Тема", "ViewModel get $getting")
+        Log.d("Тема", "Theme is $getting")
         return themeLiveData
     }
 
     fun themeSwitch() {
         themeLiveData.value = settingsInteractor.changeThemeSettings()
         val getting = if (themeLiveData.value!!) "day" else "night"
-        Log.d("Тема", "ViewModel switch $getting")
+        Log.d("Тема", "Swithed theme to $getting")
         makeTheme(themeLiveData.value!!)
     }
 

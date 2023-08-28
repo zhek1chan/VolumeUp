@@ -1,9 +1,7 @@
-package com.example.playlistmaker.search.domain
+package com.example.playlistmaker.search.data
 
 import com.example.playlistmaker.player.domain.Track
-import com.example.playlistmaker.search.data.NetworkClient
-import com.example.playlistmaker.search.data.TrackResponse
-import com.example.playlistmaker.search.data.TrackSearchRequest
+import com.example.playlistmaker.search.domain.TracksRepository
 import java.text.SimpleDateFormat
 import java.util.Locale
 

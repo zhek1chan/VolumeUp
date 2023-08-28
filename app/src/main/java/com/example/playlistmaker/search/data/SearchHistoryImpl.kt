@@ -1,8 +1,9 @@
-package com.example.playlistmaker.search.domain
+package com.example.playlistmaker.search.data
 
 import android.content.Context
 import android.util.Log
 import com.example.playlistmaker.player.domain.Track
+import com.example.playlistmaker.search.domain.SearchHistory
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
