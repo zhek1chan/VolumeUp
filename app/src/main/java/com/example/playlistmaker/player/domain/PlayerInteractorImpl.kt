@@ -3,7 +3,7 @@ package com.example.playlistmaker.player.domain
 import com.example.playlistmaker.creator.Creator
 
 class PlayerInteractorImpl : PlayerInteractor {
-    var repository = Creator.providePlayerRepository()
+    private var repository = Creator.providePlayerRepository()
 
     override fun play() {
         repository.play()

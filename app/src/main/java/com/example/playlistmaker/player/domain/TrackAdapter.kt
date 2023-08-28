@@ -1,27 +1,40 @@
 package com.example.playlistmaker.player.domain
 
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.databinding.SearchResultItemBinding
 import com.example.playlistmaker.player.TrackViewHolder
 
-class TrackAdapter(private val clickListener: TrackClickListener) :
-    RecyclerView.Adapter<TrackViewHolder>() {
+class TrackAdapter(
+    private val clickListener: TrackClick
+) : RecyclerView.Adapter<TrackViewHolder>() {
 
-    fun interface TrackClickListener {
-        fun onTrackClick(track: Track)
+    private var _items: List<Track> = emptyList()
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
+        val layoutInspector = LayoutInflater.from(parent.context)
+        return TrackViewHolder(SearchResultItemBinding.inflate(layoutInspector, parent, false))
     }
-
-    var tracks = ArrayList<Track>()
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder =
-        TrackViewHolder(parent)
-
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
-        holder.bind(tracks[position])
-        holder.itemView.setOnClickListener { clickListener.onTrackClick(tracks[position]) }
+        holder.bind(_items[position])
+        holder.itemView.setOnClickListener {
+            clickListener.onClick(_items[position])
+            notifyDataSetChanged()
+        }
+
     }
 
-    override fun getItemCount(): Int = tracks.size
+    override fun getItemCount(): Int {
+        return _items.size
+    }
 
+    fun interface TrackClick {
+        fun onClick(track: Track)
+    }
+
+    fun setItems(items: List<Track>) {
+        _items = items
+        notifyDataSetChanged()
+    }
 }

@@ -74,7 +74,6 @@
         android:layout_marginTop="50dp"
         android:indeterminateTint="@color/yp_blue"
         android:visibility="gone" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/search_results_recycler_view"
         android:layout_width="match_parent"
@@ -86,6 +85,7 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
     <LinearLayout
+        android:visibility="gone"
         android:id="@+id/history_layout"
         android:orientation="vertical"
         android:gravity="center_horizontal"

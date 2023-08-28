@@ -1,4 +1,4 @@
-package com.example.playlistmaker.search
+package com.example.playlistmaker
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

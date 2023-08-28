@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
@@ -13,6 +12,7 @@ import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.databinding.ActivityPlayerBinding
 import com.example.playlistmaker.player.domain.PlayerInteractor
 import com.example.playlistmaker.player.domain.PlayerState
+import com.example.playlistmaker.player.domain.Track
 import com.example.playlistmaker.player.ui.view_model.PlayerViewModel
 
 class PlayerActivity : AppCompatActivity() {
@@ -22,37 +22,37 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var viewModel: PlayerViewModel
     private lateinit var binding: ActivityPlayerBinding
     private lateinit var handler: Handler
-    private lateinit var url: String
-    private lateinit var nameSong: TextView
-    private lateinit var bandName: TextView
-    private lateinit var duration: TextView
-    private lateinit var albumName: TextView
-    private lateinit var year: TextView
-    private lateinit var genre: TextView
-    private lateinit var country: TextView
-
-
+    private var url: String = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
         viewModel = ViewModelProvider(
             this,
             PlayerViewModel.getViewModelFactory()
         )[PlayerViewModel::class.java]
-        nameSong = findViewById(R.id.song_name_player_activity)
-        bandName = findViewById(R.id.band_name_player_activity)
-        duration = findViewById(R.id.duration_track_value_player_activity)
-        albumName = findViewById(R.id.album_value_player_activity)
-        year = findViewById(R.id.year_value_player_activity)
-        genre = findViewById(R.id.genre_value_player_activity)
-        country = findViewById(R.id.country_value_player_activity)
-
-        transferDateFromSearchActivity()
+        val track = intent.getParcelableExtra<Track>("track")
+        binding.songNamePlayerActivity.text = track?.trackName ?: "Unknown Track"
+        binding.bandNamePlayerActivity.text = track?.artistName ?: "Unknown Artist"
+        binding.durationTrackValuePlayerActivity.text = track?.trackTimeMillis ?: "00:00"
+        binding.albumValuePlayerActivity.text = track?.collectionName ?: "Unknown Album"
+        binding.yearValuePlayerActivity.text = (track?.releaseDate ?: "Year").take(4)
+        binding.genreValuePlayerActivity.text = track?.primaryGenreName ?: "Unknown Genre"
+        binding.countryValuePlayerActivity.text = track?.country ?: "Unknown Country"
+        val getImage = (track?.artworkUrl100 ?: "Unknown Cover").replace(
+            "100x100bb.jpg",
+            "512x512bb.jpg"
+        )
+        if (getImage != "Unknown Cover") {
+            getImage.replace("100x100bb.jpg", "512x512bb.jpg")
+            Glide.with(this)
+                .load(getImage)
+                .placeholder(R.drawable.song_cover)
+                .into(binding.albumsCoverPlayerActivity)
+        }
+        url = track?.previewUrl ?: return
         playerInteractor = Creator.providePlayerInteractor()
         playerState = PlayerState.STATE_PREPARED
-
         viewModel.createPlayer(url) {
             preparePlayer()
         }
@@ -80,25 +80,6 @@ class PlayerActivity : AppCompatActivity() {
         super.onDestroy()
         viewModel.destroy()
     }
-
-    private fun transferDateFromSearchActivity() {
-        val arguments: Bundle? = intent.extras
-
-        Glide.with(applicationContext)
-            .load(arguments?.getString("album cover"))
-            .placeholder(R.drawable.song_cover)
-            .centerCrop()
-            .into(binding.albumsCoverPlayerActivity)
-        nameSong.text = arguments?.getString("name song")
-        bandName.text = arguments?.getString("band")
-        duration.text = arguments?.getString("duration")
-        albumName.text = arguments?.getString("album")
-        year.text = arguments?.getString("year")
-        genre.text = arguments?.getString("genre")
-        country.text = arguments?.getString("country")
-        url = arguments?.getString("url").toString()
-    }
-
     private fun preparePlayer() {
         binding.playButtonPlayerActivity.isEnabled = true
         binding.albumPlayerActivity.visibility = View.VISIBLE
