@@ -6,8 +6,6 @@ import android.content.res.Configuration
 import com.example.playlistmaker.App
 import com.example.playlistmaker.settings.domain.ThemeSettings
 
-const val THEME_KEY = "theme"
-
 class ThemeSettingsImpl(private val application: App) : ThemeSettings {
     private var appTheme: Boolean = false
     private lateinit var themeSharedPrefs: SharedPreferences
@@ -30,5 +28,9 @@ class ThemeSettingsImpl(private val application: App) : ThemeSettings {
         editor.putBoolean(THEME_KEY, appTheme)
         editor.apply()
         return appTheme
+    }
+
+    companion object {
+        const val THEME_KEY = "theme"
     }
 }

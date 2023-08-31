@@ -5,7 +5,7 @@ import com.example.playlistmaker.player.domain.PlayerInteractor
 import com.example.playlistmaker.player.domain.PlayerState
 
 class PlayerInteractorImpl : PlayerInteractor {
-    private var repository = Creator.providePlayerRepository()
+    private val repository = Creator.providePlayerRepository()
 
     override fun play() {
         repository.play()

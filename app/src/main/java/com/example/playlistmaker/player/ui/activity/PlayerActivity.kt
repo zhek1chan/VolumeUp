@@ -21,7 +21,7 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var playerState: PlayerState
     private lateinit var viewModel: PlayerViewModel
     private lateinit var binding: ActivityPlayerBinding
-    private lateinit var handler: Handler
+    private var handler = Handler(Looper.getMainLooper())
     private var url: String = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

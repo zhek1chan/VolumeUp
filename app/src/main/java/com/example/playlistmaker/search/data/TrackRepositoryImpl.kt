@@ -26,8 +26,9 @@ class TracksRepositoryImpl(private val networkClient: NetworkClient) : TracksRep
                     it.previewUrl!!
                 )
             }
-        } catch (error: Error) {
-            throw Exception(error)
+        } catch (t: Throwable) {
+            throw Exception(t)
+            // TODO:Тут должна быть обработка ошибки
         }
     }
 }
