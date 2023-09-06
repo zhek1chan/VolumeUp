@@ -5,9 +5,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import com.example.playlistmaker.App
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.settings.domain.SettingsInteractor
 import com.example.playlistmaker.sharing.domain.SharingInteractor
 
@@ -15,10 +12,6 @@ class SettingsViewModel(
     private var sharingInteractor: SharingInteractor,
     private var settingsInteractor: SettingsInteractor
 ) : ViewModel() {
-    init {
-        sharingInteractor = Creator.provideSharingIneractor()
-        settingsInteractor = Creator.provideSettingsIneractor()
-    }
 
     private var onBackLiveData = MutableLiveData(false)
     fun onBackClick() {
@@ -59,19 +52,5 @@ class SettingsViewModel(
 
     fun readAgreement() {
         sharingInteractor.openTerms()
-    }
-
-    companion object {
-        fun getViewModelFactory(): ViewModelProvider.Factory =
-            object : ViewModelProvider.Factory {
-                @Suppress("UNCHECKED_CAST")
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    val app = App()
-                    return SettingsViewModel(
-                        Creator.provideSharingIneractor(),
-                        Creator.provideSettingsIneractor()
-                    ) as T
-                }
-            }
     }
 }

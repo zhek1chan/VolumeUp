@@ -3,8 +3,6 @@ package com.example.playlistmaker.search.ui.view_model
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.player.domain.Track
 import com.example.playlistmaker.search.data.SearchScreenState
 import com.example.playlistmaker.search.domain.SearchHistoryInteractor
@@ -70,19 +68,5 @@ class SearchViewModel(
         trackResultList.value = emptyList()
         stateLiveData.value =
             trackHistoryList.value?.let { SearchScreenState.SearchWithHistory(it) }
-    }
-
-
-    companion object {
-        fun getViewModelFactory(): ViewModelProvider.Factory =
-            object : ViewModelProvider.Factory {
-                @Suppress("UNCHECKED_CAST")
-                override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                    return SearchViewModel(
-                        Creator.provideSearchInteractor(),
-                        Creator.provideSearchHistoryInteractor(),
-                    ) as T
-                }
-            }
     }
 }

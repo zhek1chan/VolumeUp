@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.databinding.SearchResultItemBinding
-import com.example.playlistmaker.player.TrackViewHolder
+import com.example.playlistmaker.player.ui.TrackViewHolder
 
 class TrackAdapter(
     private val clickListener: TrackClick

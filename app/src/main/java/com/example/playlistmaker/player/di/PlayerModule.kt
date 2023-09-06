@@ -1,0 +1,22 @@
+package com.example.playlistmaker.player.di
+
+import com.example.playlistmaker.player.data.PlayerInteractorImpl
+import com.example.playlistmaker.player.data.PlayerRepositoryImpl
+import com.example.playlistmaker.player.domain.PlayerInteractor
+import com.example.playlistmaker.player.domain.PlayerRepository
+import com.example.playlistmaker.player.ui.view_model.PlayerViewModel
+import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.dsl.module
+
+val playerModule = module {
+
+    factory<PlayerRepository> {
+        PlayerRepositoryImpl()
+    }
+
+    factory<PlayerInteractor> {
+        PlayerInteractorImpl(get())
+    }
+
+    viewModel { PlayerViewModel(get()) }
+}

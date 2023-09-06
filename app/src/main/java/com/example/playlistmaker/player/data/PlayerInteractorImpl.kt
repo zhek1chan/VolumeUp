@@ -1,11 +1,10 @@
 package com.example.playlistmaker.player.data
 
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.player.domain.PlayerInteractor
+import com.example.playlistmaker.player.domain.PlayerRepository
 import com.example.playlistmaker.player.domain.PlayerState
 
-class PlayerInteractorImpl : PlayerInteractor {
-    private val repository = Creator.providePlayerRepository()
+class PlayerInteractorImpl(private val repository: PlayerRepository) : PlayerInteractor {
 
     override fun play() {
         repository.play()
