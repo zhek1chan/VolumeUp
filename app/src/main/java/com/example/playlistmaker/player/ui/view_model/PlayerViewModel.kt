@@ -2,7 +2,7 @@ package com.example.playlistmaker.player.ui.view_model
 
 import androidx.lifecycle.ViewModel
 import com.example.playlistmaker.player.domain.PlayerInteractor
-import com.example.playlistmaker.player.domain.PlayerState
+import com.example.playlistmaker.player.ui.PlayerState
 
 class PlayerViewModel(
     private val playerInteractor: PlayerInteractor,

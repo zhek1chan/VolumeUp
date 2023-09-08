@@ -8,17 +8,14 @@ import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityPlayerBinding
-import com.example.playlistmaker.player.domain.PlayerInteractor
-import com.example.playlistmaker.player.domain.PlayerState
 import com.example.playlistmaker.player.domain.Track
+import com.example.playlistmaker.player.ui.PlayerState
 import com.example.playlistmaker.player.ui.view_model.PlayerViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlayerActivity : AppCompatActivity() {
-
-    private lateinit var playerInteractor: PlayerInteractor
     private lateinit var playerState: PlayerState
-    val viewModel by viewModel<PlayerViewModel>()
+    private val viewModel by viewModel<PlayerViewModel>()
     private lateinit var binding: ActivityPlayerBinding
     private var handler = Handler(Looper.getMainLooper())
     private var url: String = ""

@@ -18,9 +18,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.player.domain.Track
-import com.example.playlistmaker.player.domain.TrackAdapter
+import com.example.playlistmaker.player.ui.TrackAdapter
 import com.example.playlistmaker.player.ui.activity.PlayerActivity
-import com.example.playlistmaker.search.data.SearchScreenState
+import com.example.playlistmaker.search.ui.SearchScreenState
 import com.example.playlistmaker.search.ui.view_model.SearchViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.IOException
