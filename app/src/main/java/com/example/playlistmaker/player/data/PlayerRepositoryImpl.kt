@@ -4,13 +4,12 @@ import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Looper
 import com.example.playlistmaker.player.domain.PlayerRepository
-import com.example.playlistmaker.player.domain.PlayerState
+import com.example.playlistmaker.player.ui.PlayerState
 import java.text.SimpleDateFormat
 
-class PlayerRepositoryImpl : PlayerRepository {
-    private val mediaPlayer = MediaPlayer()
+class PlayerRepositoryImpl(private val mediaPlayer: MediaPlayer) : PlayerRepository {
     private var playerState = PlayerState.STATE_DEFAULT
-    var timePlayed = "00:00"
+    private var timePlayed = "00:00"
     private var mainThreadHandler: Handler? = Handler(Looper.getMainLooper())
 
 

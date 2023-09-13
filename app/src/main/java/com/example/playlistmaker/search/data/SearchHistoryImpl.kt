@@ -1,18 +1,18 @@
 package com.example.playlistmaker.search.data
 
-import android.content.Context
+import android.content.SharedPreferences
 import android.util.Log
 import com.example.playlistmaker.player.domain.Track
 import com.example.playlistmaker.search.domain.SearchHistory
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
-const val SEARCH_SHARED_PREFS_KEY = "123"
+const val SEARCH_SHARED_PREFS_KEY = "SEARCH_SHARED_PREFS_KEY"
 
-class SearchHistoryImpl(private val datacontext: Context) : SearchHistory {
-    private val savedHistory =
-        datacontext.getSharedPreferences(SEARCH_SHARED_PREFS_KEY, Context.MODE_PRIVATE)
-    private val gson = Gson()
+class SearchHistoryImpl(
+    private val savedHistory: SharedPreferences,
+    private val gson: Gson
+) : SearchHistory {
     private var counter = 0
     private var trackHistoryList = ArrayList<Track>()
 

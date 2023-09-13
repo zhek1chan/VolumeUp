@@ -40,6 +40,7 @@
             android:text="@string/dark_theme" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
+            style="@style/settings_switch"
             android:layout_width="wrap_content"
             android:id="@+id/themeSwitcher"
             android:switchMinWidth="32dp"

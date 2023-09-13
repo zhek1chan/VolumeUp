@@ -26,16 +26,24 @@
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">@dimen/small_text</item>
     </style>
+
     <style name="settings_image_view">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="tint">@color/white</item>
     </style>
+
     <style name="settings_back_icon">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="tint">@color/white</item>
     </style>
+
+    <style name="settings_switch">
+        <item name="thumbTint">@color/yp_blue</item>
+        <item name="trackTint">@color/yp_blue_light</item>
+    </style>
+
     <style name="settings_linear_layout">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -43,6 +51,7 @@
         <item name="android:orientation">horizontal</item>
         <item name="android:paddingVertical">@dimen/options_padding</item>
     </style>
+
     <style name="main_button">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>

@@ -24,12 +24,17 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="tint">@color/black_text</item>
     </style>
+
     <style name="settings_linear_layout">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:gravity">center</item>
         <item name="android:orientation">horizontal</item>
         <item name="android:paddingVertical">@dimen/options_padding</item>
+    </style>
+
+    <style name="settings_switch">
+
     </style>
     <!-- Main -->
     <style name="main_button" parent="Widget.MaterialComponents.Button.UnelevatedButton">

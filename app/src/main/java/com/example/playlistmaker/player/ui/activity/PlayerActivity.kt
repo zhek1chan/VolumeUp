@@ -5,21 +5,17 @@ import android.os.Handler
 import android.os.Looper
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.databinding.ActivityPlayerBinding
-import com.example.playlistmaker.player.domain.PlayerInteractor
-import com.example.playlistmaker.player.domain.PlayerState
 import com.example.playlistmaker.player.domain.Track
+import com.example.playlistmaker.player.ui.PlayerState
 import com.example.playlistmaker.player.ui.view_model.PlayerViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlayerActivity : AppCompatActivity() {
-
-    private lateinit var playerInteractor: PlayerInteractor
     private lateinit var playerState: PlayerState
-    private lateinit var viewModel: PlayerViewModel
+    private val viewModel by viewModel<PlayerViewModel>()
     private lateinit var binding: ActivityPlayerBinding
     private var handler = Handler(Looper.getMainLooper())
     private var url: String = ""
@@ -27,10 +23,6 @@ class PlayerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        viewModel = ViewModelProvider(
-            this,
-            PlayerViewModel.getViewModelFactory()
-        )[PlayerViewModel::class.java]
         val track = intent.getParcelableExtra<Track>("track")
         binding.songNamePlayerActivity.text = track?.trackName ?: "Unknown Track"
         binding.bandNamePlayerActivity.text = track?.artistName ?: "Unknown Artist"
@@ -51,7 +43,6 @@ class PlayerActivity : AppCompatActivity() {
                 .into(binding.albumsCoverPlayerActivity)
         }
         url = track?.previewUrl ?: return
-        playerInteractor = Creator.providePlayerInteractor()
         playerState = PlayerState.STATE_PREPARED
         viewModel.createPlayer(url) {
             preparePlayer()

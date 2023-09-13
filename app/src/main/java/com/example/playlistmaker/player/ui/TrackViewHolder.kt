@@ -1,4 +1,4 @@
-package com.example.playlistmaker.player
+package com.example.playlistmaker.player.ui
 
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide

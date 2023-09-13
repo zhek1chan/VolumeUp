@@ -1,5 +1,7 @@
 package com.example.playlistmaker.player.domain
 
+import com.example.playlistmaker.player.ui.PlayerState
+
 interface PlayerRepository {
     fun play()
     fun pause()
