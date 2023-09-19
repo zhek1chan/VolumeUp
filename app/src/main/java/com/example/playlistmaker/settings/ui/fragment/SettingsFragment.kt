@@ -17,15 +17,14 @@ class SettingsFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentSettingsBinding.inflate(inflater, container, false)
+    ): View {
+        binding = FragmentSettingsBinding.inflate(layoutInflater)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         settingsViewModel.getOnBackLiveData()
-        binding = FragmentSettingsBinding.inflate(layoutInflater)
         binding.themeSwitcher.isChecked = !(settingsViewModel.getThemeLiveData().value!!)
         binding.themeSwitcher.setOnClickListener {
             settingsViewModel.themeSwitch()

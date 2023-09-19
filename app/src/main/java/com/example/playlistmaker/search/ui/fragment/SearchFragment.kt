@@ -42,14 +42,13 @@ class SearchFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        binding = FragmentSearchBinding.inflate(inflater, container, false)
+    ): View {
+        binding = FragmentSearchBinding.inflate(layoutInflater)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding = FragmentSearchBinding.inflate(layoutInflater)
         historyRecycler = binding.searchHistoryRecyclerView
         searchViewModel.getStateLiveData().observe(viewLifecycleOwner) { stateLiveData ->
             when (val state = stateLiveData) {
@@ -111,19 +110,11 @@ class SearchFragment : Fragment() {
         }
     }
 
-    // метод сохраняет поисковой запрос
-    override fun onSaveInstanceState(outState: Bundle) {
-        searchText = binding.inputEditText.text.toString()
-        super.onSaveInstanceState(outState)
-        outState.putString(SEARCH_USER_INPUT, searchText)
-    }
-
-    // метод восстанавливает поисковой запрос после пересоздания активити
+    // метод восстанавливает поисковой запрос после пересоздания
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
         if (savedInstanceState != null) {
             searchText = savedInstanceState.getString(SEARCH_USER_INPUT, "")
-            binding.inputEditText.setText(searchText)
         }
     }
 
