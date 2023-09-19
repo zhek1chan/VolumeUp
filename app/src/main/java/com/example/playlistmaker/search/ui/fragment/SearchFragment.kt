@@ -1,4 +1,4 @@
-package com.example.playlistmaker.search.ui.activity
+package com.example.playlistmaker.search.ui.fragment
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -9,11 +9,12 @@ import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.*
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.databinding.FragmentSearchBinding
@@ -25,7 +26,7 @@ import com.example.playlistmaker.search.ui.view_model.SearchViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.IOException
 
-class SearchActivity : AppCompatActivity() {
+class SearchFragment : Fragment() {
     private lateinit var binding: FragmentSearchBinding
     private val searchViewModel by viewModel<SearchViewModel>()
     private var isClickAllowed = true
@@ -36,12 +37,21 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private val handler = Handler(Looper.getMainLooper())
     private var isEnterPressed: Boolean = false
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentSearchBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         binding = FragmentSearchBinding.inflate(layoutInflater)
-        setContentView(binding.root)
         historyRecycler = binding.searchHistoryRecyclerView
-        searchViewModel.getStateLiveData().observe(this) { stateLiveData ->
+        searchViewModel.getStateLiveData().observe(viewLifecycleOwner) { stateLiveData ->
             when (val state = stateLiveData) {
                 is SearchScreenState.DefaultSearch -> defaultSearch()
                 is SearchScreenState.ConnectionError -> connectionError()
@@ -54,6 +64,10 @@ class SearchActivity : AppCompatActivity() {
                 }
             }
         }
+
+        //binding.arrowBack.setOnClickListener {
+        //    finish()
+        //}
 
         onEditorFocus()
         onSearchTextChange()
@@ -68,7 +82,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         recyclerView = binding.searchResultsRecyclerView
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = trackAdapter
 
         //
@@ -78,7 +92,7 @@ class SearchActivity : AppCompatActivity() {
             }
         }
 
-        historyRecycler.layoutManager = LinearLayoutManager(this)
+        historyRecycler.layoutManager = LinearLayoutManager(requireContext())
         historyRecycler.adapter = historyAdapter
         binding.clearButton.setOnClickListener {
             makeHistoryLLGone()
@@ -105,9 +119,12 @@ class SearchActivity : AppCompatActivity() {
     }
 
     // метод восстанавливает поисковой запрос после пересоздания активити
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        searchText = savedInstanceState.getString(SEARCH_USER_INPUT, "")
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        if (savedInstanceState != null) {
+            searchText = savedInstanceState.getString(SEARCH_USER_INPUT, "")
+            binding.inputEditText.setText(searchText)
+        }
     }
 
     private lateinit var searchText: String
@@ -128,7 +145,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun clickAdapting(item: Track) {
         searchViewModel.addItem(item)
-        val intent = Intent(this, PlayerActivity::class.java)
+        val intent = Intent(requireContext(), PlayerActivity::class.java)
         intent.putExtra("track", item)
         this.startActivity(intent)
     }
@@ -209,7 +226,8 @@ class SearchActivity : AppCompatActivity() {
     private fun onClearIconClick() {
         binding.clearIcon.setOnClickListener {
             binding.inputEditText.setText("")
-            val keyboard = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val keyboard =
+                requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             keyboard.hideSoftInputFromWindow(
                 binding.inputEditText.windowToken,
                 0
@@ -317,4 +335,3 @@ class SearchActivity : AppCompatActivity() {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 }
-

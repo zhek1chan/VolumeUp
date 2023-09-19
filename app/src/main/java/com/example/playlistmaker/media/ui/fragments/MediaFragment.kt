@@ -1,26 +1,37 @@
-package com.example.playlistmaker.media.ui.activity
+package com.example.playlistmaker.media.ui.fragments
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentMediatekaBinding
-import com.example.playlistmaker.media.ui.FragmentsAdapter
 import com.example.playlistmaker.media.ui.PageSelector
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
-class MediaActivity : AppCompatActivity(), PageSelector {
+class MediaFragment : Fragment(), PageSelector {
     private lateinit var tabMediator: TabLayoutMediator
     private lateinit var binding: FragmentMediatekaBinding
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentMediatekaBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         binding = FragmentMediatekaBinding.inflate(layoutInflater)
         binding.backButtonMediaActivity.setOnClickListener {
-            finish()
+            //finish()
         }
-        setContentView(binding.root)
-        val adapter = FragmentsAdapter(supportFragmentManager, lifecycle)
-        binding.viewPager.adapter = adapter
+        //val adapter = FragmentsAdapter(supportFragmentManager, lifecycle)
+        //binding.viewPager.adapter = adapter
 
 
         tabMediator = TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
