@@ -31,12 +31,6 @@ class SettingsFragment : Fragment() {
             binding.themeSwitcher.isChecked = !(settingsViewModel.getThemeLiveData().value!!)
         }
 
-        /*binding.arrowBack.setOnClickListener {
-            settingsViewModel.onBackClick()
-        }
-        settingsViewModel.getOnBackLiveData()
-            .observe(requireActivity()) { onBackLiveData -> onBackClick(onBackLiveData) }*/
-
         binding.buttonShare.setOnClickListener {
             settingsViewModel.shareApp()
         }
@@ -47,9 +41,4 @@ class SettingsFragment : Fragment() {
             settingsViewModel.readAgreement()
         }
     }
-
-    /*private fun onBackClick(back: Boolean) {
-        if (back) {
-        }
-    }*/
 }

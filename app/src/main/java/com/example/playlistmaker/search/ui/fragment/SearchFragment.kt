@@ -64,17 +64,13 @@ class SearchFragment : Fragment() {
             }
         }
 
-        //binding.arrowBack.setOnClickListener {
-        //    finish()
-        //}
-
         onEditorFocus()
         onSearchTextChange()
         onClearIconClick()
         clearIconVisibilityChanger()
         startSearchByEnterPress()
 
-        trackAdapter = TrackAdapter() {
+        trackAdapter = TrackAdapter {
             if (clickDebounce()) {
                 clickAdapting(it)
             }
@@ -85,7 +81,7 @@ class SearchFragment : Fragment() {
         recyclerView.adapter = trackAdapter
 
         //
-        historyAdapter = TrackAdapter() {
+        historyAdapter = TrackAdapter {
             if (clickDebounce()) {
                 clickAdapting(it)
             }
@@ -164,7 +160,7 @@ class SearchFragment : Fragment() {
     }
 
     private fun onEditorFocus() {
-        binding.inputEditText.setOnFocusChangeListener { view, hasFocus ->
+        binding.inputEditText.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus && binding.inputEditText.text.isEmpty() && searchViewModel.provideHistory().value?.isNotEmpty() == true) {
                 searchViewModel.clearTrackList()
             } else {

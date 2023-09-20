@@ -1,9 +1,9 @@
 package com.example.playlistmaker.player.di
 
 import android.media.MediaPlayer
-import com.example.playlistmaker.player.domain.PlayerInteractorImpl
 import com.example.playlistmaker.player.data.PlayerRepositoryImpl
 import com.example.playlistmaker.player.domain.PlayerInteractor
+import com.example.playlistmaker.player.domain.PlayerInteractorImpl
 import com.example.playlistmaker.player.domain.PlayerRepository
 import com.example.playlistmaker.player.ui.view_model.PlayerViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel

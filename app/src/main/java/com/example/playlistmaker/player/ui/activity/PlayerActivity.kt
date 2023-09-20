@@ -71,6 +71,7 @@ class PlayerActivity : AppCompatActivity() {
         super.onDestroy()
         viewModel.destroy()
     }
+
     private fun preparePlayer() {
         binding.playButtonPlayerActivity.isEnabled = true
         binding.albumPlayerActivity.visibility = View.VISIBLE

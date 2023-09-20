@@ -30,7 +30,6 @@ class MediaFragment : Fragment(), PageSelector {
         super.onViewCreated(view, savedInstanceState)
         activity = requireActivity()
         val adapter = FragmentsAdapter(this)
-        //binding.viewPager.adapter = adapter
         binding.viewPager.adapter = adapter
 
         tabMediator = TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->

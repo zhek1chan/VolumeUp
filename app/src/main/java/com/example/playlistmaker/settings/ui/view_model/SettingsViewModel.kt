@@ -14,9 +14,6 @@ class SettingsViewModel(
 ) : ViewModel() {
 
     private var onBackLiveData = MutableLiveData(false)
-    fun onBackClick() {
-        onBackLiveData.value = true
-    }
 
     fun getOnBackLiveData(): LiveData<Boolean> = onBackLiveData
 

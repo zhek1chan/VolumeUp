@@ -4,16 +4,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.playlistmaker.player.domain.Track
-import com.example.playlistmaker.search.ui.SearchScreenState
 import com.example.playlistmaker.search.domain.SearchHistoryInteractor
 import com.example.playlistmaker.search.domain.SearchInteractor
+import com.example.playlistmaker.search.ui.SearchScreenState
 
 class SearchViewModel(
     private var searchInteractor: SearchInteractor,
     private var searchHistoryInteractor: SearchHistoryInteractor,
 ) : ViewModel() {
     private var stateLiveData =
-        MutableLiveData<SearchScreenState>(SearchScreenState.DefaultSearch)
+        MutableLiveData<SearchScreenState>()
 
     fun getStateLiveData(): LiveData<SearchScreenState> {
         return stateLiveData
