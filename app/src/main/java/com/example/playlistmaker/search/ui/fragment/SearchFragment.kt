@@ -24,7 +24,6 @@ import com.example.playlistmaker.player.ui.activity.PlayerActivity
 import com.example.playlistmaker.search.ui.SearchScreenState
 import com.example.playlistmaker.search.ui.view_model.SearchViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.io.IOException
 
 class SearchFragment : Fragment() {
     private lateinit var binding: FragmentSearchBinding
@@ -33,7 +32,6 @@ class SearchFragment : Fragment() {
     private lateinit var trackAdapter: TrackAdapter
     private lateinit var historyAdapter: TrackAdapter
     private lateinit var historyRecycler: RecyclerView
-    lateinit var historyList: List<Track>
     private lateinit var recyclerView: RecyclerView
     private val handler = Handler(Looper.getMainLooper())
     private var isEnterPressed: Boolean = false
@@ -51,13 +49,13 @@ class SearchFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         historyRecycler = binding.searchHistoryRecyclerView
         searchViewModel.getStateLiveData().observe(viewLifecycleOwner) { stateLiveData ->
-            when (val state = stateLiveData) {
+            when (stateLiveData) {
                 is SearchScreenState.DefaultSearch -> defaultSearch()
                 is SearchScreenState.ConnectionError -> connectionError()
                 is SearchScreenState.Loading -> loading()
                 is SearchScreenState.NothingFound -> nothingFound()
-                is SearchScreenState.SearchIsOk -> searchIsOk(state.data)
-                is SearchScreenState.SearchWithHistory -> searchWithHistory(state.historyData)
+                is SearchScreenState.SearchIsOk -> searchIsOk(stateLiveData.data)
+                is SearchScreenState.SearchWithHistory -> searchWithHistory(stateLiveData.historyData)
                 else -> {
                     connectionError()
                 }
@@ -93,17 +91,7 @@ class SearchFragment : Fragment() {
             makeHistoryLLGone()
             searchViewModel.clearHistory()
         }
-
-        historyList = try {
-            val historyValue = searchViewModel.provideHistory().value
-            historyValue ?: emptyList()
-        } catch (e: IOException) {
-            emptyList()
-        }
-        //searchViewModel.provideHistory()
-        if (historyList.isNotEmpty()) {
-            makeHistoryLLVisible()
-        }
+        showHistoryTracks()
     }
 
     // метод восстанавливает поисковой запрос после пересоздания
@@ -119,6 +107,13 @@ class SearchFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         isClickAllowed = true
+    }
+
+    private fun showHistoryTracks() {
+        if (searchViewModel.provideHistory().value?.isNotEmpty() != false) {
+            searchViewModel.provideHistory().value?.let { historyAdapter.setItems(it) }
+            makeHistoryLLVisible()
+        }
     }
 
     private fun clickDebounce(): Boolean {
@@ -146,7 +141,9 @@ class SearchFragment : Fragment() {
     }
 
     private fun search() {
-        searchViewModel.searchRequesting(binding.inputEditText.text.toString())
+        if (!isEnterPressed) {
+            searchViewModel.searchRequesting(binding.inputEditText.text.toString())
+        }
     }
 
 
@@ -176,15 +173,14 @@ class SearchFragment : Fragment() {
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                if (binding.inputEditText.hasFocus() && p0?.isEmpty() == true && historyList.isNotEmpty()) {
+                if (binding.inputEditText.hasFocus() && p0?.isEmpty() == true && searchViewModel.provideHistory().value?.isNotEmpty() == true) {
                     searchViewModel.clearTrackList()
                 } else {
                     makeHistoryLLGone()
                 }
-                if (!binding.inputEditText.text.isNullOrEmpty()) {
+                if (!binding.inputEditText.text.isEmpty()) {
                     searchText = binding.inputEditText.text.toString()
                     searchDebounce()
-
                 }
             }
 
@@ -221,6 +217,7 @@ class SearchFragment : Fragment() {
             )
             binding.inputEditText.clearFocus()
             searchViewModel.clearTrackList()
+            showHistoryTracks()
         }
     }
 
@@ -232,7 +229,6 @@ class SearchFragment : Fragment() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 binding.clearIcon.visibility = clearButtonVisibility(s)
-                searchDebounce()
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -274,8 +270,6 @@ class SearchFragment : Fragment() {
 
     private fun nothingFound() {
         binding.loadingIndicator.visibility = View.GONE
-        binding.historyLayout.visibility = View.GONE
-        historyRecycler.visibility = View.GONE
         binding.clearButton.visibility = View.VISIBLE
         recyclerView.visibility = View.GONE
         binding.nothingFoundPlaceholder.visibility = View.VISIBLE
@@ -295,7 +289,6 @@ class SearchFragment : Fragment() {
     }
 
     private fun searchWithHistory(historyData: List<Track>) {
-        makeHistoryLLVisible()
         binding.clearButton.visibility = View.VISIBLE
         recyclerView.visibility = View.GONE
         binding.nothingFoundPlaceholder.visibility = View.GONE
@@ -304,6 +297,7 @@ class SearchFragment : Fragment() {
         binding.loadingIndicator.visibility = View.GONE
         historyAdapter.setItems(historyData)
         historyAdapter.notifyDataSetChanged()
+        makeHistoryLLVisible()
         Log.d("searchWithHistory", "SearchWithHistory was started")
     }
 
