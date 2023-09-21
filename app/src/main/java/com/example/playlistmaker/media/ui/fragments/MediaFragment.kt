@@ -54,7 +54,7 @@ class MediaFragment : Fragment(), PageSelector {
 
     }
 
-    override fun NavigateTo(page: Int) {
+    override fun navigateTo(page: Int) {
         binding.viewPager.currentItem = page
     }
 
