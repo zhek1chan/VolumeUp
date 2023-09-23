@@ -20,10 +20,6 @@ class PlayerViewModel(
         playerInteractor.pause()
     }
 
-    fun destroy() {
-        playerInteractor.destroy()
-    }
-
     fun getTime(): String {
         return playerInteractor.getTime()
     }

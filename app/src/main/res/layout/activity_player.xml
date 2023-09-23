@@ -233,6 +233,7 @@
         android:layout_marginTop="17dp"
         tools:text="@string/country"
         style="@style/primary_text"
-        android:textSize="13sp" />
+        android:textSize="13sp"
+        android:lines="1" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
