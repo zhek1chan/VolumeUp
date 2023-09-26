@@ -1,8 +1,6 @@
 package com.example.playlistmaker.search.domain
 
 import com.example.playlistmaker.player.domain.Track
-import com.example.playlistmaker.search.domain.SearchInteractor
-import com.example.playlistmaker.search.domain.TracksRepository
 
 class SearchInteractorImpl(private val repository: TracksRepository) : SearchInteractor {
     override fun search(

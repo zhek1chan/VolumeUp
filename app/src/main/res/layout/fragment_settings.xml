@@ -1,29 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     style="@style/settings_background"
     android:orientation="vertical"
     android:paddingHorizontal="@dimen/common_padding"
-    android:paddingTop="@dimen/layouts_padding">
+    android:paddingTop="@dimen/layouts_padding"
+    tools:context=".settings.ui.fragment.SettingsFragment">>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <ImageView
-            android:color="@color/black_text"
-            android:id="@+id/arrow_back"
-            style="@style/settings_back_icon"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="4dp"
-            android:foreground="?attr/selectableItemBackground"
-            android:src="@drawable/back" />
-
         <TextView
             style="@style/settings_text_view"
-            android:paddingStart="@dimen/vertical_padding"
             android:text="@string/settings"
             android:textSize="@dimen/main_text_size"
             android:fontFamily="@font/ys_display_medium"/>

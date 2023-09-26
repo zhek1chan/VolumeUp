@@ -1,30 +1,35 @@
-package com.example.playlistmaker.settings.ui.activity
+package com.example.playlistmaker.settings.ui.fragment
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import com.example.playlistmaker.databinding.ActivitySettingsBinding
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import com.example.playlistmaker.databinding.FragmentSettingsBinding
 import com.example.playlistmaker.settings.ui.view_model.SettingsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsFragment : Fragment() {
     private val settingsViewModel by viewModel<SettingsViewModel>()
-    private lateinit var binding: ActivitySettingsBinding
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivitySettingsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    private lateinit var binding: FragmentSettingsBinding
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentSettingsBinding.inflate(layoutInflater)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        settingsViewModel.getOnBackLiveData()
         binding.themeSwitcher.isChecked = !(settingsViewModel.getThemeLiveData().value!!)
         binding.themeSwitcher.setOnClickListener {
             settingsViewModel.themeSwitch()
             binding.themeSwitcher.isChecked = !(settingsViewModel.getThemeLiveData().value!!)
         }
-
-        binding.arrowBack.setOnClickListener {
-            settingsViewModel.onBackClick()
-        }
-        settingsViewModel.getOnBackLiveData()
-            .observe(this) { onBackLiveData -> onBackClick(onBackLiveData) }
 
         binding.buttonShare.setOnClickListener {
             settingsViewModel.shareApp()
@@ -34,12 +39,6 @@ class SettingsActivity : AppCompatActivity() {
         }
         binding.buttonUserAgreements.setOnClickListener {
             settingsViewModel.readAgreement()
-        }
-    }
-
-    private fun onBackClick(back: Boolean) {
-        if (back) {
-            finish()
         }
     }
 }

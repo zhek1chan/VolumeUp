@@ -67,10 +67,6 @@ class PlayerActivity : AppCompatActivity() {
         viewModel.pause()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        viewModel.destroy()
-    }
     private fun preparePlayer() {
         binding.playButtonPlayerActivity.isEnabled = true
         binding.albumPlayerActivity.visibility = View.VISIBLE

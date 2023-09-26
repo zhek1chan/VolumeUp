@@ -1,0 +1,18 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/searchFragment"
+        android:icon="@drawable/search_small"
+        android:title="@string/search" />
+
+    <item
+        android:id="@+id/mediaFragment"
+        android:icon="@drawable/media"
+        android:title="@string/media" />
+
+    <item
+        android:id="@+id/settingsFragment"
+        android:icon="@drawable/settings"
+        android:title="@string/settings" />
+</menu>

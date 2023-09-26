@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/search_element_main_layout_style"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/search_element_height"
+    android:layout_height="wrap_content"
     android:orientation="horizontal">
 
     <ImageView
@@ -16,7 +16,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/search_screen_title_padding_start"
         android:layout_weight="1"
         android:gravity="center_vertical"

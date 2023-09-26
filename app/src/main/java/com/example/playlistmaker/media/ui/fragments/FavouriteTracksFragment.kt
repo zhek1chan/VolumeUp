@@ -6,9 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.playlistmaker.databinding.FragmentFavouriteTracksBinding
+import com.example.playlistmaker.media.ui.viewmodel.FavouriteTracksViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavouriteTracksFragment : Fragment() {
-    //private val favouritesViewModel by viewModel<FavouriteTracksViewModel>()
+    private val favouritesViewModel by viewModel<FavouriteTracksViewModel>()
     private lateinit var nullableFavouriteTracksBinding: FragmentFavouriteTracksBinding
 
     override fun onCreateView(
