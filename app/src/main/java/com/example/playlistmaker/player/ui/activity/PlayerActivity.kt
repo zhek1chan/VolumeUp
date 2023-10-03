@@ -3,6 +3,7 @@ package com.example.playlistmaker.player.ui.activity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
@@ -11,6 +12,7 @@ import com.example.playlistmaker.databinding.ActivityPlayerBinding
 import com.example.playlistmaker.player.domain.Track
 import com.example.playlistmaker.player.ui.PlayerState
 import com.example.playlistmaker.player.ui.view_model.PlayerViewModel
+import kotlinx.coroutines.Job
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlayerActivity : AppCompatActivity() {
@@ -19,6 +21,7 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPlayerBinding
     private var handler = Handler(Looper.getMainLooper())
     private var url: String = ""
+    private var timerJob: Job? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPlayerBinding.inflate(layoutInflater)
@@ -58,6 +61,10 @@ class PlayerActivity : AppCompatActivity() {
         binding.pauseButtonPlayerActivity.setOnClickListener {
             viewModel.pause()
         }
+        viewModel.putTime().observe(this) { timer ->
+            binding.trackTimePlayerActivity.text = timer
+            Log.d("Timing in PlayerActivity", timer)
+        }
         handler.post(updateButton())
         handler.post(updateTimer())
     }
@@ -75,7 +82,7 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun updateTimer(): Runnable {
         val updatedTimer = Runnable {
-            binding.trackTimePlayerActivity.text = viewModel.getTime()
+            binding.trackTimePlayerActivity.text = viewModel.getTime().toString()
             handler.postDelayed(updateTimer(), DELAY_MILLIS_Activity)
         }
         return updatedTimer
