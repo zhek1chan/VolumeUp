@@ -1,6 +1,5 @@
 package com.example.playlistmaker.player.ui.view_model
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,7 +15,6 @@ class PlayerViewModel(
 ) : ViewModel() {
 
     private var timeJob: Job? = null
-    private var stateLiveData = MutableLiveData<PlayerState>()
     private var timer = MutableLiveData("00:00")
     fun createPlayer(url: String, completion: () -> Unit) {
         playerInteractor.createPlayer(url, completion)
@@ -24,6 +22,7 @@ class PlayerViewModel(
 
     fun play() {
         playerInteractor.play()
+        timeJob?.start()!!
     }
 
     fun pause() {
@@ -44,7 +43,6 @@ class PlayerViewModel(
 
     fun putTime(): LiveData<String> {
         getTime()
-        timer.value?.let { Log.d("Timing in PlayerViewModel", it) }
         return timer
     }
 
