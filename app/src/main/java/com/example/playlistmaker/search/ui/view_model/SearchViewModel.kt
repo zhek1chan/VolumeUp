@@ -21,19 +21,8 @@ class SearchViewModel(
         return stateLiveData
     }
 
-    //поиск трека
-    private val tracksConsumer = object : SearchInteractor.TracksConsumer {
-        override fun consume(tracks: List<Track>) {
-            trackResultList.postValue(tracks)
-            stateLiveData.postValue(
-                if (tracks.isNullOrEmpty())
-                    SearchScreenState.NothingFound
-                else SearchScreenState.SearchIsOk(tracks)
-            )
-        }
-    }
 
-    private var trackResultList: MutableLiveData<List<Track>> = MutableLiveData<List<Track>>()
+    private var trackResultList: MutableLiveData<List<Track>?> = MutableLiveData<List<Track>?>()
 
     fun searchRequesting(searchExpression: String) {
         if (searchExpression.isNotEmpty()) {
@@ -41,7 +30,20 @@ class SearchViewModel(
             viewModelScope.launch {
                 stateLiveData.postValue(SearchScreenState.Loading)
                 try {
-                    searchInteractor.search(searchExpression, tracksConsumer)
+                    searchInteractor.search(searchExpression).collect {
+                        when (it.message) {
+                            "CONNECTION_ERROR" -> stateLiveData.postValue(SearchScreenState.ConnectionError)
+                            "SERVER_ERROR" -> stateLiveData.postValue(SearchScreenState.NothingFound)
+                            else -> {
+                                trackResultList.postValue(it.data)
+                                stateLiveData.postValue(
+                                    if (it.data.isNullOrEmpty())
+                                        SearchScreenState.NothingFound
+                                    else SearchScreenState.SearchIsOk(it.data)
+                                )
+                            }
+                        }
+                    }
                 } catch (error: Error) {
                     stateLiveData.postValue(SearchScreenState.ConnectionError)
                 }
