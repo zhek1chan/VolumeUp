@@ -4,8 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -15,6 +13,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.databinding.FragmentSearchBinding
@@ -23,6 +22,10 @@ import com.example.playlistmaker.player.ui.TrackAdapter
 import com.example.playlistmaker.player.ui.activity.PlayerActivity
 import com.example.playlistmaker.search.ui.SearchScreenState
 import com.example.playlistmaker.search.ui.view_model.SearchViewModel
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
@@ -33,8 +36,8 @@ class SearchFragment : Fragment() {
     private lateinit var historyAdapter: TrackAdapter
     private lateinit var historyRecycler: RecyclerView
     private lateinit var recyclerView: RecyclerView
-    private val handler = Handler(Looper.getMainLooper())
-    private var isEnterPressed: Boolean = false
+    private var searchJob: Job? = null
+    private var latestSearchText: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -61,7 +64,7 @@ class SearchFragment : Fragment() {
                 }
             }
         }
-
+        clickDebounceManager()
         onEditorFocus()
         onSearchTextChange()
         onClearIconClick()
@@ -69,7 +72,7 @@ class SearchFragment : Fragment() {
         startSearchByEnterPress()
 
         trackAdapter = TrackAdapter {
-            if (clickDebounce()) {
+            if (isClickAllowed) {
                 clickAdapting(it)
             }
         }
@@ -80,7 +83,7 @@ class SearchFragment : Fragment() {
 
         //
         historyAdapter = TrackAdapter {
-            if (clickDebounce()) {
+            if (isClickAllowed) {
                 clickAdapting(it)
             }
         }
@@ -116,11 +119,15 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private fun clickDebounce(): Boolean {
+    private fun clickDebounceManager() {
+        GlobalScope.launch { clickDebounce() }
+    }
+
+    private suspend fun clickDebounce(): Boolean {
         val current = isClickAllowed
         if (isClickAllowed) {
+            delay(CLICK_DEBOUNCE_DELAY)
             isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
         }
         return current
     }
@@ -141,19 +148,14 @@ class SearchFragment : Fragment() {
     }
 
     private fun search() {
-        if (!isEnterPressed) {
-            searchViewModel.searchRequesting(binding.inputEditText.text.toString())
-        }
+        searchViewModel.searchRequesting(binding.inputEditText.text.toString())
     }
-
-
     private fun searchDebounce() {
-        handler.removeCallbacks(searchRunnable)
-        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY_MILLIS)
-    }
-
-    private val searchRunnable = Runnable {
-        search()
+        searchJob?.cancel()
+        searchJob = lifecycleScope.launch {
+            delay(SEARCH_DEBOUNCE_DELAY_MILLIS)
+            search()
+        }
     }
 
     private fun onEditorFocus() {
@@ -198,8 +200,6 @@ class SearchFragment : Fragment() {
                     searchText = binding.inputEditText.text.toString()
                     search()
                     trackAdapter.notifyDataSetChanged()
-                    isEnterPressed = true
-                    handler.postDelayed({ isEnterPressed = false }, 3000L)
                 }
             }
             false

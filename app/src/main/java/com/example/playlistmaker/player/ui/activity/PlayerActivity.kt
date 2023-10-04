@@ -55,19 +55,15 @@ class PlayerActivity : AppCompatActivity() {
         binding.backButtonPlayerActivity.setOnClickListener {
             finish()
         }
+        updateButton()
         binding.playButtonPlayerActivity.setOnClickListener {
             if (viewModel.playerStateGetter() == PlayerState.STATE_PLAYING) viewModel.pause() else viewModel.play()
             updateButton()
         }
-        updateButton()
-        /*binding.playButtonPlayerActivity.setOnClickListener {
-            viewModel.play()
-        }*/
         binding.pauseButtonPlayerActivity.setOnClickListener {
             viewModel.pause()
             updateButton()
         }
-        updateButton()
         viewModel.putTime().observe(this) { timer ->
             binding.trackTimePlayerActivity.text = timer
             if ((timer != "00:00") and (playerState != PlayerState.STATE_PAUSED)) Log.d(
