@@ -3,10 +3,12 @@ package com.example.playlistmaker.search.ui.view_model
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.player.domain.Track
 import com.example.playlistmaker.search.domain.SearchHistoryInteractor
 import com.example.playlistmaker.search.domain.SearchInteractor
 import com.example.playlistmaker.search.ui.SearchScreenState
+import kotlinx.coroutines.launch
 
 class SearchViewModel(
     private var searchInteractor: SearchInteractor,
@@ -34,11 +36,16 @@ class SearchViewModel(
     private var trackResultList: MutableLiveData<List<Track>> = MutableLiveData<List<Track>>()
 
     fun searchRequesting(searchExpression: String) {
-        stateLiveData.postValue(SearchScreenState.Loading)
-        try {
-            searchInteractor.search(searchExpression, tracksConsumer)
-        } catch (error: Error) {
-            stateLiveData.postValue(SearchScreenState.ConnectionError)
+        if (searchExpression.isNotEmpty()) {
+            stateLiveData.postValue(SearchScreenState.Loading)
+            viewModelScope.launch {
+                stateLiveData.postValue(SearchScreenState.Loading)
+                try {
+                    searchInteractor.search(searchExpression, tracksConsumer)
+                } catch (error: Error) {
+                    stateLiveData.postValue(SearchScreenState.ConnectionError)
+                }
+            }
         }
     }
 
