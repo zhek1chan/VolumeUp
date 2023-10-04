@@ -70,11 +70,15 @@ class PlayerActivity : AppCompatActivity() {
                 "TrackTimer",
                 timer
             )
+            if (timer == "00:00") {
+                updateButton()
+            }
         }
         buttonChangerJob?.start()!!
     }
 
     override fun onPause() {
+        updateButton()
         super.onPause()
         viewModel.pause()
     }
