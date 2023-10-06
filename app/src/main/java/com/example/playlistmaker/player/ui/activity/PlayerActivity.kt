@@ -1,24 +1,28 @@
 package com.example.playlistmaker.player.ui.activity
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityPlayerBinding
 import com.example.playlistmaker.player.domain.Track
 import com.example.playlistmaker.player.ui.PlayerState
 import com.example.playlistmaker.player.ui.view_model.PlayerViewModel
+import com.example.playlistmaker.player.ui.view_model.PlayerViewModel.Companion.PLAYER_BUTTON_PRESSING_DELAY
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlayerActivity : AppCompatActivity() {
     private lateinit var playerState: PlayerState
     private val viewModel by viewModel<PlayerViewModel>()
     private lateinit var binding: ActivityPlayerBinding
-    private var handler = Handler(Looper.getMainLooper())
     private var url: String = ""
+    private var buttonChangerJob: Job? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPlayerBinding.inflate(layoutInflater)
@@ -47,22 +51,34 @@ class PlayerActivity : AppCompatActivity() {
         viewModel.createPlayer(url) {
             preparePlayer()
         }
-        handler = Handler(Looper.getMainLooper())
 
         binding.backButtonPlayerActivity.setOnClickListener {
             finish()
         }
+        updateButton()
         binding.playButtonPlayerActivity.setOnClickListener {
-            viewModel.play()
+            if (viewModel.playerStateGetter() == PlayerState.STATE_PLAYING) viewModel.pause() else viewModel.play()
+            updateButton()
         }
         binding.pauseButtonPlayerActivity.setOnClickListener {
             viewModel.pause()
+            updateButton()
         }
-        handler.post(updateButton())
-        handler.post(updateTimer())
+        viewModel.putTime().observe(this) { timer ->
+            binding.trackTimePlayerActivity.text = timer
+            if ((timer != "00:00") and (playerState != PlayerState.STATE_PAUSED)) Log.d(
+                "TrackTimer",
+                timer
+            )
+            if (timer == "00:00") {
+                updateButton()
+            }
+        }
+        buttonChangerJob?.start()!!
     }
 
     override fun onPause() {
+        updateButton()
         super.onPause()
         viewModel.pause()
     }
@@ -71,14 +87,6 @@ class PlayerActivity : AppCompatActivity() {
         binding.playButtonPlayerActivity.isEnabled = true
         binding.albumPlayerActivity.visibility = View.VISIBLE
         binding.pauseButtonPlayerActivity.visibility = View.GONE
-    }
-
-    private fun updateTimer(): Runnable {
-        val updatedTimer = Runnable {
-            binding.trackTimePlayerActivity.text = viewModel.getTime()
-            handler.postDelayed(updateTimer(), DELAY_MILLIS_Activity)
-        }
-        return updatedTimer
     }
 
     //логика смены кнопок Pause & Play
@@ -107,16 +115,12 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateButton(): Runnable {
-        val updatedButton = Runnable {
+    private fun updateButton() {
+        Log.d("Changing player button", "updateButton has started")
+        buttonChangerJob = lifecycleScope.launch {
+            delay(PLAYER_BUTTON_PRESSING_DELAY)
             playerButtonChanger()
-            handler.postDelayed(updateButton(), DELAY_MILLIS_Activity)
         }
-        return updatedButton
-    }
-
-    companion object {
-        const val DELAY_MILLIS_Activity = 100L
     }
 }
 

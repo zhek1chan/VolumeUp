@@ -1,19 +1,19 @@
 package com.example.playlistmaker.player.data
 
 import android.media.MediaPlayer
-import android.os.Handler
-import android.os.Looper
 import com.example.playlistmaker.player.domain.PlayerRepository
 import com.example.playlistmaker.player.ui.PlayerState
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import java.text.SimpleDateFormat
 
 class PlayerRepositoryImpl(private val mediaPlayer: MediaPlayer) : PlayerRepository {
     private var playerState = PlayerState.STATE_DEFAULT
-    private var timePlayed = "00:00"
-    private var mainThreadHandler: Handler? = Handler(Looper.getMainLooper())
-
-
+    private var playerJob: Job? = null
     override fun preparePlayer(url: String, completion: () -> Unit) {
+        playerJob?.start()
         if (playerState != PlayerState.STATE_DEFAULT) return
         mediaPlayer.reset()
         mediaPlayer.setDataSource(url)
@@ -30,7 +30,6 @@ class PlayerRepositoryImpl(private val mediaPlayer: MediaPlayer) : PlayerReposit
     override fun play() {
         mediaPlayer.start()
         playerState = PlayerState.STATE_PLAYING
-        mainThreadHandler?.post(timing())
     }
 
     override fun pause() {
@@ -41,25 +40,19 @@ class PlayerRepositoryImpl(private val mediaPlayer: MediaPlayer) : PlayerReposit
     override fun destroy() {
         mediaPlayer.release()
         playerState = PlayerState.STATE_DEFAULT
+        playerJob?.cancel()
     }
 
-    private fun timing(): Runnable {
-        return object : Runnable {
-            override fun run() {
-                if ((playerState == PlayerState.STATE_PLAYING) or (playerState == PlayerState.STATE_PAUSED)) {
-                    val simpleDateFormat = SimpleDateFormat("mm:ss")
-                    timePlayed = simpleDateFormat.format(mediaPlayer.currentPosition)
-                    mainThreadHandler?.postDelayed(this, DELAY_MILLIS)
-                } else {
-                    timePlayed = "00:00"
-                    mainThreadHandler?.postDelayed(this, DELAY_MILLIS)
-                }
+    override fun timing(): Flow<String> = flow {
+        val time = SimpleDateFormat("mm:ss")
+        while (true) {
+            if ((playerState == PlayerState.STATE_PLAYING) or (playerState == PlayerState.STATE_PAUSED)) {
+                emit(time.format(mediaPlayer.currentPosition))
+            } else {
+                emit("00:00")
             }
+            delay(DELAY_MILLIS)
         }
-    }
-
-    override fun timeTransfer(): String {
-        return timePlayed
     }
 
     override fun playerStateReporter(): PlayerState {
