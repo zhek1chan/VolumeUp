@@ -12,6 +12,7 @@ import com.example.playlistmaker.player.domain.Track
 import com.example.playlistmaker.player.ui.PlayerState
 import com.example.playlistmaker.player.ui.view_model.PlayerViewModel
 import com.example.playlistmaker.player.ui.view_model.PlayerViewModel.Companion.PLAYER_BUTTON_PRESSING_DELAY
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -63,6 +64,20 @@ class PlayerActivity : AppCompatActivity() {
         binding.pauseButtonPlayerActivity.setOnClickListener {
             viewModel.pause()
             updateButton()
+        }
+        binding.likeButtonPlayerActivity.setOnClickListener {
+            GlobalScope.launch {
+                viewModel.onLikeClick(track)
+            }
+            binding.likeButtonPlayerActivity.visibility = View.GONE
+            binding.pressedLikeButtonPlayerActivity.visibility = View.VISIBLE
+        }
+        binding.pressedLikeButtonPlayerActivity.setOnClickListener {
+            GlobalScope.launch {
+                viewModel.onLikeClick(track)
+            }
+            binding.likeButtonPlayerActivity.visibility = View.VISIBLE
+            binding.pressedLikeButtonPlayerActivity.visibility = View.GONE
         }
         viewModel.putTime().observe(this) { timer ->
             binding.trackTimePlayerActivity.text = timer

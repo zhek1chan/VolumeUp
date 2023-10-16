@@ -14,7 +14,8 @@ data class Track(
     var releaseDate: String,
     var primaryGenreName: String,
     var country: String,
-    var previewUrl: String
+    var previewUrl: String,
+    var isFavourite: Boolean = false
 ) : Parcelable {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

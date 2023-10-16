@@ -2,8 +2,9 @@ package com.example.playlistmaker
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
-import com.example.playlistmaker.media.di.dataModule
+import com.example.playlistmaker.media.di.mediaDataModule
 import com.example.playlistmaker.media.di.mediaModule
+import com.example.playlistmaker.media.di.mediaRepositoryModule
 import com.example.playlistmaker.player.di.playerModule
 import com.example.playlistmaker.search.di.searchDataModule
 import com.example.playlistmaker.search.di.searchInteractorModule
@@ -30,7 +31,8 @@ class App : Application(), KoinComponent {
                 settingsModule,
                 sharingModule,
                 mediaModule,
-                dataModule
+                mediaDataModule,
+                mediaRepositoryModule
             )
         }
         instance = this

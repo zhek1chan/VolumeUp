@@ -5,18 +5,23 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.playlistmaker.media.data.entity.TrackEntity
+import com.example.playlistmaker.player.domain.Track
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TrackDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTrack(track: List<TrackEntity>)
+    fun insertTrack(track: Track)
 
     @Query("SELECT * FROM tracks_table")
-    suspend fun getTracks(): List<TrackEntity>
+    fun getTracks(): List<TrackEntity>
 
     @Query("SELECT trackId FROM tracks_table")
-    suspend fun getTracksId(): List<TrackEntity>
+    fun getTracksId(): Flow<List<String>>
 
-    @Query("DELETE FROM tracks_table WHERE TrackId = trackId")
-    suspend fun deleteTrack(trackId: String)
+    @Query("DELETE FROM tracks_table WHERE :trackId = TrackId")
+    fun deleteTrack(trackId: String): Integer
+
+    @Query("SELECT * FROM tracks_table WHERE trackId=:searchId")
+    fun queryTrackId(searchId: String): TrackEntity?
 }

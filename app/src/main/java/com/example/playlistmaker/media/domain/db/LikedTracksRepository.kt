@@ -7,8 +7,10 @@ interface LikedTracksRepository {
 
     fun getLikedTracks(): Flow<List<Track>>
 
-    fun putLikedTrack()
+    fun putLikedTrack(track: Track)
 
-    fun deleteTrack()
+    fun deleteTrack(track: Track)
+
+    fun checkOnLike(id: String): Flow<Boolean>
 
 }
