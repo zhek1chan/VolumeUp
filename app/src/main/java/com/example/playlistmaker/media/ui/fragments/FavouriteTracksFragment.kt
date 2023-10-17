@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,6 +23,7 @@ class FavouriteTracksFragment : Fragment() {
     private lateinit var binding: FragmentFavouriteTracksBinding
     private var adapter: TrackAdapter? = null
     private lateinit var placeholderMessage: TextView
+    private lateinit var placeholderPicture: ImageView
     private lateinit var favouriteTracks: RecyclerView
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,8 +46,8 @@ class FavouriteTracksFragment : Fragment() {
         )
 
         placeholderMessage = binding.placeholderMessage
+        placeholderPicture = binding.emptyLibrary
         favouriteTracks = binding.favouriteTracksRV
-
         favouriteTracks.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         favouriteTracks.adapter = adapter
@@ -72,7 +74,7 @@ class FavouriteTracksFragment : Fragment() {
 
     private fun render(state: FavTracksState) {
         when (state) {
-            is FavTracksState.FavTracks -> showContent()
+            is FavTracksState.FavTracks -> showContent(state.tracks)
             is FavTracksState.Empty -> showEmpty()
         }
     }
@@ -80,11 +82,14 @@ class FavouriteTracksFragment : Fragment() {
     private fun showEmpty() {
         favouriteTracks.visibility = View.GONE
         placeholderMessage.visibility = View.VISIBLE
+        placeholderPicture.visibility = View.VISIBLE
     }
 
-    private fun showContent() {
+    private fun showContent(tracks: List<Track>) {
         favouriteTracks.visibility = View.VISIBLE
         placeholderMessage.visibility = View.GONE
+        placeholderPicture.visibility = View.GONE
+        adapter?.setItems(tracks)
         adapter?.notifyDataSetChanged()
     }
 

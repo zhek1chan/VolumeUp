@@ -57,7 +57,7 @@ class PlayerViewModel(
     }
 
     fun onLikeClick(track: Track) {
-        Log.d("PlayerViewModel", "$track, \"adding to favourites track\"")
+        Log.d("Adding track to favourites", "$track, \"adding to favourites track\"")
         if (track.isFavourite) {
             track.trackId?.let { likeInteractor.favouritesDelete(track) }
         } else track.trackId?.let {

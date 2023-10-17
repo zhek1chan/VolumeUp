@@ -37,7 +37,6 @@
         android:layout_marginTop="16dp"
         android:visibility="gone"
         tools:listitem="@layout/search_result_item"
-        tools:itemCount="5"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

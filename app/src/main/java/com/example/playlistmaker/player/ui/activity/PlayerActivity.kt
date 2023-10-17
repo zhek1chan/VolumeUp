@@ -131,7 +131,6 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun updateButton() {
-        Log.d("Changing player button", "updateButton has started")
         buttonChangerJob = lifecycleScope.launch {
             delay(PLAYER_BUTTON_PRESSING_DELAY)
             playerButtonChanger()
