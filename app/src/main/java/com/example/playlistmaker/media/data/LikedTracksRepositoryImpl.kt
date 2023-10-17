@@ -12,14 +12,16 @@ class LikedTracksRepositoryImpl(
     private val db: AppDataBase,
     private val convertor: TrackDbConvertor,
 ) : LikedTracksRepository {
+    private lateinit var convertedTrack: TrackEntity
     override fun getLikedTracks(): Flow<List<Track>> = flow {
         val tracks = db.trackDao().getTracks()
         emit(convertFromTrackEntity(tracks))
     }
 
     override fun putLikedTrack(track: Track) {
+        convertedTrack = convertor.map(track)
         track.isFavourite = true
-        db.trackDao().insertTrack(track)
+        db.trackDao().insertTrack(convertedTrack)
     }
 
     override fun deleteTrack(track: Track) {

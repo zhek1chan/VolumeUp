@@ -37,6 +37,7 @@ class SearchFragment : Fragment() {
     private lateinit var historyRecycler: RecyclerView
     private lateinit var recyclerView: RecyclerView
     private var searchJob: Job? = null
+    private var latestSearchText: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,

@@ -5,13 +5,12 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.playlistmaker.media.data.entity.TrackEntity
-import com.example.playlistmaker.player.domain.Track
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TrackDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertTrack(track: Track)
+    fun insertTrack(track: TrackEntity)
 
     @Query("SELECT * FROM tracks_table")
     fun getTracks(): List<TrackEntity>

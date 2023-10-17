@@ -65,6 +65,17 @@ class PlayerActivity : AppCompatActivity() {
             viewModel.pause()
             updateButton()
         }
+        viewModel.putTime().observe(this) { timer ->
+            binding.trackTimePlayerActivity.text = timer
+            if ((timer != "00:00") and (playerState != PlayerState.STATE_PAUSED)) Log.d(
+                "TrackTimer",
+                timer
+            )
+            if (timer == "00:00") {
+                updateButton()
+            }
+        }
+        buttonChangerJob?.start()!!
         binding.likeButtonPlayerActivity.setOnClickListener {
             GlobalScope.launch {
                 viewModel.onLikeClick(track)
@@ -79,17 +90,6 @@ class PlayerActivity : AppCompatActivity() {
             binding.likeButtonPlayerActivity.visibility = View.VISIBLE
             binding.pressedLikeButtonPlayerActivity.visibility = View.GONE
         }
-        viewModel.putTime().observe(this) { timer ->
-            binding.trackTimePlayerActivity.text = timer
-            if ((timer != "00:00") and (playerState != PlayerState.STATE_PAUSED)) Log.d(
-                "TrackTimer",
-                timer
-            )
-            if (timer == "00:00") {
-                updateButton()
-            }
-        }
-        buttonChangerJob?.start()!!
     }
 
     override fun onPause() {
