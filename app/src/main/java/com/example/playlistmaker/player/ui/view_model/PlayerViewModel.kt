@@ -19,6 +19,8 @@ class PlayerViewModel(
 ) : ViewModel() {
 
     private var timeJob: Job? = null
+    private var likeJob: Job? = null
+    private var likeIndicator = MutableLiveData<Boolean>()
     private var timer = MutableLiveData("00:00")
     fun createPlayer(url: String, completion: () -> Unit) {
         playerInteractor.createPlayer(url, completion)
@@ -54,7 +56,7 @@ class PlayerViewModel(
         return playerInteractor.playerStateGetter()
     }
 
-    suspend fun onLikeClick(track: Track) {
+    fun onLikeClick(track: Track) {
         Log.d("PlayerViewModel", "$track, \"adding to favourites track\"")
         if (track.isFavourite) {
             track.trackId?.let { likeInteractor.favouritesDelete(track) }
@@ -63,6 +65,21 @@ class PlayerViewModel(
                 track
             )
         }
+    }
+
+    fun onLikedCheck(track: Track): LiveData<Boolean> {
+        likeJob = viewModelScope.launch {
+            while (true) {
+                delay(PLAYER_BUTTON_PRESSING_DELAY)
+                track.trackId?.let { id ->
+                    likeInteractor.favouritesCheck(id.toString())
+                        .collect { value ->
+                            likeIndicator.postValue(value)
+                        }
+                }
+            }
+        }
+        return likeIndicator
     }
 
     companion object {

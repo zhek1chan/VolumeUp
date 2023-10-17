@@ -37,7 +37,6 @@ class SearchFragment : Fragment() {
     private lateinit var historyRecycler: RecyclerView
     private lateinit var recyclerView: RecyclerView
     private var searchJob: Job? = null
-    private var latestSearchText: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -72,6 +71,7 @@ class SearchFragment : Fragment() {
         startSearchByEnterPress()
 
         trackAdapter = TrackAdapter {
+            Log.d("trackAdapter", "CHet huita kakayato")
             if (isClickAllowed) {
                 clickAdapting(it)
             }
@@ -81,8 +81,8 @@ class SearchFragment : Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = trackAdapter
 
-        //
         historyAdapter = TrackAdapter {
+            Log.d("historyAdapter", "CHet huita kakayato")
             if (isClickAllowed) {
                 clickAdapting(it)
             }
@@ -133,6 +133,7 @@ class SearchFragment : Fragment() {
     }
 
     private fun clickAdapting(item: Track) {
+        Log.d("SearchFragment", "Click on the track")
         searchViewModel.addItem(item)
         val intent = Intent(requireContext(), PlayerActivity::class.java)
         intent.putExtra("track", item)
@@ -180,7 +181,7 @@ class SearchFragment : Fragment() {
                 } else {
                     makeHistoryLLGone()
                 }
-                if (!binding.inputEditText.text.isEmpty()) {
+                if (binding.inputEditText.text.isNotEmpty()) {
                     searchText = binding.inputEditText.text.toString()
                     searchDebounce()
                 }

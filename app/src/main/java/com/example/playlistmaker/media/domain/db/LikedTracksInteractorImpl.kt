@@ -5,11 +5,11 @@ import kotlinx.coroutines.flow.Flow
 
 class LikedTracksInteractorImpl(private val repository: LikedTracksRepository) :
     LikedTracksInteractor {
-    override suspend fun favouritesAdd(track: Track) {
+    override fun favouritesAdd(track: Track) {
         repository.putLikedTrack(track)
     }
 
-    override suspend fun favouritesDelete(track: Track) {
+    override fun favouritesDelete(track: Track) {
         repository.deleteTrack(track)
     }
 

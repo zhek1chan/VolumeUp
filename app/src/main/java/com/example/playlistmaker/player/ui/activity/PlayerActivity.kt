@@ -12,7 +12,6 @@ import com.example.playlistmaker.player.domain.Track
 import com.example.playlistmaker.player.ui.PlayerState
 import com.example.playlistmaker.player.ui.view_model.PlayerViewModel
 import com.example.playlistmaker.player.ui.view_model.PlayerViewModel.Companion.PLAYER_BUTTON_PRESSING_DELAY
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -42,9 +41,7 @@ class PlayerActivity : AppCompatActivity() {
         )
         if (getImage != "Unknown Cover") {
             getImage.replace("100x100bb.jpg", "512x512bb.jpg")
-            Glide.with(this)
-                .load(getImage)
-                .placeholder(R.drawable.song_cover)
+            Glide.with(this).load(getImage).placeholder(R.drawable.song_cover)
                 .into(binding.albumsCoverPlayerActivity)
         }
         url = track?.previewUrl ?: return
@@ -76,19 +73,22 @@ class PlayerActivity : AppCompatActivity() {
             }
         }
         buttonChangerJob?.start()!!
-        binding.likeButtonPlayerActivity.setOnClickListener {
-            GlobalScope.launch {
-                viewModel.onLikeClick(track)
+        viewModel.onLikedCheck(track).observe(this) { likeIndicator ->
+            if (likeIndicator) {
+                binding.likeButtonPlayerActivity.visibility = View.GONE
+                binding.pressedLikeButtonPlayerActivity.visibility = View.VISIBLE
+                binding.pressedLikeButtonPlayerActivity.setOnClickListener {
+                    viewModel.onLikeClick(track)
+                    binding.likeButtonPlayerActivity.visibility = View.VISIBLE
+                    binding.pressedLikeButtonPlayerActivity.visibility = View.GONE
+                }
+            } else {
+                binding.likeButtonPlayerActivity.setOnClickListener {
+                    viewModel.onLikeClick(track)
+                    binding.likeButtonPlayerActivity.visibility = View.GONE
+                    binding.pressedLikeButtonPlayerActivity.visibility = View.VISIBLE
+                }
             }
-            binding.likeButtonPlayerActivity.visibility = View.GONE
-            binding.pressedLikeButtonPlayerActivity.visibility = View.VISIBLE
-        }
-        binding.pressedLikeButtonPlayerActivity.setOnClickListener {
-            GlobalScope.launch {
-                viewModel.onLikeClick(track)
-            }
-            binding.likeButtonPlayerActivity.visibility = View.VISIBLE
-            binding.pressedLikeButtonPlayerActivity.visibility = View.GONE
         }
     }
 
