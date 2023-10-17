@@ -71,7 +71,6 @@ class SearchFragment : Fragment() {
         startSearchByEnterPress()
 
         trackAdapter = TrackAdapter {
-            Log.d("trackAdapter", "CHet huita kakayato")
             if (isClickAllowed) {
                 clickAdapting(it)
             }
@@ -82,7 +81,6 @@ class SearchFragment : Fragment() {
         recyclerView.adapter = trackAdapter
 
         historyAdapter = TrackAdapter {
-            Log.d("historyAdapter", "CHet huita kakayato")
             if (isClickAllowed) {
                 clickAdapting(it)
             }
