@@ -78,18 +78,17 @@ class PlayerActivity : AppCompatActivity() {
         }
         buttonChangerJob?.start()!!
         viewModel.onLikedCheck(track).observe(this) { likeIndicator ->
-            if (likeIndicator) {
+            if (!likeIndicator) {
+                changeLikeButton(track)
+            } else {
+                track.isFavourite = true
                 binding.likeButtonPlayerActivity.visibility = View.GONE
                 binding.pressedLikeButtonPlayerActivity.visibility = View.VISIBLE
                 binding.pressedLikeButtonPlayerActivity.setOnClickListener {
-                    binding.pressedLikeButtonPlayerActivity.visibility = View.GONE
-                    binding.likeButtonPlayerActivity.visibility = View.VISIBLE
+                    Log.d("Press on dislike", ":)")
                     viewModel.onLikeClick(track)
-                    Log.d("I pressed on dislike", ":)")
                     changeLikeButton(track)
                 }
-            } else {
-                changeLikeButton(track)
             }
         }
     }
@@ -140,8 +139,10 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun changeLikeButton(track: Track) {
+        binding.likeButtonPlayerActivity.visibility = View.VISIBLE
+        binding.pressedLikeButtonPlayerActivity.visibility = View.GONE
         binding.likeButtonPlayerActivity.setOnClickListener {
-            Log.d("I pressed on like", ":)")
+            Log.d("Press on like button", ":)")
             viewModel.onLikeClick(track)
             binding.likeButtonPlayerActivity.visibility = View.GONE
             binding.pressedLikeButtonPlayerActivity.visibility = View.VISIBLE
