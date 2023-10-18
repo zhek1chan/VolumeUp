@@ -31,14 +31,10 @@ class FavouriteTracksViewModel(
 
     private fun processResult(tracks: List<Track>) {
         if (tracks.isEmpty()) {
-            renderState(FavTracksState.Empty(R.string.nothing_in_favourite))
+            stateLiveData.postValue(FavTracksState.Empty(R.string.nothing_in_favourite))
         } else {
-            renderState(FavTracksState.FavTracks(tracks))
+            stateLiveData.postValue(FavTracksState.FavTracks(tracks))
         }
-    }
-
-    private fun renderState(state: FavTracksState) {
-        stateLiveData.postValue(state)
     }
 
     fun addItem(item: Track) {
