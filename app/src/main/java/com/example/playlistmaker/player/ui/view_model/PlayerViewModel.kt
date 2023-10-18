@@ -57,14 +57,10 @@ class PlayerViewModel(
     }
 
     fun onLikeClick(track: Track) {
-        Log.d("Adding track to favourites", "$track, \"adding to favourites track\"")
+        Log.d("Pressed like button with", "$track, \"adding to favourites track\"")
         if (track.isFavourite) {
             track.trackId?.let { likeInteractor.favouritesDelete(track) }
-        } else track.trackId?.let {
-            likeInteractor.favouritesAdd(
-                track
-            )
-        }
+        } else track.trackId?.let { likeInteractor.favouritesAdd(track) }
     }
 
     fun onLikedCheck(track: Track): LiveData<Boolean> {
@@ -72,7 +68,7 @@ class PlayerViewModel(
             while (true) {
                 delay(PLAYER_BUTTON_PRESSING_DELAY)
                 track.trackId?.let { id ->
-                    likeInteractor.favouritesCheck(id.toString())
+                    likeInteractor.favouritesCheck(id)
                         .collect { value ->
                             likeIndicator.postValue(value)
                         }

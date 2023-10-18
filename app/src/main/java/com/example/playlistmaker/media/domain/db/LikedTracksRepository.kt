@@ -11,6 +11,6 @@ interface LikedTracksRepository {
 
     fun deleteTrack(track: Track)
 
-    fun checkOnLike(id: String): Flow<Boolean>
+    fun checkOnLike(id: Long): Flow<Boolean>
 
 }

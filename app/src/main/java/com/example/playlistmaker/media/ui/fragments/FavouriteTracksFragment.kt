@@ -68,7 +68,7 @@ class FavouriteTracksFragment : Fragment() {
     private fun onTrackClickDebounce(item: Track) {
         favouritesViewModel.addItem(item)
         val intent = Intent(requireContext(), PlayerActivity::class.java)
-        intent.putExtra("track", item)
+        intent.putExtra(key, item)
         this.startActivity(intent)
     }
 
@@ -94,6 +94,7 @@ class FavouriteTracksFragment : Fragment() {
     }
 
     companion object {
+        private const val key = "track"
         fun newInstance() = FavouriteTracksFragment()
     }
 }

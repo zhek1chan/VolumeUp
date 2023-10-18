@@ -6,7 +6,7 @@ import com.example.playlistmaker.player.domain.Track
 class TrackDbConvertor {
     fun map(track: Track): TrackEntity {
         return TrackEntity(
-            track.trackId.toString(),
+            track.trackId,
             track.artworkUrl100,
             track.trackName,
             track.artistName,

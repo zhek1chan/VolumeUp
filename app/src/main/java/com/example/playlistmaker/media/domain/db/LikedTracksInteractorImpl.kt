@@ -17,7 +17,7 @@ class LikedTracksInteractorImpl(private val repository: LikedTracksRepository) :
         return repository.getLikedTracks()
     }
 
-    override suspend fun favouritesCheck(id: String): Flow<Boolean> {
+    override suspend fun favouritesCheck(id: Long): Flow<Boolean> {
         return repository.checkOnLike(id)
     }
 }

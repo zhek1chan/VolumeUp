@@ -7,5 +7,5 @@ interface LikedTracksInteractor {
     fun favouritesAdd(track: Track)
     fun favouritesDelete(track: Track)
     suspend fun favouritesGet(): Flow<List<Track>>
-    suspend fun favouritesCheck(id: String): Flow<Boolean>
+    suspend fun favouritesCheck(id: Long): Flow<Boolean>
 }

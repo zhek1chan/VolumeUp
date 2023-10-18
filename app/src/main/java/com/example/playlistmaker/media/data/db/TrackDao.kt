@@ -16,11 +16,11 @@ interface TrackDao {
     fun getTracks(): List<TrackEntity>
 
     @Query("SELECT trackId FROM tracks_table")
-    fun getTracksId(): Flow<List<String>>
+    fun getTracksId(): Flow<List<Integer>>
 
     @Query("DELETE FROM tracks_table WHERE :trackId = TrackId")
-    fun deleteTrack(trackId: String): Integer
+    fun deleteTrack(trackId: Long): Integer
 
     @Query("SELECT * FROM tracks_table WHERE trackId=:searchId")
-    fun queryTrackId(searchId: String): TrackEntity?
+    fun queryTrackId(searchId: Long): TrackEntity?
 }

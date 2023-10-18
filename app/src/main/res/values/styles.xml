@@ -155,7 +155,7 @@
     </style>
 
     <style name="search_clear_icon">
-        <item name="android:tint">@color/black_text</item>
+        <item name="android:tint">@color/icon_color</item>
     </style>
 
     <style name="primary_text">

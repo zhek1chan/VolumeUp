@@ -6,6 +6,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityPlayerBinding
 import com.example.playlistmaker.player.domain.Track
@@ -41,7 +42,10 @@ class PlayerActivity : AppCompatActivity() {
         )
         if (getImage != "Unknown Cover") {
             getImage.replace("100x100bb.jpg", "512x512bb.jpg")
-            Glide.with(this).load(getImage).placeholder(R.drawable.song_cover)
+            Glide.with(this)
+                .load(getImage)
+                .placeholder(R.drawable.song_cover)
+                .transform(RoundedCorners(resources.getDimensionPixelSize(R.dimen.player_album_cover_corner_radius)))
                 .into(binding.albumsCoverPlayerActivity)
         }
         url = track?.previewUrl ?: return
@@ -78,16 +82,14 @@ class PlayerActivity : AppCompatActivity() {
                 binding.likeButtonPlayerActivity.visibility = View.GONE
                 binding.pressedLikeButtonPlayerActivity.visibility = View.VISIBLE
                 binding.pressedLikeButtonPlayerActivity.setOnClickListener {
-                    viewModel.onLikeClick(track)
-                    binding.likeButtonPlayerActivity.visibility = View.VISIBLE
                     binding.pressedLikeButtonPlayerActivity.visibility = View.GONE
+                    binding.likeButtonPlayerActivity.visibility = View.VISIBLE
+                    viewModel.onLikeClick(track)
+                    Log.d("I pressed on dislike", ":)")
+                    changeLikeButton(track)
                 }
             } else {
-                binding.likeButtonPlayerActivity.setOnClickListener {
-                    viewModel.onLikeClick(track)
-                    binding.likeButtonPlayerActivity.visibility = View.GONE
-                    binding.pressedLikeButtonPlayerActivity.visibility = View.VISIBLE
-                }
+                changeLikeButton(track)
             }
         }
     }
@@ -134,6 +136,15 @@ class PlayerActivity : AppCompatActivity() {
         buttonChangerJob = lifecycleScope.launch {
             delay(PLAYER_BUTTON_PRESSING_DELAY)
             playerButtonChanger()
+        }
+    }
+
+    private fun changeLikeButton(track: Track) {
+        binding.likeButtonPlayerActivity.setOnClickListener {
+            Log.d("I pressed on like", ":)")
+            viewModel.onLikeClick(track)
+            binding.likeButtonPlayerActivity.visibility = View.GONE
+            binding.pressedLikeButtonPlayerActivity.visibility = View.VISIBLE
         }
     }
 }

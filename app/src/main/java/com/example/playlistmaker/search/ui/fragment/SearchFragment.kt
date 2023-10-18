@@ -63,12 +63,6 @@ class SearchFragment : Fragment() {
                 }
             }
         }
-        clickDebounceManager()
-        onEditorFocus()
-        onSearchTextChange()
-        onClearIconClick()
-        clearIconVisibilityChanger()
-        startSearchByEnterPress()
 
         trackAdapter = TrackAdapter {
             if (isClickAllowed) {
@@ -76,15 +70,23 @@ class SearchFragment : Fragment() {
             }
         }
 
-        recyclerView = binding.searchResultsRecyclerView
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        recyclerView.adapter = trackAdapter
-
         historyAdapter = TrackAdapter {
             if (isClickAllowed) {
                 clickAdapting(it)
             }
         }
+        isClickAllowed = false
+        clickDebounceManager()
+        onEditorFocus()
+        onSearchTextChange()
+        onClearIconClick()
+        clearIconVisibilityChanger()
+        startSearchByEnterPress()
+
+        recyclerView = binding.searchResultsRecyclerView
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        recyclerView.adapter = trackAdapter
+
 
         historyRecycler.layoutManager = LinearLayoutManager(requireContext())
         historyRecycler.adapter = historyAdapter
@@ -132,9 +134,10 @@ class SearchFragment : Fragment() {
 
     private fun clickAdapting(item: Track) {
         Log.d("SearchFragment", "Click on the track")
+        isClickAllowed = false
         searchViewModel.addItem(item)
         val intent = Intent(requireContext(), PlayerActivity::class.java)
-        intent.putExtra("track", item)
+        intent.putExtra(key, item)
         this.startActivity(intent)
     }
 
@@ -288,6 +291,10 @@ class SearchFragment : Fragment() {
     }
 
     private fun searchWithHistory(historyData: List<Track>) {
+        if (historyData.isEmpty()) {
+            defaultSearch()
+            return
+        }
         binding.clearButton.visibility = View.VISIBLE
         recyclerView.visibility = View.GONE
         binding.nothingFoundPlaceholder.visibility = View.GONE
@@ -310,7 +317,8 @@ class SearchFragment : Fragment() {
 
 
     companion object {
-        const val SEARCH_USER_INPUT = "SEARCH_USER_INPUT"
+        private const val key = "track"
+        private const val SEARCH_USER_INPUT = "SEARCH_USER_INPUT"
         private const val SEARCH_DEBOUNCE_DELAY_MILLIS = 2000L
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
