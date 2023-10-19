@@ -35,4 +35,6 @@
     <string name="no_playlists_there">Вы не создали \n ни одного плейлиста</string>
     <string name="new_playlist">Новый плейлист</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="nothing_in_favourite">Ваша медиатека пуста</string>
+
 </resources>

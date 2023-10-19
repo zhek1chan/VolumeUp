@@ -10,23 +10,23 @@ class TrackAdapter(
     private val clickListener: TrackClick
 ) : RecyclerView.Adapter<TrackViewHolder>() {
 
-    private var _items: List<Track> = emptyList()
+    private var items: List<Track> = emptyList()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
         val layoutInspector = LayoutInflater.from(parent.context)
         return TrackViewHolder(SearchResultItemBinding.inflate(layoutInspector, parent, false))
     }
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
-        holder.bind(_items[position])
+        holder.bind(items[position])
         holder.itemView.setOnClickListener {
-            clickListener.onClick(_items[position])
+            clickListener.onClick(items[position])
             notifyDataSetChanged()
         }
 
     }
 
     override fun getItemCount(): Int {
-        return _items.size
+        return items.size
     }
 
     fun interface TrackClick {
@@ -34,7 +34,7 @@ class TrackAdapter(
     }
 
     fun setItems(items: List<Track>) {
-        _items = items
+        this.items = items
         notifyDataSetChanged()
     }
 }

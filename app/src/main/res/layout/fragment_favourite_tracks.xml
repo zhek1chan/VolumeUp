@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <ImageView
         app:layout_constraintStart_toStartOf="parent"
@@ -12,18 +13,30 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="106dp"
-        android:src="@drawable/nothing_found" />
+        android:src="@drawable/nothing_found"
+        android:visibility="gone" />
 
     <TextView
+        android:id="@+id/placeholderMessage"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/emptyLibrary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="@string/nothing_found"
+        android:text="@string/nothing_in_favourite"
         android:fontFamily="@font/ys_display_medium"
         android:textColor="?attr/colorOnSecondary"
-        android:textSize="19sp" />
+        android:textSize="19sp"
+        android:visibility="gone" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/favouriteTracksRV"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        tools:listitem="@layout/search_result_item"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

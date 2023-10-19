@@ -25,4 +25,6 @@
     <dimen name="search_screen_arrow_margin_end">12dp</dimen>
     <dimen name="search_element_height">61dp</dimen>
     <dimen name="album_cover_corner_radius">2dp</dimen>
+    <dimen name="player_album_cover_corner_radius">8dp</dimen>
+
 </resources>
