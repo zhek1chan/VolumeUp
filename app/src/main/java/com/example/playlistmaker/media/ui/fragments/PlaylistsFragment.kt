@@ -1,14 +1,17 @@
 package com.example.playlistmaker.media.ui.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
-import com.example.playlistmaker.media.data.Album
-import com.example.playlistmaker.media.data.AlbumsAdapter
+import com.example.playlistmaker.media.data.Playlist
+import com.example.playlistmaker.media.data.PlaylistsAdapter
 import com.example.playlistmaker.media.ui.viewmodel.PlaylistsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -23,14 +26,16 @@ class PlaylistsFragment : Fragment() {
     ): View {
         binding = FragmentPlaylistsBinding.inflate(inflater, container, false)
         return binding.root
-        TODO("NUZHNO DOBAVIT' OBRABOTKU SPISKA ALBOMOV")
-        val albums = listOf(
-            Album("В Хомяковилле запущена новая станция метро", "Сегодня ", "4"),
-            Album("Хомяки вышли на ежегодный марш в поддержку трудящихся", "Ежегодно", "4"),
-            Album("В Хомёбино ночью была драка с участием местных банд", "В ночь ", "4"),
-            Album("Учёные лаборатории по изучению людей сделали открытие.", "В мышления людей", "4")
-        )
-        if (albums.isEmpty()) {
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.newPlaylist.setOnClickListener {
+            Log.d("NewPlaylist", "tap tap")
+            findNavController().navigate(R.id.createPlaylistFragment)
+        }
+        val playlists = emptyList<Playlist>()
+        if (playlists.isEmpty()) {
             binding.emptyLibrary.visibility = View.VISIBLE
             binding.placeholderMessage.visibility = View.VISIBLE
             binding.recyclerView.visibility = View.GONE
@@ -41,7 +46,7 @@ class PlaylistsFragment : Fragment() {
             requireContext(), /*Количество столбцов*/
             2
         ) //ориентация по умолчанию — вертикальная
-        recyclerView.adapter = AlbumsAdapter(albums + albums + albums)
+        recyclerView.adapter = PlaylistsAdapter(playlists + playlists + playlists)
     }
 
     companion object {

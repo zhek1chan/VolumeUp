@@ -16,4 +16,8 @@
         android:id="@+id/mediaFragment"
         android:name="com.example.playlistmaker.media.ui.fragments.MediaFragment"
         android:label="MediaFragment" />
+    <fragment
+        android:id="@+id/createPlaylistFragment"
+        android:name="com.example.playlistmaker.media.ui.fragments.CreatingPlaylistFragment"
+        android:label="CreatingPlaylistFragment" />
 </navigation>
