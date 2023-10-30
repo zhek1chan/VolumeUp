@@ -181,4 +181,15 @@
     <style name="MyCustomTextAppearance" parent="TextAppearance.Design.Tab">
         <item name="textAllCaps">false</item>
     </style>
+
+    <style name="playlist_edit_text">
+        <item name="android:background">@drawable/place_to_write_something_album</item>
+        <item name="android:layout_width">328dp</item>
+        <item name="android:layout_height">56dp</item>
+        <item name="android:drawableTint">@color/icon_color</item>
+        <item name="android:textColorHint">@color/icon_color</item>
+        <item name="android:textColor">@color/black_text</item>
+        <item name="android:paddingStart">15dp</item>
+        <item name="android:textSize">16sp</item>
+    </style>
 </resources>

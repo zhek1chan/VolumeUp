@@ -36,5 +36,9 @@
     <string name="new_playlist">Новый плейлист</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="nothing_in_favourite">Ваша медиатека пуста</string>
+    <string name="create">Создать</string>
+    <string name="Naming">Название*</string>
+    <string name="defenition">Описание</string>
+    <string name="new_playlist_header">Новый плейлист</string>
 
 </resources>
