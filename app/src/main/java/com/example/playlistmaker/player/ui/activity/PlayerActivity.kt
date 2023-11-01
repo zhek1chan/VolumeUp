@@ -5,14 +5,21 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityPlayerBinding
+import com.example.playlistmaker.media.data.Playlist
+import com.example.playlistmaker.media.data.PlaylistsAdapter
+import com.example.playlistmaker.media.data.PlaylistsState
 import com.example.playlistmaker.player.domain.Track
 import com.example.playlistmaker.player.ui.PlayerState
 import com.example.playlistmaker.player.ui.view_model.PlayerViewModel
 import com.example.playlistmaker.player.ui.view_model.PlayerViewModel.Companion.PLAYER_BUTTON_PRESSING_DELAY
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -24,6 +31,8 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPlayerBinding
     private var url: String = ""
     private var buttonChangerJob: Job? = null
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: PlaylistsAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPlayerBinding.inflate(layoutInflater)
@@ -77,6 +86,46 @@ class PlayerActivity : AppCompatActivity() {
             }
         }
         buttonChangerJob?.start()!!
+
+        val bottomSheetContainer = binding.playlistsBottomSheet
+
+        //  BottomSheetBehavior.from() — вспомогательная функция, позволяющая получить объект BottomSheetBehavior, связанный с контейнером BottomSheet
+        val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer).apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
+        }
+
+        binding.plusButtonPlayerActivity.setOnClickListener {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        }
+        binding.newPlaylist.setOnClickListener {
+            Log.d("NewPlaylist", "tap tap")
+            findNavController(R.id.root_navigation_graph).navigate(R.id.createPlaylistFragment)
+        }
+        recyclerView = binding.recyclerView
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        viewModel.loadPlaylists()
+        viewModel.observeState().observe(this) {
+            render(it)
+        }
+
+        bottomSheetBehavior.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                // newState — новое состояние BottomSheet
+                when (newState) {
+                    BottomSheetBehavior.STATE_EXPANDED -> {
+                        // загружаем рекламный баннер
+                        recyclerView.visibility = View.VISIBLE
+                    }
+
+                    else -> {
+                        // Остальные состояния не обрабатываем
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+        })
         viewModel.onLikedCheck(track).observe(this) { likeIndicator ->
             if (!likeIndicator) {
                 changeLikeButton(track)
@@ -147,6 +196,23 @@ class PlayerActivity : AppCompatActivity() {
             binding.likeButtonPlayerActivity.visibility = View.GONE
             binding.pressedLikeButtonPlayerActivity.visibility = View.VISIBLE
         }
+    }
+
+    private fun render(state: PlaylistsState) {
+        when (state) {
+            is PlaylistsState.Playlists -> showContent(state.playlist)
+            is PlaylistsState.Empty -> showEmpty()
+        }
+    }
+
+    private fun showContent(playlist: List<Playlist>) {
+
+        recyclerView.adapter = PlaylistsAdapter(playlist)
+        recyclerView.adapter?.notifyDataSetChanged()
+    }
+
+    private fun showEmpty() {
+        binding.recyclerView.visibility = View.GONE
     }
 }
 

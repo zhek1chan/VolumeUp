@@ -8,16 +8,19 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.example.playlistmaker.media.data.Playlist
 import com.example.playlistmaker.media.data.PlaylistsAdapter
+import com.example.playlistmaker.media.data.PlaylistsState
 import com.example.playlistmaker.media.ui.viewmodel.PlaylistsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistsFragment : Fragment() {
-    private val favouritesViewModel by viewModel<PlaylistsViewModel>()
+    private val viewModel by viewModel<PlaylistsViewModel>()
     private lateinit var binding: FragmentPlaylistsBinding
+    private lateinit var recyclerView: RecyclerView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,19 +37,47 @@ class PlaylistsFragment : Fragment() {
             Log.d("NewPlaylist", "tap tap")
             findNavController().navigate(R.id.createPlaylistFragment)
         }
-        val playlists = emptyList<Playlist>()
-        if (playlists.isEmpty()) {
-            binding.emptyLibrary.visibility = View.VISIBLE
-            binding.placeholderMessage.visibility = View.VISIBLE
-            binding.recyclerView.visibility = View.GONE
-        }
-        val recyclerView = binding.recyclerView
 
+        viewModel.fillData()
+        recyclerView = binding.recyclerView
         recyclerView.layoutManager = GridLayoutManager(
             requireContext(), /*Количество столбцов*/
             2
         ) //ориентация по умолчанию — вертикальная
-        recyclerView.adapter = PlaylistsAdapter(playlists + playlists + playlists)
+        viewModel.observeState().observe(viewLifecycleOwner) {
+            render(it)
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        recyclerView.adapter = null
+    }
+
+    /*private fun onPlaylistClickDebounce(item: PlaylistEntity) {
+        val intent = Intent(requireContext(), PlayerActivity::class.java)
+        intent.putExtra(FavouriteTracksFragment.key, item)
+        this.startActivity(intent)
+    }*/
+    private fun render(state: PlaylistsState) {
+        when (state) {
+            is PlaylistsState.Playlists -> showContent(state.playlist)
+            is PlaylistsState.Empty -> showEmpty()
+        }
+    }
+
+    private fun showContent(playlist: List<Playlist>) {
+        binding.emptyLibrary.visibility = View.GONE
+        binding.placeholderMessage.visibility = View.GONE
+        binding.recyclerView.visibility = View.VISIBLE
+        recyclerView.adapter = PlaylistsAdapter(playlist)
+        recyclerView.adapter?.notifyDataSetChanged()
+    }
+
+    private fun showEmpty() {
+        binding.emptyLibrary.visibility = View.VISIBLE
+        binding.placeholderMessage.visibility = View.VISIBLE
+        binding.recyclerView.visibility = View.GONE
     }
 
     companion object {

@@ -40,5 +40,6 @@
     <string name="Naming">Название*</string>
     <string name="defenition">Описание</string>
     <string name="new_playlist_header">Новый плейлист</string>
+    <string name="add_to_playlist">Добавить в плейлист</string>
 
 </resources>
