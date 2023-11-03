@@ -14,6 +14,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityPlayerBinding
 import com.example.playlistmaker.media.data.Playlist
 import com.example.playlistmaker.media.data.PlaylistsAdapter
+import com.example.playlistmaker.media.data.PlaylistsBottomAdapter
 import com.example.playlistmaker.media.data.PlaylistsState
 import com.example.playlistmaker.player.domain.Track
 import com.example.playlistmaker.player.ui.PlayerState
@@ -207,7 +208,7 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun showContent(playlist: List<Playlist>) {
 
-        recyclerView.adapter = PlaylistsAdapter(playlist)
+        recyclerView.adapter = PlaylistsBottomAdapter(playlist)
         recyclerView.adapter?.notifyDataSetChanged()
     }
 

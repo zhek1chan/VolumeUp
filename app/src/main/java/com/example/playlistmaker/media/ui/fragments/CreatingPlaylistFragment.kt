@@ -17,12 +17,16 @@ import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
+import com.example.playlistmaker.databinding.CreatingAlbumAlertBinding
 import com.example.playlistmaker.databinding.FragmentPlaylistCreatingBinding
 import com.example.playlistmaker.media.data.Playlist
 import com.example.playlistmaker.media.ui.viewmodel.CreatingPlaylistViewModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.io.FileOutputStream
+
 
 class CreatingPlaylistFragment : Fragment() {
     private lateinit var binding: FragmentPlaylistCreatingBinding
@@ -42,7 +46,13 @@ class CreatingPlaylistFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.backIcon.setOnClickListener {
-            findNavController().navigateUp()
+            MaterialAlertDialogBuilder(requireContext()).setTitle(getString(R.string.exit_question))
+                .setMessage(getString(R.string.all_data_would_be_lost))
+                .setPositiveButton(getString(R.string.cancel)) { dialog, which ->
+                    dialog.cancel()
+                }.setNegativeButton(getString(R.string.finish)) { dialog, which ->
+                    findNavController().navigateUp()
+                }.show()
         }
 
         onNameTextChange()
@@ -50,6 +60,14 @@ class CreatingPlaylistFragment : Fragment() {
 
         binding.createPlaylist.setOnClickListener {
             viewModel.onCreateClick(playlist)
+            val customSnackBar = Snackbar.make(binding.snackBar, "", 2000)
+            val layout = customSnackBar.view as Snackbar.SnackbarLayout
+            val bind: CreatingAlbumAlertBinding = CreatingAlbumAlertBinding.inflate(layoutInflater)
+            bind.text.setText("Плейлист $nameText создан")
+            layout.setPadding(0, 0, 0, 0)
+            layout.addView(bind.root, 0)
+            customSnackBar.show()
+            findNavController().navigateUp()
         }
         val pickMedia =
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
