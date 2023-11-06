@@ -19,7 +19,6 @@ class TrackInPlaylistConvertor {
             track.isFavourite
         )
     }
-
     fun map(track: Track): TrackInsidePlaylistEntity {
         return TrackInsidePlaylistEntity(
             track.trackId,

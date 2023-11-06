@@ -1,5 +1,6 @@
 package com.example.playlistmaker.media.ui.fragments
 
+import android.app.AlertDialog
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -11,6 +12,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
@@ -46,13 +48,18 @@ class CreatingPlaylistFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.backIcon.setOnClickListener {
-            MaterialAlertDialogBuilder(requireContext()).setTitle(getString(R.string.exit_question))
+            var dialog = MaterialAlertDialogBuilder(requireContext(), R.style.DialogStyle)
+                .setTitle(getString(R.string.exit_question))
                 .setMessage(getString(R.string.all_data_would_be_lost))
                 .setPositiveButton(getString(R.string.cancel)) { dialog, which ->
                     dialog.cancel()
                 }.setNegativeButton(getString(R.string.finish)) { dialog, which ->
                     findNavController().navigateUp()
                 }.show()
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                .setTextColor(com.google.android.material.R.attr.colorOnPrimary)
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                .setTextColor(com.google.android.material.R.attr.colorOnPrimary)
         }
 
         onNameTextChange()
@@ -83,12 +90,14 @@ class CreatingPlaylistFragment : Fragment() {
         //по нажатию на кнопку pickImage запускаем photo picker
         binding.albumCoverage.setOnClickListener {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+
             val filePath = File(
                 requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
                 "myalbum"
             )
             val file = File(filePath, "first_cover.jpg")
             binding.albumCoverage.setImageURI(file.toUri())
+            binding.albumCoverage.setScaleType(ImageView.ScaleType.CENTER_CROP)
             binding.albumCoverageAdd.visibility = View.GONE
         }
         binding.albumCoverageAdd.setOnClickListener {
@@ -99,6 +108,7 @@ class CreatingPlaylistFragment : Fragment() {
             )
             val file = File(filePath, "first_cover.jpg")
             binding.albumCoverage.setImageURI(file.toUri())
+            binding.albumCoverage.setScaleType(ImageView.ScaleType.CENTER_CROP)
             binding.albumCoverageAdd.visibility = View.GONE
         }
     }

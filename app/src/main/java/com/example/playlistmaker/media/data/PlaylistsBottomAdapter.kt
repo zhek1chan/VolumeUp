@@ -28,7 +28,6 @@ class PlaylistsBottomAdapter(
             notifyDataSetChanged()
         }
     }
-
     fun interface PlaylistClick {
         fun onClick(playlist: Playlist)
     }

@@ -24,6 +24,7 @@ class PlaylistsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             .centerCrop()
             .transform(RoundedCorners(cornerPixelSize))
             .into(pic)
+        pic.setScaleType(ImageView.ScaleType.CENTER_CROP)
         name.text = albums.name
         num.text = albums.num.toString()
     }

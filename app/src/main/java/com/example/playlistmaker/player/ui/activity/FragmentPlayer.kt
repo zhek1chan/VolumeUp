@@ -44,7 +44,6 @@ class FragmentPlayer : Fragment() {
         binding = FragmentPlayerBinding.inflate(inflater, container, false)
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         track = arguments?.getParcelable<Track>("track")!!
@@ -233,7 +232,6 @@ class FragmentPlayer : Fragment() {
     private fun showEmpty() {
         binding.recyclerView.visibility = View.GONE
     }
-
     private fun playlistClickAdapting(track: Track, playlist: Playlist) {
         viewModel.addTrackToPlaylist(track, playlist)
     }
