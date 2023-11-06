@@ -2,43 +2,52 @@ package com.example.playlistmaker.player.ui.activity
 
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
-import androidx.appcompat.app.AppCompatActivity
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.ActivityPlayerBinding
+import com.example.playlistmaker.databinding.FragmentPlayerBinding
 import com.example.playlistmaker.media.data.Playlist
-import com.example.playlistmaker.media.data.PlaylistsAdapter
 import com.example.playlistmaker.media.data.PlaylistsBottomAdapter
 import com.example.playlistmaker.media.data.PlaylistsState
 import com.example.playlistmaker.player.domain.Track
 import com.example.playlistmaker.player.ui.PlayerState
-import com.example.playlistmaker.player.ui.view_model.PlayerViewModel
-import com.example.playlistmaker.player.ui.view_model.PlayerViewModel.Companion.PLAYER_BUTTON_PRESSING_DELAY
+import com.example.playlistmaker.player.ui.view_model.FragmentPlayerViewModel
+import com.example.playlistmaker.player.ui.view_model.FragmentPlayerViewModel.Companion.PLAYER_BUTTON_PRESSING_DELAY
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class PlayerActivity : AppCompatActivity() {
+class FragmentPlayer : Fragment() {
     private lateinit var playerState: PlayerState
-    private val viewModel by viewModel<PlayerViewModel>()
-    private lateinit var binding: ActivityPlayerBinding
+    private val viewModel by viewModel<FragmentPlayerViewModel>()
+    private lateinit var binding: FragmentPlayerBinding
     private var url: String = ""
     private var buttonChangerJob: Job? = null
     private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: PlaylistsAdapter
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityPlayerBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        val track = intent.getParcelableExtra<Track>("track")
+    private lateinit var track: Track
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentPlayerBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        track = arguments?.getParcelable<Track>("track")!!
         binding.songNamePlayerActivity.text = track?.trackName ?: "Unknown Track"
         binding.bandNamePlayerActivity.text = track?.artistName ?: "Unknown Artist"
         binding.durationTrackValuePlayerActivity.text = track?.trackTimeMillis ?: "00:00"
@@ -65,7 +74,7 @@ class PlayerActivity : AppCompatActivity() {
         }
 
         binding.backButtonPlayerActivity.setOnClickListener {
-            finish()
+            findNavController().navigateUp()
         }
         updateButton()
         binding.playButtonPlayerActivity.setOnClickListener {
@@ -76,7 +85,7 @@ class PlayerActivity : AppCompatActivity() {
             viewModel.pause()
             updateButton()
         }
-        viewModel.putTime().observe(this) { timer ->
+        viewModel.putTime().observe(requireActivity()) { timer ->
             binding.trackTimePlayerActivity.text = timer
             if ((timer != "00:00") and (playerState != PlayerState.STATE_PAUSED)) Log.d(
                 "TrackTimer",
@@ -100,34 +109,9 @@ class PlayerActivity : AppCompatActivity() {
         }
         binding.newPlaylist.setOnClickListener {
             Log.d("NewPlaylist", "tap tap")
-            findNavController(R.id.root_navigation_graph).navigate(R.id.createPlaylistFragment)
+            findNavController().navigate(R.id.createPlaylistFragment)
         }
-        recyclerView = binding.recyclerView
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        viewModel.loadPlaylists()
-        viewModel.observeState().observe(this) {
-            render(it)
-        }
-
-        bottomSheetBehavior.addBottomSheetCallback(object :
-            BottomSheetBehavior.BottomSheetCallback() {
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                // newState — новое состояние BottomSheet
-                when (newState) {
-                    BottomSheetBehavior.STATE_EXPANDED -> {
-                        // загружаем рекламный баннер
-                        recyclerView.visibility = View.VISIBLE
-                    }
-
-                    else -> {
-                        // Остальные состояния не обрабатываем
-                    }
-                }
-            }
-
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
-        })
-        viewModel.onLikedCheck(track).observe(this) { likeIndicator ->
+        viewModel.onLikedCheck(track).observe(requireActivity()) { likeIndicator ->
             if (!likeIndicator) {
                 changeLikeButton(track)
             } else {
@@ -141,6 +125,33 @@ class PlayerActivity : AppCompatActivity() {
                 }
             }
         }
+        recyclerView = binding.recyclerView
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        viewModel.loadPlaylists()
+        viewModel.observeState().observe(requireActivity()) {
+            render(track, it)
+        }
+
+
+        bottomSheetBehavior.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                // newState — новое состояние BottomSheet
+                when (newState) {
+                    BottomSheetBehavior.STATE_EXPANDED -> {
+                        // загружаем
+                        recyclerView.visibility = View.VISIBLE
+
+                    }
+
+                    else -> {
+                        // Остальные состояния не обрабатываем
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+        })
     }
 
     override fun onPause() {
@@ -189,31 +200,42 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun changeLikeButton(track: Track) {
+        track.isFavourite = false
         binding.likeButtonPlayerActivity.visibility = View.VISIBLE
         binding.pressedLikeButtonPlayerActivity.visibility = View.GONE
         binding.likeButtonPlayerActivity.setOnClickListener {
             Log.d("Press on like button", ":)")
             viewModel.onLikeClick(track)
+            track.isFavourite = true
             binding.likeButtonPlayerActivity.visibility = View.GONE
             binding.pressedLikeButtonPlayerActivity.visibility = View.VISIBLE
         }
     }
 
-    private fun render(state: PlaylistsState) {
+    private fun render(track: Track, state: PlaylistsState) {
         when (state) {
-            is PlaylistsState.Playlists -> showContent(state.playlist)
-            is PlaylistsState.Empty -> showEmpty()
+            is PlaylistsState.Playlists ->
+                showContent(track, state.playlist)
+
+            is PlaylistsState.Empty ->
+                showEmpty()
         }
     }
 
-    private fun showContent(playlist: List<Playlist>) {
-
-        recyclerView.adapter = PlaylistsBottomAdapter(playlist)
+    private fun showContent(track: Track, playlist: List<Playlist>) {
+        recyclerView.adapter = PlaylistsBottomAdapter(playlist) {
+            Log.d("ClickAdapting", "Launched")
+            playlistClickAdapting(track, it)
+        }
         recyclerView.adapter?.notifyDataSetChanged()
     }
 
     private fun showEmpty() {
         binding.recyclerView.visibility = View.GONE
+    }
+
+    private fun playlistClickAdapting(track: Track, playlist: Playlist) {
+        viewModel.addTrackToPlaylist(track, playlist)
     }
 }
 

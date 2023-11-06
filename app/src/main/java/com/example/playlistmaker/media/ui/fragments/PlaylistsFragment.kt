@@ -54,11 +54,6 @@ class PlaylistsFragment : Fragment() {
         recyclerView.adapter = null
     }
 
-    /*private fun onPlaylistClickDebounce(item: PlaylistEntity) {
-        val intent = Intent(requireContext(), PlayerActivity::class.java)
-        intent.putExtra(FavouriteTracksFragment.key, item)
-        this.startActivity(intent)
-    }*/
     private fun render(state: PlaylistsState) {
         when (state) {
             is PlaylistsState.Playlists -> showContent(state.playlist)

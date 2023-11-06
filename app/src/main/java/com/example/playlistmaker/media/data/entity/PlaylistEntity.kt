@@ -10,6 +10,6 @@ data class PlaylistEntity(
     val name: String,
     val description: String,
     val artworkUrl100: String,
-    val tracksId: Long,
+    val trackId: Long,
     val num: Long
 )

@@ -6,7 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import com.example.playlistmaker.media.data.entity.PlaylistEntity
-import com.example.playlistmaker.media.data.entity.TrackEntity
+import com.example.playlistmaker.media.data.entity.TrackInsidePlaylistEntity
 import com.example.playlistmaker.media.data.entity.TracksInPlaylistEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -27,36 +27,39 @@ interface PlaylistDao {
     @Query("SELECT * FROM playlists_table WHERE :searchId = PlaylistId")
     fun queryPlaylistId(searchId: Long): PlaylistEntity?
 
-    @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun addingTrack(tracksInPlaylist: TracksInPlaylistEntity)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun addingTrack(tracksInPlaylist: TracksInPlaylistEntity)
+
+    @Insert(entity = TrackInsidePlaylistEntity::class, onConflict = OnConflictStrategy.REPLACE)
+    fun insertTrack(track: TrackInsidePlaylistEntity)
 
     @Query("UPDATE playlists_table SET num = num + 1 WHERE playlistId = :playlistId")
-    suspend fun updateQuantity(playlistId: String)
+    fun updateQuantity(playlistId: Long): Int?
 
     //отображение всех треков в плейлисте
     @Transaction
     @Query(
         """
-        SELECT * FROM playlists_table
-        JOIN TracksInPlaylist ON playlists_table.tracksId = TracksInPlaylist.tracksId
-        WHERE TracksInPlaylist.playlistId = :playlistId
+        SELECT * FROM track_in_playlist_table
+        JOIN TracksInPlaylist ON track_in_playlist_table.trackId = TracksInPlaylist.trackId
+        WHERE TracksInPlaylist.playlistId = :playlistId;
         """
     )
-    fun getTracksFromPlaylist(playlistId: String): Flow<List<TrackEntity>>
+    fun getTracksFromPlaylist(playlistId: Long): Flow<List<TrackInsidePlaylistEntity>>
 
 
-    @Query("SELECT EXISTS (SELECT * FROM TracksInPlaylist WHERE playlistId = :playlistId AND tracksId = :trackId)")
-    suspend fun checkIfTrackIsInPlaylist(playlistId: String, trackId: Long): Boolean
+    @Query("SELECT EXISTS (SELECT * FROM TracksInPlaylist WHERE playlistId = :playlistId AND trackId = :trackId)")
+    fun checkIfTrackIsInPlaylist(playlistId: Long, trackId: Long): Boolean
 
     @Transaction
-    suspend fun addTrackToPlaylist(tInP: TracksInPlaylistEntity): Boolean {
+    fun addTrackToPlaylist(tInP: TracksInPlaylistEntity): Boolean {
         //проверка на добавление трека до текущего момента
         return if (!checkIfTrackIsInPlaylist(
                 tInP.playlistId,
-                tInP.tracksId
+                tInP.trackId
             )
         ) {
-            updateQuantity(tInP.playlistId.toString())
+            updateQuantity(tInP.playlistId)
             addingTrack(tInP)
             true
         } else {

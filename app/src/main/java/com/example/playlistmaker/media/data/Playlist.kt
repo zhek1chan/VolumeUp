@@ -5,6 +5,6 @@ data class Playlist(
     var name: String,
     var description: String,
     var artworkUrl100: String,
-    var tracksId: Long,
+    var trackId: Long,
     var num: Long
 )

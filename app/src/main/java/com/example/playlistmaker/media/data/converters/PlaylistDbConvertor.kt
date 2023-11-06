@@ -10,7 +10,7 @@ class PlaylistDbConvertor {
             pl.name,
             pl.description,
             pl.artworkUrl100,
-            pl.tracksId,
+            pl.trackId,
             pl.num
         )
     }
@@ -21,7 +21,7 @@ class PlaylistDbConvertor {
             pl.name,
             pl.description,
             pl.artworkUrl100,
-            pl.tracksId,
+            pl.trackId,
             pl.num
         )
     }

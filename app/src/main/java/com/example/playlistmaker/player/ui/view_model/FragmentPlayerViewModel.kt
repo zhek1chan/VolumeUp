@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.R
 import com.example.playlistmaker.media.data.Playlist
 import com.example.playlistmaker.media.data.PlaylistsState
+import com.example.playlistmaker.media.data.entity.TracksInPlaylistEntity
 import com.example.playlistmaker.media.domain.db.LikedTracksInteractor
 import com.example.playlistmaker.media.domain.db.PlaylistsInteractor
 import com.example.playlistmaker.player.domain.PlayerInteractor
@@ -17,7 +18,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class PlayerViewModel(
+class FragmentPlayerViewModel(
     private val playerInteractor: PlayerInteractor,
     private val likeInteractor: LikedTracksInteractor,
     private val playlistsInteractor: PlaylistsInteractor
@@ -109,6 +110,14 @@ class PlayerViewModel(
         } else {
             stateLiveData.postValue(PlaylistsState.Playlists(playlists))
         }
+    }
+
+    fun addTrackToPlaylist(track: Track, playlist: Playlist) {
+        Log.d("Viewm", "Click on adding to album")
+        val playlistEnt = TracksInPlaylistEntity(playlist.playlistId, track.trackId)
+        playlistsInteractor.insertTrack(track)
+        Log.d("Viewm", "Inserting track")
+        playlistsInteractor.putTrack(playlistEnt)
     }
 
     companion object {
