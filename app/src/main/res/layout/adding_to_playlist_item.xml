@@ -13,7 +13,7 @@
         android:id="@+id/emptyList"
         android:layout_width="45dp"
         android:layout_height="45dp"
-        android:src="@drawable/song_cover"
+        android:src="@drawable/placeholder_rounded_corners"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="13dp" />

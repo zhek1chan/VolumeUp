@@ -13,7 +13,7 @@ import androidx.room.ForeignKey
         onDelete = ForeignKey.CASCADE
     ),
         ForeignKey(
-            entity = TrackEntity::class,
+            entity = TrackInsidePlaylistEntity::class,
             parentColumns = ["trackId"],
             childColumns = ["trackId"],
             onDelete = ForeignKey.CASCADE

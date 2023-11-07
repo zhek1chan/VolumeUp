@@ -96,9 +96,9 @@ class FragmentPlayer : Fragment() {
         }
         buttonChangerJob?.start()!!
 
+
         val bottomSheetContainer = binding.playlistsBottomSheet
 
-        //  BottomSheetBehavior.from() — вспомогательная функция, позволяющая получить объект BottomSheetBehavior, связанный с контейнером BottomSheet
         val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer).apply {
             state = BottomSheetBehavior.STATE_HIDDEN
         }
@@ -113,6 +113,7 @@ class FragmentPlayer : Fragment() {
         viewModel.onLikedCheck(track).observe(requireActivity()) { likeIndicator ->
             if (!likeIndicator) {
                 changeLikeButton(track)
+                track.isFavourite = false
             } else {
                 track.isFavourite = true
                 binding.likeButtonPlayerActivity.visibility = View.GONE
@@ -124,13 +125,14 @@ class FragmentPlayer : Fragment() {
                 }
             }
         }
+
+
         recyclerView = binding.recyclerView
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         viewModel.loadPlaylists()
         viewModel.observeState().observe(requireActivity()) {
             render(track, it)
         }
-
 
         bottomSheetBehavior.addBottomSheetCallback(object :
             BottomSheetBehavior.BottomSheetCallback() {

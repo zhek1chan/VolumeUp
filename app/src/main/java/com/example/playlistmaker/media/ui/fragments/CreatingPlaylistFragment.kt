@@ -18,6 +18,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.CreatingAlbumAlertBinding
 import com.example.playlistmaker.databinding.FragmentPlaylistCreatingBinding
@@ -96,8 +99,14 @@ class CreatingPlaylistFragment : Fragment() {
                 "myalbum"
             )
             val file = File(filePath, "first_cover.jpg")
-            binding.albumCoverage.setImageURI(file.toUri())
-            binding.albumCoverage.setScaleType(ImageView.ScaleType.CENTER_CROP)
+            val pic: ImageView = binding.albumCoverage
+            Glide.with(binding.albumCoverage)
+                .load(file.toUri())
+                .transform(
+                    CenterCrop(),
+                    RoundedCorners(resources.getDimensionPixelSize(R.dimen.player_album_cover_corner_radius))
+                )
+                .into(pic)
             binding.albumCoverageAdd.visibility = View.GONE
         }
         binding.albumCoverageAdd.setOnClickListener {
