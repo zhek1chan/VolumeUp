@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
+import com.example.playlistmaker.databinding.CreatingAlbumAlertBinding
 import com.example.playlistmaker.databinding.FragmentPlayerBinding
 import com.example.playlistmaker.media.data.Playlist
 import com.example.playlistmaker.media.data.PlaylistsBottomAdapter
@@ -22,6 +23,7 @@ import com.example.playlistmaker.player.ui.PlayerState
 import com.example.playlistmaker.player.ui.view_model.FragmentPlayerViewModel
 import com.example.playlistmaker.player.ui.view_model.FragmentPlayerViewModel.Companion.PLAYER_BUTTON_PRESSING_DELAY
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -236,6 +238,13 @@ class FragmentPlayer : Fragment() {
     }
     private fun playlistClickAdapting(track: Track, playlist: Playlist) {
         viewModel.addTrackToPlaylist(track, playlist)
+        val customSnackBar = Snackbar.make(binding.snackBar, "", 3000)
+        val layout = customSnackBar.view as Snackbar.SnackbarLayout
+        val bind: CreatingAlbumAlertBinding = CreatingAlbumAlertBinding.inflate(layoutInflater)
+        bind.text.setText("Трек '${track.trackName}' добавлен в плейлист '${playlist.name}'")
+        layout.setPadding(0, 0, 0, 0)
+        layout.addView(bind.root, 0)
+        customSnackBar.show()
     }
 }
 
