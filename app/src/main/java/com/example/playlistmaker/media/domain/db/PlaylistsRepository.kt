@@ -23,4 +23,5 @@ interface PlaylistsRepository {
     fun insertTrack(track: Track)
 
     fun savePic(uri: Uri, activity: Activity)
+    fun checkIfAlreadyInPlaylist(track: Track, playlist: Playlist): Boolean
 }

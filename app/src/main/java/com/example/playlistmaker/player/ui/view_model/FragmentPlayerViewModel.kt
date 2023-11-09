@@ -112,12 +112,18 @@ class FragmentPlayerViewModel(
         }
     }
 
-    fun addTrackToPlaylist(track: Track, playlist: Playlist) {
-        Log.d("Viewm", "Click on adding to album")
-        val playlistEnt = TracksInPlaylistEntity(playlist.playlistId, track.trackId)
-        playlistsInteractor.insertTrack(track)
-        Log.d("Viewm", "Inserting track")
-        playlistsInteractor.putTrack(playlistEnt)
+    fun addTrackToPlaylist(track: Track, playlist: Playlist): Boolean {
+        val e = playlistsInteractor.checkIfAlreadyInPlaylist(track, playlist)
+        if (e == true) {
+            return false
+        } else {
+            Log.d("Viewm", "Click on adding to album")
+            val playlistEnt = TracksInPlaylistEntity(playlist.playlistId, track.trackId)
+            playlistsInteractor.insertTrack(track)
+            Log.d("Viewm", "Inserting track")
+            playlistsInteractor.putTrack(playlistEnt)
+            return true
+        }
     }
 
     companion object {

@@ -243,19 +243,26 @@ class PlayerFragment : Fragment() {
         binding.recyclerView.visibility = View.GONE
     }
     private fun playlistClickAdapting(track: Track, playlist: Playlist) {
-        viewModel.addTrackToPlaylist(track, playlist)
-        recyclerView.adapter?.notifyDataSetChanged()
-        viewModel.loadPlaylists()
-        viewModel.observeState().observe(requireActivity()) {
-            render(track, it)
-        }
         val customSnackBar = Snackbar.make(binding.snackBar, "", 3000)
         val layout = customSnackBar.view as Snackbar.SnackbarLayout
         val bind: CreatingAlbumAlertBinding = CreatingAlbumAlertBinding.inflate(layoutInflater)
-        bind.text.setText("Трек '${track.trackName}' добавлен в плейлист '${playlist.name}'")
-        layout.setPadding(0, 0, 0, 0)
-        layout.addView(bind.root, 0)
-        customSnackBar.show()
+        val e = viewModel.addTrackToPlaylist(track, playlist)
+        if (e == true) {
+            recyclerView.adapter?.notifyDataSetChanged()
+            viewModel.loadPlaylists()
+            viewModel.observeState().observe(requireActivity()) {
+                render(track, it)
+            }
+            bind.text.setText("Трек '${track.trackName}' добавлен в плейлист '${playlist.name}'")
+            layout.setPadding(0, 0, 0, 0)
+            layout.addView(bind.root, 0)
+            customSnackBar.show()
+        } else {
+            bind.text.setText("Трек '${track.trackName}' уже был добавлен в плейлист '${playlist.name}'")
+            layout.setPadding(0, 0, 0, 0)
+            layout.addView(bind.root, 0)
+            customSnackBar.show()
+        }
     }
 }
 

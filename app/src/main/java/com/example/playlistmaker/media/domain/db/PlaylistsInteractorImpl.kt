@@ -39,4 +39,9 @@ class PlaylistsInteractorImpl(private val repository: PlaylistsRepository) : Pla
     override fun playlistDelete(playlist: Playlist) {
         repository.deletePlaylist(playlist)
     }
+
+    override fun checkIfAlreadyInPlaylist(track: Track, playlist: Playlist): Boolean {
+        val e = repository.checkIfAlreadyInPlaylist(track, playlist)
+        return e
+    }
 }

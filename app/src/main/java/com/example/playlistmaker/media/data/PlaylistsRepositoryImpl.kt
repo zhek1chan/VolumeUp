@@ -85,5 +85,10 @@ class PlaylistsRepositoryImpl(
         return playlists.map { playlists -> convertor.map(playlists) }
     }
 
+    override fun checkIfAlreadyInPlaylist(track: Track, playlist: Playlist): Boolean {
+        val e = db.playlistDao().checkIfTrackIsInPlaylist(playlist.playlistId, track.trackId)
+        return e
+    }
+
 
 }
