@@ -1,9 +1,6 @@
 package com.example.playlistmaker.media.ui.fragments
 
 import android.app.AlertDialog
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.text.Editable
@@ -32,7 +29,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
-import java.io.FileOutputStream
 
 
 class CreatingPlaylistFragment : Fragment() {
@@ -95,7 +91,8 @@ class CreatingPlaylistFragment : Fragment() {
                 if (uri != null) {
                     binding.albumCoverage.setImageURI(uri)
                     binding.albumCoverageAdd.visibility = View.GONE
-                    saveImageToPrivateStorage(uri)
+                    playlist.artworkUrl100 = uri.toString()
+                    viewModel.saveImageToPrivateStorage(uri, requireActivity())
                 } else {
                     Log.d("PhotoPicker", "No media selected")
                 }
@@ -180,29 +177,8 @@ class CreatingPlaylistFragment : Fragment() {
         playlist.description = d
     }
 
-    private fun saveImageToPrivateStorage(uri: Uri) {
-        //создаём экземпляр класса File, который указывает на нужный каталог
-        val filePath =
-            File(requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), album)
-        //создаем каталог, если он не создан
-        if (!filePath.exists()) {
-            filePath.mkdirs()
-        }
-        //создаём экземпляр класса File, который указывает на файл внутри каталога
-        val file = File(filePath, jpg)
-        // создаём входящий поток байтов из выбранной картинки
-        val inputStream = requireActivity().contentResolver.openInputStream(uri)
-        // создаём исходящий поток байтов в созданный выше файл
-        val outputStream = FileOutputStream(file)
-        // записываем картинку с помощью BitmapFactory
-        BitmapFactory
-            .decodeStream(inputStream)
-            .compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
-        playlist.artworkUrl100 = uri.toString()
-    }
-
     companion object {
-        private const val album = "myalbum"
-        private const val jpg = "first_cover.jpg"
+        const val album = "myalbum"
+        const val jpg = "first_cover.jpg"
     }
 }

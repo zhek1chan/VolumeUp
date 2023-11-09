@@ -1,5 +1,7 @@
 package com.example.playlistmaker.media.domain.db
 
+import android.app.Activity
+import android.net.Uri
 import com.example.playlistmaker.media.data.Playlist
 import com.example.playlistmaker.media.data.entity.TracksInPlaylistEntity
 import com.example.playlistmaker.player.domain.Track
@@ -28,6 +30,10 @@ class PlaylistsInteractorImpl(private val repository: PlaylistsRepository) : Pla
 
     override fun insertTrack(track: Track) {
         return repository.insertTrack(track)
+    }
+
+    override fun savePic(uri: Uri, activity: Activity) {
+        repository.savePic(uri, activity)
     }
 
     override fun playlistDelete(playlist: Playlist) {

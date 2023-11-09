@@ -1,5 +1,10 @@
 package com.example.playlistmaker.media.data
 
+import android.app.Activity
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
+import android.os.Environment
 import android.util.Log
 import com.example.playlistmaker.media.data.converters.PlaylistDbConvertor
 import com.example.playlistmaker.media.data.converters.TrackInPlaylistConvertor
@@ -8,9 +13,12 @@ import com.example.playlistmaker.media.data.entity.PlaylistEntity
 import com.example.playlistmaker.media.data.entity.TrackInsidePlaylistEntity
 import com.example.playlistmaker.media.data.entity.TracksInPlaylistEntity
 import com.example.playlistmaker.media.domain.db.PlaylistsRepository
+import com.example.playlistmaker.media.ui.fragments.CreatingPlaylistFragment
 import com.example.playlistmaker.player.domain.Track
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import java.io.File
+import java.io.FileOutputStream
 
 class PlaylistsRepositoryImpl(
     private val db: AppDataBase,
@@ -49,9 +57,33 @@ class PlaylistsRepositoryImpl(
         Log.d("DB", "Inserted $track to DB_playlist")
     }
 
+    override fun savePic(uri: Uri, activity: Activity) {
+        //создаём экземпляр класса File, который указывает на нужный каталог
+        val filePath =
+            File(
+                activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                CreatingPlaylistFragment.album
+            )
+        //создаем каталог, если он не создан
+        if (!filePath.exists()) {
+            filePath.mkdirs()
+        }
+        //создаём экземпляр класса File, который указывает на файл внутри каталога
+        val file = File(filePath, CreatingPlaylistFragment.jpg)
+        // создаём входящий поток байтов из выбранной картинки
+        val inputStream = activity.contentResolver.openInputStream(uri)
+        // создаём исходящий поток байтов в созданный выше файл
+        val outputStream = FileOutputStream(file)
+        // записываем картинку с помощью BitmapFactory
+        BitmapFactory
+            .decodeStream(inputStream)
+            .compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
+    }
+
 
     private fun convertFromPlaylistEntity(playlists: List<PlaylistEntity>): List<Playlist> {
         return playlists.map { playlists -> convertor.map(playlists) }
     }
+
 
 }
