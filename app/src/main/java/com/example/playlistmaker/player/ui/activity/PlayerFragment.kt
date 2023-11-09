@@ -16,8 +16,8 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.CreatingAlbumAlertBinding
 import com.example.playlistmaker.databinding.FragmentPlayerBinding
 import com.example.playlistmaker.media.data.Playlist
-import com.example.playlistmaker.media.data.PlaylistsBottomAdapter
 import com.example.playlistmaker.media.data.PlaylistsState
+import com.example.playlistmaker.media.ui.PlaylistsBottomAdapter
 import com.example.playlistmaker.player.domain.Track
 import com.example.playlistmaker.player.ui.PlayerState
 import com.example.playlistmaker.player.ui.view_model.FragmentPlayerViewModel
@@ -29,7 +29,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class FragmentPlayer : Fragment() {
+class PlayerFragment : Fragment() {
     private lateinit var playerState: PlayerState
     private val viewModel by viewModel<FragmentPlayerViewModel>()
     private lateinit var binding: FragmentPlayerBinding
@@ -143,11 +143,17 @@ class FragmentPlayer : Fragment() {
                 when (newState) {
                     BottomSheetBehavior.STATE_EXPANDED -> {
                         // загружаем
+                        binding.background.alpha = 0.5f
                         recyclerView.visibility = View.VISIBLE
 
                     }
 
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        binding.background.alpha = 1f
+                    }
+
                     else -> {
+                        binding.background.alpha = 0.5f
                         // Остальные состояния не обрабатываем
                     }
                 }
@@ -229,8 +235,8 @@ class FragmentPlayer : Fragment() {
         recyclerView.adapter = PlaylistsBottomAdapter(playlist) {
             Log.d("ClickAdapting", "Launched")
             playlistClickAdapting(track, it)
+            recyclerView.adapter?.notifyDataSetChanged()
         }
-        recyclerView.adapter?.notifyDataSetChanged()
     }
 
     private fun showEmpty() {
@@ -238,6 +244,11 @@ class FragmentPlayer : Fragment() {
     }
     private fun playlistClickAdapting(track: Track, playlist: Playlist) {
         viewModel.addTrackToPlaylist(track, playlist)
+        recyclerView.adapter?.notifyDataSetChanged()
+        viewModel.loadPlaylists()
+        viewModel.observeState().observe(requireActivity()) {
+            render(track, it)
+        }
         val customSnackBar = Snackbar.make(binding.snackBar, "", 3000)
         val layout = customSnackBar.view as Snackbar.SnackbarLayout
         val bind: CreatingAlbumAlertBinding = CreatingAlbumAlertBinding.inflate(layoutInflater)

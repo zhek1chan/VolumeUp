@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.example.playlistmaker.media.data.Playlist
-import com.example.playlistmaker.media.data.PlaylistsAdapter
+import com.example.playlistmaker.media.ui.PlaylistsAdapter
 import com.example.playlistmaker.media.data.PlaylistsState
 import com.example.playlistmaker.media.ui.viewmodel.PlaylistsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel

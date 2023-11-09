@@ -31,7 +31,7 @@
         android:label="CreatingPlaylistFragment" />
     <fragment
         android:id="@+id/playerActivity"
-        android:name="com.example.playlistmaker.player.ui.activity.FragmentPlayer"
+        android:name="com.example.playlistmaker.player.ui.activity.PlayerFragment"
         android:label="fragment_player"
         tools:layout="@layout/fragment_player" />
 </navigation>

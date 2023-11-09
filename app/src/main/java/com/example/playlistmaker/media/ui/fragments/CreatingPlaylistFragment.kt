@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.text.Editable
+import android.text.Html
 import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,6 +16,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -52,17 +54,25 @@ class CreatingPlaylistFragment : Fragment() {
 
         binding.backIcon.setOnClickListener {
             var dialog = MaterialAlertDialogBuilder(requireContext(), R.style.DialogStyle)
-                .setTitle(getString(R.string.exit_question))
-                .setMessage(getString(R.string.all_data_would_be_lost))
+                .setBackground(
+                    ContextCompat.getDrawable(
+                        requireContext(),
+                        android.R.color.background_dark
+                    )
+                )
+                .setTitle(Html.fromHtml("<font color='#FFFFFF'>${getString(R.string.exit_question)}</font>"))
+                .setMessage(Html.fromHtml("<font color='#FFFFFF'>${getString(R.string.all_data_would_be_lost)}</font>"))
                 .setPositiveButton(getString(R.string.cancel)) { dialog, which ->
                     dialog.cancel()
                 }.setNegativeButton(getString(R.string.finish)) { dialog, which ->
                     findNavController().navigateUp()
                 }.show()
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-                .setTextColor(com.google.android.material.R.attr.colorOnPrimary)
+                .setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                .setAllCaps(false)
             dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                .setTextColor(com.google.android.material.R.attr.colorOnPrimary)
+                .setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
         }
 
         onNameTextChange()
@@ -96,9 +106,9 @@ class CreatingPlaylistFragment : Fragment() {
 
             val filePath = File(
                 requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-                "myalbum"
+                album
             )
-            val file = File(filePath, "first_cover.jpg")
+            val file = File(filePath, jpg)
             val pic: ImageView = binding.albumCoverage
             Glide.with(binding.albumCoverage)
                 .load(file.toUri())
@@ -113,9 +123,9 @@ class CreatingPlaylistFragment : Fragment() {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
             val filePath = File(
                 requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-                "myalbum"
+                album
             )
-            val file = File(filePath, "first_cover.jpg")
+            val file = File(filePath, jpg)
             binding.albumCoverage.setImageURI(file.toUri())
             binding.albumCoverage.setScaleType(ImageView.ScaleType.CENTER_CROP)
             binding.albumCoverageAdd.visibility = View.GONE
@@ -133,8 +143,13 @@ class CreatingPlaylistFragment : Fragment() {
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 nameText = binding.nameOfAlbum.text.toString()
                 saveText(nameText, descriptionText)
-                binding.createPlaylist.isClickable = true
-                binding.createPlaylist.setBackgroundResource(R.drawable.button_create_playlist_active);
+                if (nameText.isNotEmpty()) {
+                    binding.createPlaylist.isClickable = true
+                    binding.createPlaylist.setBackgroundResource(R.drawable.button_create_playlist_active);
+                } else {
+                    binding.createPlaylist.isClickable = false
+                    binding.createPlaylist.setBackgroundResource(R.drawable.button_create_playlist);
+                }
             }
 
             override fun afterTextChanged(p0: Editable?) {
@@ -168,13 +183,13 @@ class CreatingPlaylistFragment : Fragment() {
     private fun saveImageToPrivateStorage(uri: Uri) {
         //создаём экземпляр класса File, который указывает на нужный каталог
         val filePath =
-            File(requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), "myalbum")
+            File(requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES), album)
         //создаем каталог, если он не создан
         if (!filePath.exists()) {
             filePath.mkdirs()
         }
         //создаём экземпляр класса File, который указывает на файл внутри каталога
-        val file = File(filePath, "first_cover.jpg")
+        val file = File(filePath, jpg)
         // создаём входящий поток байтов из выбранной картинки
         val inputStream = requireActivity().contentResolver.openInputStream(uri)
         // создаём исходящий поток байтов в созданный выше файл
@@ -184,5 +199,10 @@ class CreatingPlaylistFragment : Fragment() {
             .decodeStream(inputStream)
             .compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
         playlist.artworkUrl100 = uri.toString()
+    }
+
+    companion object {
+        private const val album = "myalbum"
+        private const val jpg = "first_cover.jpg"
     }
 }
