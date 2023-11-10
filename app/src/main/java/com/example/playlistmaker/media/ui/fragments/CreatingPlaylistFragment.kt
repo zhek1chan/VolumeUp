@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.activity.addCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -44,12 +45,35 @@ class CreatingPlaylistFragment : Fragment() {
         binding = FragmentPlaylistCreatingBinding.inflate(inflater, container, false)
         return binding.root
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         var uriString = ""
+        requireActivity().onBackPressedDispatcher.addCallback(this) {
+            if ((nameText.isNotEmpty()) || (descriptionText.isNotEmpty()) || (uriString.isNotEmpty())) {
+                var dialog = MaterialAlertDialogBuilder(requireContext(), R.style.DialogStyle)
+                    .setBackground(
+                        ContextCompat.getDrawable(
+                            requireContext(),
+                            android.R.color.background_dark
+                        )
+                    )
+                    .setTitle(Html.fromHtml("<font color='#FFFFFF'>${getString(R.string.exit_question)}</font>"))
+                    .setMessage(Html.fromHtml("<font color='#FFFFFF'>${getString(R.string.all_data_would_be_lost)}</font>"))
+                    .setPositiveButton(getString(R.string.cancel)) { dialog, which ->
+                        dialog.cancel()
+                    }.setNegativeButton(getString(R.string.finish)) { dialog, which ->
+                        findNavController().navigateUp()
+                    }.show()
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                    .setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                    .setAllCaps(false)
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                    .setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
+            } else findNavController().navigateUp()
+        }
         binding.backIcon.setOnClickListener {
-            if ((nameText.isNotEmpty()) && (descriptionText.isNotEmpty()) && (uriString.isNotEmpty())) {
+            if ((nameText.isNotEmpty()) || (descriptionText.isNotEmpty()) || (uriString.isNotEmpty())) {
                 var dialog = MaterialAlertDialogBuilder(requireContext(), R.style.DialogStyle)
                     .setBackground(
                         ContextCompat.getDrawable(
