@@ -8,6 +8,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityRootBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.markodevcic.peko.PermissionRequester
 
 class RootActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRootBinding
@@ -29,5 +30,6 @@ class RootActivity : AppCompatActivity() {
                 bottomNavigationView.visibility = View.VISIBLE
             }
         }
+        PermissionRequester.initialize(applicationContext)
     }
 }

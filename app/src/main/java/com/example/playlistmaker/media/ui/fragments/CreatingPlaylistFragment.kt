@@ -1,5 +1,6 @@
 package com.example.playlistmaker.media.ui.fragments
 
+import android.Manifest
 import android.app.AlertDialog
 import android.os.Bundle
 import android.os.Environment
@@ -17,6 +18,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
@@ -28,6 +30,9 @@ import com.example.playlistmaker.media.data.Playlist
 import com.example.playlistmaker.media.ui.viewmodel.CreatingPlaylistViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import com.markodevcic.peko.PermissionRequester
+import com.markodevcic.peko.PermissionResult
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 
@@ -36,7 +41,7 @@ class CreatingPlaylistFragment : Fragment() {
     private lateinit var binding: FragmentPlaylistCreatingBinding
     private val viewModel by viewModel<CreatingPlaylistViewModel>()
     private var playlist = Playlist(0, "", "", "", 0, 0)
-
+    private val requester = PermissionRequester.instance()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -126,22 +131,31 @@ class CreatingPlaylistFragment : Fragment() {
             }
         //по нажатию на кнопку pickImage запускаем photo picker
         binding.albumCoverage.setOnClickListener {
-            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            lifecycleScope.launch {
+                requester.request(Manifest.permission.WRITE_EXTERNAL_STORAGE).collect { result ->
+                    when (result) {
+                        is PermissionResult.Granted -> {
+                            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                            val filePath = File(
+                                requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                                album
+                            )
+                            val file = File(filePath, jpg)
+                            val pic: ImageView = binding.albumCoverage
+                            Glide.with(binding.albumCoverage)
+                                .load(file.toUri())
+                                .transform(
+                                    CenterCrop(),
+                                    RoundedCorners(resources.getDimensionPixelSize(R.dimen.player_album_cover_corner_radius))
+                                )
+                                .into(pic)
+                            binding.albumCoverageAdd.visibility = View.GONE
+                        }
 
-            val filePath = File(
-                requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-                album
-            )
-            val file = File(filePath, jpg)
-            val pic: ImageView = binding.albumCoverage
-            Glide.with(binding.albumCoverage)
-                .load(file.toUri())
-                .transform(
-                    CenterCrop(),
-                    RoundedCorners(resources.getDimensionPixelSize(R.dimen.player_album_cover_corner_radius))
-                )
-                .into(pic)
-            binding.albumCoverageAdd.visibility = View.GONE
+                        else -> {}
+                    }
+                }
+            }
         }
         binding.albumCoverageAdd.setOnClickListener {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
