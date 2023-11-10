@@ -30,7 +30,7 @@ interface PlaylistDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addingTrack(tracksInPlaylist: TracksInPlaylistEntity)
 
-    @Insert(entity = TrackInsidePlaylistEntity::class, onConflict = OnConflictStrategy.ABORT)
+    @Insert(entity = TrackInsidePlaylistEntity::class, onConflict = OnConflictStrategy.REPLACE)
     fun insertTrack(track: TrackInsidePlaylistEntity)
 
     @Query("UPDATE playlists_table SET num = num + 1 WHERE playlistId = :playlistId")

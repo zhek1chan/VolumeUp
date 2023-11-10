@@ -11,14 +11,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.activity.addCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
@@ -30,9 +28,7 @@ import com.example.playlistmaker.media.data.Playlist
 import com.example.playlistmaker.media.ui.viewmodel.CreatingPlaylistViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import com.markodevcic.peko.PermissionRequester
-import com.markodevcic.peko.PermissionResult
-import kotlinx.coroutines.launch
+import com.tbruyelle.rxpermissions3.RxPermissions
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 
@@ -41,7 +37,6 @@ class CreatingPlaylistFragment : Fragment() {
     private lateinit var binding: FragmentPlaylistCreatingBinding
     private val viewModel by viewModel<CreatingPlaylistViewModel>()
     private var playlist = Playlist(0, "", "", "", 0, 0)
-    private val requester = PermissionRequester.instance()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -53,9 +48,10 @@ class CreatingPlaylistFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         var uriString = ""
+        val rxPermissions = RxPermissions(this)
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             if ((nameText.isNotEmpty()) || (descriptionText.isNotEmpty()) || (uriString.isNotEmpty())) {
-                var dialog = MaterialAlertDialogBuilder(requireContext(), R.style.DialogStyle)
+                val dialog = MaterialAlertDialogBuilder(requireContext(), R.style.DialogStyle)
                     .setBackground(
                         ContextCompat.getDrawable(
                             requireContext(),
@@ -64,9 +60,9 @@ class CreatingPlaylistFragment : Fragment() {
                     )
                     .setTitle(Html.fromHtml("<font color='#FFFFFF'>${getString(R.string.exit_question)}</font>"))
                     .setMessage(Html.fromHtml("<font color='#FFFFFF'>${getString(R.string.all_data_would_be_lost)}</font>"))
-                    .setPositiveButton(getString(R.string.cancel)) { dialog, which ->
+                    .setPositiveButton(getString(R.string.cancel)) { dialog, _ ->
                         dialog.cancel()
-                    }.setNegativeButton(getString(R.string.finish)) { dialog, which ->
+                    }.setNegativeButton(getString(R.string.finish)) { dialog, _ ->
                         findNavController().navigateUp()
                     }.show()
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
@@ -79,7 +75,7 @@ class CreatingPlaylistFragment : Fragment() {
         }
         binding.backIcon.setOnClickListener {
             if ((nameText.isNotEmpty()) || (descriptionText.isNotEmpty()) || (uriString.isNotEmpty())) {
-                var dialog = MaterialAlertDialogBuilder(requireContext(), R.style.DialogStyle)
+                val dialog = MaterialAlertDialogBuilder(requireContext(), R.style.DialogStyle)
                     .setBackground(
                         ContextCompat.getDrawable(
                             requireContext(),
@@ -121,7 +117,6 @@ class CreatingPlaylistFragment : Fragment() {
                 //обрабатываем событие выбора пользователем фотографии
                 uriString = uri.toString()
                 if (uri != null) {
-                    binding.albumCoverage.setImageURI(uri)
                     binding.albumCoverageAdd.visibility = View.GONE
                     playlist.artworkUrl100 = uri.toString()
                     viewModel.saveImageToPrivateStorage(uri, requireActivity())
@@ -131,42 +126,53 @@ class CreatingPlaylistFragment : Fragment() {
             }
         //по нажатию на кнопку pickImage запускаем photo picker
         binding.albumCoverage.setOnClickListener {
-            lifecycleScope.launch {
-                requester.request(Manifest.permission.WRITE_EXTERNAL_STORAGE).collect { result ->
-                    when (result) {
-                        is PermissionResult.Granted -> {
-                            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                            val filePath = File(
-                                requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-                                album
-                            )
-                            val file = File(filePath, jpg)
-                            val pic: ImageView = binding.albumCoverage
-                            Glide.with(binding.albumCoverage)
-                                .load(file.toUri())
-                                .transform(
-                                    CenterCrop(),
-                                    RoundedCorners(resources.getDimensionPixelSize(R.dimen.player_album_cover_corner_radius))
-                                )
-                                .into(pic)
-                            binding.albumCoverageAdd.visibility = View.GONE
-                        }
-
-                        else -> {}
+            rxPermissions.request(Manifest.permission.READ_MEDIA_IMAGES)
+                .subscribe { granted: Boolean ->
+                    if (granted) {
+                        pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                    } else {
+                        pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
                     }
+                    val filePath = File(
+                        requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                        album
+                    )
+                    val file = File(filePath, jpg)
+                    Glide.with(requireActivity())
+                        .load(file.toUri())
+                        .centerCrop()
+                        .transform(
+                            CenterCrop(),
+                            RoundedCorners(resources.getDimensionPixelSize(R.dimen.player_album_cover_corner_radius))
+                        )
+                        .into(binding.albumCoverage)
+                    binding.albumCoverageAdd.visibility = View.GONE
                 }
-            }
         }
         binding.albumCoverageAdd.setOnClickListener {
-            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-            val filePath = File(
-                requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-                album
-            )
-            val file = File(filePath, jpg)
-            binding.albumCoverage.setImageURI(file.toUri())
-            binding.albumCoverage.setScaleType(ImageView.ScaleType.CENTER_CROP)
-            binding.albumCoverageAdd.visibility = View.GONE
+            rxPermissions.request(Manifest.permission.READ_MEDIA_IMAGES)
+                .subscribe { granted: Boolean ->
+                    if (granted) {
+                        pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                    } else {
+                        pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                    }
+                    val filePath = File(
+                        requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                        album
+                    )
+                    val file = File(filePath, jpg)
+                    Glide.with(requireActivity())
+                        .load(file.toUri())
+                        .centerCrop()
+                        .transform(
+                            CenterCrop(),
+                            RoundedCorners(resources.getDimensionPixelSize(R.dimen.player_album_cover_corner_radius)),
+                            CenterCrop()
+                        )
+                        .into(binding.albumCoverage)
+                    binding.albumCoverageAdd.visibility = View.GONE
+                }
         }
     }
 
