@@ -1,6 +1,5 @@
 package com.example.playlistmaker.media.domain.db
 
-import android.app.Activity
 import android.net.Uri
 import com.example.playlistmaker.media.data.entity.TracksInPlaylistEntity
 import com.example.playlistmaker.player.domain.Track
@@ -21,6 +20,6 @@ interface PlaylistsRepository {
 
     fun insertTrack(track: Track)
 
-    fun savePic(uri: Uri, activity: Activity)
+    fun savePic(uri: Uri)
     fun checkIfAlreadyInPlaylist(track: Track, playlist: Playlist): Boolean
 }

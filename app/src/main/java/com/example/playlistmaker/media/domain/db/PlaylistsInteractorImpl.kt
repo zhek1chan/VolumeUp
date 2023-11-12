@@ -31,8 +31,8 @@ class PlaylistsInteractorImpl(private val repository: PlaylistsRepository) : Pla
         return repository.insertTrack(track)
     }
 
-    override fun savePic(uri: Uri, activity: Activity) {
-        repository.savePic(uri, activity)
+    override fun savePic(uri: Uri) {
+        repository.savePic(uri)
     }
 
     override fun playlistDelete(playlist: Playlist) {

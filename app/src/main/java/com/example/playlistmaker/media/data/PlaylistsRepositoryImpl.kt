@@ -1,6 +1,6 @@
 package com.example.playlistmaker.media.data
 
-import android.app.Activity
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -24,7 +24,8 @@ import java.io.FileOutputStream
 class PlaylistsRepositoryImpl(
     private val db: AppDataBase,
     private val convertor: PlaylistDbConvertor,
-    private val convertorForTrack: TrackInPlaylistConvertor
+    private val convertorForTrack: TrackInPlaylistConvertor,
+    private val context: Context
 ) : PlaylistsRepository {
     override fun getPlaylists(): Flow<List<Playlist>> = flow {
         val playlists = db.playlistDao().getPlaylist()
@@ -58,11 +59,11 @@ class PlaylistsRepositoryImpl(
         Log.d("DB", "Inserted $track to DB_playlist")
     }
 
-    override fun savePic(uri: Uri, activity: Activity) {
+    override fun savePic(uri: Uri) {
         //создаём экземпляр класса File, который указывает на нужный каталог
         val filePath =
             File(
-                activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
+                context.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
                 CreatingPlaylistFragment.album
             )
         //создаем каталог, если он не создан
@@ -72,7 +73,7 @@ class PlaylistsRepositoryImpl(
         //создаём экземпляр класса File, который указывает на файл внутри каталога
         val file = File(filePath, CreatingPlaylistFragment.jpg)
         // создаём входящий поток байтов из выбранной картинки
-        val inputStream = activity.contentResolver.openInputStream(uri)
+        val inputStream = context.contentResolver.openInputStream(uri)
         // создаём исходящий поток байтов в созданный выше файл
         val outputStream = FileOutputStream(file)
         // записываем картинку с помощью BitmapFactory

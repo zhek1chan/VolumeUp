@@ -1,6 +1,5 @@
 package com.example.playlistmaker.media.domain.db
 
-import android.app.Activity
 import android.net.Uri
 import com.example.playlistmaker.media.data.entity.TracksInPlaylistEntity
 import com.example.playlistmaker.player.domain.Track
@@ -14,6 +13,6 @@ interface PlaylistsInteractor {
     suspend fun getTracks(id: Long): Flow<List<Track>>
     fun putTrack(track: TracksInPlaylistEntity)
     fun insertTrack(track: Track)
-    fun savePic(uri: Uri, activity: Activity)
+    fun savePic(uri: Uri)
     fun checkIfAlreadyInPlaylist(track: Track, playlist: Playlist): Boolean
 }

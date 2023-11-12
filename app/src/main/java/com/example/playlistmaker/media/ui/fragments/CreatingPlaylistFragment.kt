@@ -3,7 +3,6 @@ package com.example.playlistmaker.media.ui.fragments
 import android.Manifest
 import android.app.AlertDialog
 import android.os.Bundle
-import android.os.Environment
 import android.text.Editable
 import android.text.Html
 import android.text.TextWatcher
@@ -15,7 +14,6 @@ import androidx.activity.addCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -30,7 +28,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.tbruyelle.rxpermissions3.RxPermissions
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.io.File
 
 
 class CreatingPlaylistFragment : Fragment() {
@@ -119,14 +116,9 @@ class CreatingPlaylistFragment : Fragment() {
                 if (uri != null) {
                     binding.albumCoverageAdd.visibility = View.GONE
                     playlist.artworkUrl100 = uri.toString()
-                    viewModel.saveImageToPrivateStorage(uri, requireActivity())
-                    val filePath = File(
-                        requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-                        album
-                    )
-                    val file = File(filePath, jpg)
+                    viewModel.saveImageToPrivateStorage(uri)
                     Glide.with(requireActivity())
-                        .load(file.toUri())
+                        .load(uri)
                         .centerCrop()
                         .transform(
                             CenterCrop(),
@@ -135,7 +127,14 @@ class CreatingPlaylistFragment : Fragment() {
                         .into(binding.albumCoverage)
                 } else {
                     binding.albumCoverageAdd.visibility = View.VISIBLE
-                    binding.albumCoverage.setBackgroundResource(R.drawable.creating_album_cover)
+                    Glide.with(binding.albumCoverage)
+                        .load(R.drawable.creating_album_cover)
+                        .centerCrop()
+                        .transform(
+                            CenterCrop(),
+                            RoundedCorners(resources.getDimensionPixelSize(R.dimen.player_album_cover_corner_radius))
+                        )
+                        .into(binding.albumCoverage)
                     Log.d("PhotoPicker", "No media selected")
                 }
             }
