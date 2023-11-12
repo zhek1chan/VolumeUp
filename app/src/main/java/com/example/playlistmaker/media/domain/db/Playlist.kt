@@ -1,4 +1,4 @@
-package com.example.playlistmaker.media.data
+package com.example.playlistmaker.media.domain.db
 
 data class Playlist(
     val playlistId: Long,

@@ -9,7 +9,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
-import com.example.playlistmaker.media.data.Playlist
+import com.example.playlistmaker.media.domain.db.Playlist
 
 class PlaylistsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
@@ -25,7 +25,7 @@ class PlaylistsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
                 itemView.resources.getDimensionPixelSize(R.dimen.player_album_cover_corner_radius)
             Glide.with(itemView)
                 .load(Uri.parse(albums.artworkUrl100))
-                .transform(CenterCrop(), RoundedCorners(cornerPixelSize))
+                .transform(CenterCrop(), RoundedCorners(cornerPixelSize), CenterCrop())
                 .into(pic)
         }
         name.text = albums.name

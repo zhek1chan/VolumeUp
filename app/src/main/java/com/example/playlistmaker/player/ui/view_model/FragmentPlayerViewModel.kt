@@ -6,10 +6,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.R
-import com.example.playlistmaker.media.data.Playlist
 import com.example.playlistmaker.media.data.PlaylistsState
 import com.example.playlistmaker.media.data.entity.TracksInPlaylistEntity
 import com.example.playlistmaker.media.domain.db.LikedTracksInteractor
+import com.example.playlistmaker.media.domain.db.Playlist
 import com.example.playlistmaker.media.domain.db.PlaylistsInteractor
 import com.example.playlistmaker.player.domain.PlayerInteractor
 import com.example.playlistmaker.player.domain.Track
@@ -113,8 +113,8 @@ class FragmentPlayerViewModel(
     }
 
     fun addTrackToPlaylist(track: Track, playlist: Playlist): Boolean {
-        val e = playlistsInteractor.checkIfAlreadyInPlaylist(track, playlist)
-        if (e == true) {
+        val booleanType = playlistsInteractor.checkIfAlreadyInPlaylist(track, playlist)
+        if (booleanType == true) {
             return false
         } else {
             Log.d("Viewm", "Click on adding to album")

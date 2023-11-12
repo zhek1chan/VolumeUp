@@ -30,7 +30,7 @@ interface PlaylistDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addingTrack(tracksInPlaylist: TracksInPlaylistEntity)
 
-    @Insert(entity = TrackInsidePlaylistEntity::class, onConflict = OnConflictStrategy.REPLACE)
+    @Insert(entity = TrackInsidePlaylistEntity::class, onConflict = OnConflictStrategy.IGNORE)
     fun insertTrack(track: TrackInsidePlaylistEntity)
 
     @Query("UPDATE playlists_table SET num = num + 1 WHERE playlistId = :playlistId")
@@ -54,11 +54,7 @@ interface PlaylistDao {
     @Transaction
     fun addTrackToPlaylist(tInP: TracksInPlaylistEntity): Boolean {
         //проверка на добавление трека до текущего момента
-        return if (!checkIfTrackIsInPlaylist(
-                tInP.playlistId,
-                tInP.trackId
-            )
-        ) {
+        return if (!checkIfTrackIsInPlaylist(tInP.playlistId, tInP.trackId)) {
             updateQuantity(tInP.playlistId)
             addingTrack(tInP)
             true

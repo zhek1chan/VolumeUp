@@ -24,7 +24,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.CreatingAlbumAlertBinding
 import com.example.playlistmaker.databinding.FragmentPlaylistCreatingBinding
-import com.example.playlistmaker.media.data.Playlist
+import com.example.playlistmaker.media.domain.db.Playlist
 import com.example.playlistmaker.media.ui.viewmodel.CreatingPlaylistViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -120,19 +120,6 @@ class CreatingPlaylistFragment : Fragment() {
                     binding.albumCoverageAdd.visibility = View.GONE
                     playlist.artworkUrl100 = uri.toString()
                     viewModel.saveImageToPrivateStorage(uri, requireActivity())
-                } else {
-                    Log.d("PhotoPicker", "No media selected")
-                }
-            }
-        //по нажатию на кнопку pickImage запускаем photo picker
-        binding.albumCoverage.setOnClickListener {
-            rxPermissions.request(Manifest.permission.READ_MEDIA_IMAGES)
-                .subscribe { granted: Boolean ->
-                    if (granted) {
-                        pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                    } else {
-                        pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                    }
                     val filePath = File(
                         requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
                         album
@@ -146,7 +133,21 @@ class CreatingPlaylistFragment : Fragment() {
                             RoundedCorners(resources.getDimensionPixelSize(R.dimen.player_album_cover_corner_radius))
                         )
                         .into(binding.albumCoverage)
-                    binding.albumCoverageAdd.visibility = View.GONE
+                } else {
+                    binding.albumCoverageAdd.visibility = View.VISIBLE
+                    binding.albumCoverage.setBackgroundResource(R.drawable.creating_album_cover)
+                    Log.d("PhotoPicker", "No media selected")
+                }
+            }
+        //по нажатию на кнопку pickImage запускаем photo picker
+        binding.albumCoverage.setOnClickListener {
+            rxPermissions.request(Manifest.permission.READ_MEDIA_IMAGES)
+                .subscribe { granted: Boolean ->
+                    if (granted) {
+                        pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                    } else {
+                        pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                    }
                 }
         }
         binding.albumCoverageAdd.setOnClickListener {
@@ -157,21 +158,6 @@ class CreatingPlaylistFragment : Fragment() {
                     } else {
                         pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
                     }
-                    val filePath = File(
-                        requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-                        album
-                    )
-                    val file = File(filePath, jpg)
-                    Glide.with(requireActivity())
-                        .load(file.toUri())
-                        .centerCrop()
-                        .transform(
-                            CenterCrop(),
-                            RoundedCorners(resources.getDimensionPixelSize(R.dimen.player_album_cover_corner_radius)),
-                            CenterCrop()
-                        )
-                        .into(binding.albumCoverage)
-                    binding.albumCoverageAdd.visibility = View.GONE
                 }
         }
     }

@@ -15,8 +15,8 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.CreatingAlbumAlertBinding
 import com.example.playlistmaker.databinding.FragmentPlayerBinding
-import com.example.playlistmaker.media.data.Playlist
 import com.example.playlistmaker.media.data.PlaylistsState
+import com.example.playlistmaker.media.domain.db.Playlist
 import com.example.playlistmaker.media.ui.PlaylistsBottomAdapter
 import com.example.playlistmaker.player.domain.Track
 import com.example.playlistmaker.player.ui.PlayerState
@@ -143,17 +143,17 @@ class PlayerFragment : Fragment() {
                 when (newState) {
                     BottomSheetBehavior.STATE_EXPANDED -> {
                         // загружаем
-                        binding.background.alpha = 0.5f
+                        binding.background.alpha = lowLightBackground
                         recyclerView.visibility = View.VISIBLE
 
                     }
 
                     BottomSheetBehavior.STATE_HIDDEN -> {
-                        binding.background.alpha = 1f
+                        binding.background.alpha = standartBackground
                     }
 
                     else -> {
-                        binding.background.alpha = 0.5f
+                        binding.background.alpha = lowLightBackground
                         // Остальные состояния не обрабатываем
                     }
                 }
@@ -246,8 +246,8 @@ class PlayerFragment : Fragment() {
         val customSnackBar = Snackbar.make(binding.snackBar, "", 3000)
         val layout = customSnackBar.view as Snackbar.SnackbarLayout
         val bind: CreatingAlbumAlertBinding = CreatingAlbumAlertBinding.inflate(layoutInflater)
-        val e = viewModel.addTrackToPlaylist(track, playlist)
-        if (e == true) {
+        val booleanType = viewModel.addTrackToPlaylist(track, playlist)
+        if (booleanType == true) {
             recyclerView.adapter?.notifyDataSetChanged()
             viewModel.loadPlaylists()
             viewModel.observeState().observe(requireActivity()) {
@@ -263,6 +263,11 @@ class PlayerFragment : Fragment() {
             layout.addView(bind.root, 0)
             customSnackBar.show()
         }
+    }
+
+    companion object {
+        val lowLightBackground = 0.2f
+        val standartBackground = 1.0f
     }
 }
 

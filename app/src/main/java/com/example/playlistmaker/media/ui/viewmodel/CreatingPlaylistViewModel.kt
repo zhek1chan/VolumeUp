@@ -4,7 +4,7 @@ import android.app.Activity
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.example.playlistmaker.media.data.Playlist
+import com.example.playlistmaker.media.domain.db.Playlist
 import com.example.playlistmaker.media.domain.db.PlaylistsInteractor
 
 class CreatingPlaylistViewModel(

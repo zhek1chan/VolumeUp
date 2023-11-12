@@ -1,6 +1,6 @@
 package com.example.playlistmaker.media.data.converters
 
-import com.example.playlistmaker.media.data.Playlist
+import com.example.playlistmaker.media.domain.db.Playlist
 import com.example.playlistmaker.media.data.entity.PlaylistEntity
 
 class PlaylistDbConvertor {

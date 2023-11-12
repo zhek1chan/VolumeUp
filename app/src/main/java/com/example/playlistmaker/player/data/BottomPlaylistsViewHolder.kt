@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
-import com.example.playlistmaker.media.data.Playlist
+import com.example.playlistmaker.media.domain.db.Playlist
 
 class BottomPlaylistsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
