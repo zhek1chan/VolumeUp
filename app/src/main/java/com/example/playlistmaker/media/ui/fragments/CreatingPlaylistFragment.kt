@@ -188,13 +188,14 @@ class CreatingPlaylistFragment : Fragment() {
     }
 
     private fun onDescriptionTextChange() {
-        binding.nameOfAlbum.addTextChangedListener(object : TextWatcher {
+        binding.descriptionOfAlbum.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                descriptionText = binding.nameOfAlbum.text.toString()
+                descriptionText = binding.descriptionOfAlbum.text.toString()
+                Log.d("Input", "$descriptionText")
                 saveText(nameText, descriptionText)
             }
 

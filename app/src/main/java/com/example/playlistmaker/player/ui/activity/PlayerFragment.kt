@@ -261,6 +261,9 @@ class PlayerFragment : Fragment() {
             viewModel.observeState().observe(requireActivity()) {
                 render(track, it)
             }
+            BottomSheetBehavior.from(binding.playlistsBottomSheet).apply {
+                state = BottomSheetBehavior.STATE_HIDDEN
+            }
             bind.text.setText("Трек '${track.trackName}' добавлен в плейлист '${playlist.name}'")
             layout.setPadding(0, 0, 0, 0)
             layout.addView(bind.root, 0)
