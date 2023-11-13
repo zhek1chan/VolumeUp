@@ -22,11 +22,13 @@ import com.example.playlistmaker.player.domain.Track
 import com.example.playlistmaker.player.ui.PlayerState
 import com.example.playlistmaker.player.ui.view_model.FragmentPlayerViewModel
 import com.example.playlistmaker.player.ui.view_model.FragmentPlayerViewModel.Companion.PLAYER_BUTTON_PRESSING_DELAY
+import com.example.playlistmaker.settings.domain.SettingsInteractor
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.getKoin
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlayerFragment : Fragment() {
@@ -143,16 +145,22 @@ class PlayerFragment : Fragment() {
                 when (newState) {
                     BottomSheetBehavior.STATE_EXPANDED -> {
                         // загружаем
+                        val settingsInteractor = getKoin().get<SettingsInteractor>()
+                        switchBckgndColor(settingsInteractor.isAppThemeDark(), false)
                         binding.background.alpha = lowLightBackground
                         recyclerView.visibility = View.VISIBLE
 
                     }
 
                     BottomSheetBehavior.STATE_HIDDEN -> {
+                        val settingsInteractor = getKoin().get<SettingsInteractor>()
+                        switchBckgndColor(settingsInteractor.isAppThemeDark(), true)
                         binding.background.alpha = standartBackground
                     }
 
                     else -> {
+                        val settingsInteractor = getKoin().get<SettingsInteractor>()
+                        switchBckgndColor(settingsInteractor.isAppThemeDark(), false)
                         binding.background.alpha = lowLightBackground
                         // Остальные состояния не обрабатываем
                     }
@@ -265,8 +273,20 @@ class PlayerFragment : Fragment() {
         }
     }
 
+    private fun switchBckgndColor(darkThemeIsDisabled: Boolean, change: Boolean) {
+        Log.d("Theme", "white theme is enabled: $darkThemeIsDisabled")
+        if (darkThemeIsDisabled) {
+            binding.background.setBackgroundResource(R.color.black_text_settings)
+        } else {
+            binding.background.setBackgroundResource(R.color.black_text_settings)
+        }
+        if (change && darkThemeIsDisabled) {
+            binding.background.setBackgroundResource(R.color.white)
+        }
+    }
+
     companion object {
-        val lowLightBackground = 0.2f
+        val lowLightBackground = 0.5f
         val standartBackground = 1.0f
     }
 }
