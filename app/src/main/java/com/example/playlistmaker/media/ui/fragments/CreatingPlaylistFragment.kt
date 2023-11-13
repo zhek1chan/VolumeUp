@@ -2,6 +2,7 @@ package com.example.playlistmaker.media.ui.fragments
 
 import android.Manifest
 import android.app.AlertDialog
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.text.Editable
 import android.text.Html
@@ -13,6 +14,7 @@ import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -26,7 +28,6 @@ import com.example.playlistmaker.media.domain.db.Playlist
 import com.example.playlistmaker.media.ui.viewmodel.CreatingPlaylistViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import com.tbruyelle.rxpermissions3.RxPermissions
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -45,7 +46,6 @@ class CreatingPlaylistFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         var uriString = ""
-        val rxPermissions = RxPermissions(this)
         requireActivity().onBackPressedDispatcher.addCallback(this) {
             if ((nameText.isNotEmpty()) || (descriptionText.isNotEmpty()) || (uriString.isNotEmpty())) {
                 val dialog = MaterialAlertDialogBuilder(requireContext(), R.style.DialogStyle)
@@ -140,24 +140,26 @@ class CreatingPlaylistFragment : Fragment() {
             }
         //по нажатию на кнопку pickImage запускаем photo picker
         binding.albumCoverage.setOnClickListener {
-            rxPermissions.request(Manifest.permission.READ_MEDIA_IMAGES)
-                .subscribe { granted: Boolean ->
-                    if (granted) {
-                        pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                    } else {
-                        pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                    }
-                }
+            requestPermission()
+            if (ContextCompat.checkSelfPermission(
+                    requireActivity(),
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                )
+                == PackageManager.PERMISSION_GRANTED
+            ) {
+                pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            }
         }
         binding.albumCoverageAdd.setOnClickListener {
-            rxPermissions.request(Manifest.permission.READ_MEDIA_IMAGES)
-                .subscribe { granted: Boolean ->
-                    if (granted) {
-                        pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                    } else {
-                        pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-                    }
-                }
+            requestPermission()
+            if (ContextCompat.checkSelfPermission(
+                    requireActivity(),
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                )
+                == PackageManager.PERMISSION_GRANTED
+            ) {
+                pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            }
         }
     }
 
@@ -213,5 +215,13 @@ class CreatingPlaylistFragment : Fragment() {
     companion object {
         const val album = "myalbum"
         const val jpg = "first_cover.jpg"
+    }
+
+    private fun requestPermission() {
+        ActivityCompat.requestPermissions(
+            requireActivity(),
+            arrayOf<String>(Manifest.permission.READ_EXTERNAL_STORAGE),
+            255
+        )
     }
 }
