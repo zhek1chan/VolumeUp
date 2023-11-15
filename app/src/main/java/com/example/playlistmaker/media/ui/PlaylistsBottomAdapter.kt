@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
 import com.example.playlistmaker.media.domain.db.Playlist
-import com.example.playlistmaker.media.ui.fragments.PlaylistsViewHolder
 
 class PlaylistsBottomAdapter(
     private val playlists: List<Playlist>,
