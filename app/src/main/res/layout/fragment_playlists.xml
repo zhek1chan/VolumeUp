@@ -22,15 +22,18 @@
         android:fontFamily="@font/ys_display_medium" />
 
     <androidx.recyclerview.widget.RecyclerView
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:id="@+id/recyclerView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/newPlaylist"
+        android:paddingLeft="16dp"
+        android:paddingRight="2dp"
+        android:layout_marginBottom="56dp"
         android:layout_marginTop="3dp"
-        android:layout_marginHorizontal="0.001dp"
-        android:visibility="gone"
+        android:visibility="visible"
         android:backgroundTint="?attr/colorPrimary" />
 
     <ImageView
