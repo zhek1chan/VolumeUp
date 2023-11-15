@@ -29,11 +29,9 @@ class PlaylistsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
                 .into(pic)
         }
         name.text = albums.name
-        if (albums.num.toString() == "1") {
-            num.text = "${albums.num} трек"
-
-        } else if (albums.num.toString() == "2" || albums.num.toString() == "3" || albums.num.toString() == "4") {
-            num.text = "${albums.num} трека"
-        } else num.text = "${albums.num} треков"
+        num.text = albums.num.toString() + " " + itemView.resources.getQuantityString(
+            R.plurals.numberOfSongsAvailable,
+            albums.num.toInt()
+        )
     }
 }
