@@ -38,7 +38,7 @@
                 app:layout_constraintTop_toBottomOf="@id/back_button_player_activity"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toTopOf="@+id/song_name_player_activity"
+                app:layout_constraintBottom_toTopOf="@+id/playlist_name"
                 app:layout_constraintDimensionRatio="w, 1:1"
                 android:layout_marginHorizontal="24dp"
                 android:layout_marginBottom="24dp"
@@ -46,7 +46,7 @@
                 android:background="@drawable/square" />
 
             <TextView
-                android:id="@+id/song_name_player_activity"
+                android:id="@+id/playlist_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
@@ -61,11 +61,11 @@
                 android:ellipsize="end" />
 
             <TextView
-                android:id="@+id/band_name_player_activity"
+                android:id="@+id/description"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="@id/song_name_player_activity"
-                app:layout_constraintEnd_toEndOf="@id/song_name_player_activity"
+                app:layout_constraintStart_toStartOf="@id/playlist_name"
+                app:layout_constraintEnd_toEndOf="@id/playlist_name"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginBottom="360dp"
                 tools:text="@string/track_artist"
@@ -75,10 +75,10 @@
                 android:ellipsize="end" />
 
             <ImageView
-                android:id="@+id/plus_button_player_activity"
+                android:id="@+id/button_share_playlist"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="@id/song_name_player_activity"
+                app:layout_constraintStart_toStartOf="@id/playlist_name"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginBottom="255dp"
                 android:src="@drawable/add_icon" />
@@ -108,10 +108,10 @@
             </RelativeLayout>
 
             <ImageView
-                android:id="@+id/like_button_player_activity"
+                android:id="@+id/button_edit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="@id/song_name_player_activity"
+                app:layout_constraintEnd_toEndOf="@id/playlist_name"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginBottom="255dp"
                 android:src="@drawable/heart"
@@ -121,7 +121,7 @@
                 android:id="@+id/pressed_like_button_player_activity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="@id/song_name_player_activity"
+                app:layout_constraintEnd_toEndOf="@id/playlist_name"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginBottom="255dp"
                 android:src="@drawable/red_heart"
@@ -133,7 +133,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/band_name_player_activity"
+                app:layout_constraintTop_toBottomOf="@id/description"
                 android:layout_marginTop="134dp"
                 style="@style/primary_text"
                 android:text="@string/timing" />

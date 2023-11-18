@@ -48,5 +48,8 @@
     <string name="playlist_was_created">Плейлист %1$s создан</string>
     <string name="track">" трек"</string>
     <string name="tracks">" треков"</string>
+    <string name="share">Поделиться</string>
+    <string name="edit_info">Редактировать информацию</string>
+    <string name="delete_playlist">Удалить плейлист</string>
 
 </resources>
