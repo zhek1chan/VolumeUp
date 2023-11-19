@@ -92,5 +92,12 @@ class PlaylistsRepositoryImpl(
         return e
     }
 
+    override fun getData(id: Long): Playlist {
+        val playlist = db.playlistDao().queryPlaylistId(id)
+        val list = listOf(playlist)
+        val pl = convertFromPlaylistEntity(list)
+        return pl.first()
+    }
+
 
 }

@@ -25,7 +25,7 @@ interface PlaylistDao {
     fun deletePlaylist(playlistsId: Long): Integer
 
     @Query("SELECT * FROM playlists_table WHERE :searchId = PlaylistId")
-    fun queryPlaylistId(searchId: Long): PlaylistEntity?
+    fun queryPlaylistId(searchId: Long): PlaylistEntity
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addingTrack(tracksInPlaylist: TracksInPlaylistEntity)
@@ -50,6 +50,9 @@ interface PlaylistDao {
 
     @Query("SELECT EXISTS (SELECT * FROM TracksInPlaylist WHERE playlistId = :playlistId AND trackId = :trackId)")
     fun checkIfTrackIsInPlaylist(playlistId: Long, trackId: Long): Boolean
+
+    @Query("SELECT * FROM playlists_table WHERE playlistId=:id")
+    fun getdata(id: Long): PlaylistEntity
 
     @Transaction
     fun addTrackToPlaylist(tInP: TracksInPlaylistEntity): Boolean {

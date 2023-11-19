@@ -3,6 +3,7 @@ package com.example.playlistmaker.media.di
 import com.example.playlistmaker.media.ui.viewmodel.CreatingPlaylistViewModel
 import com.example.playlistmaker.media.ui.viewmodel.FavouriteTracksViewModel
 import com.example.playlistmaker.media.ui.viewmodel.MediaActivityViewModel
+import com.example.playlistmaker.media.ui.viewmodel.PlaylistViewModel
 import com.example.playlistmaker.media.ui.viewmodel.PlaylistsViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
@@ -12,4 +13,5 @@ val mediaModule = module {
     viewModel { PlaylistsViewModel(get()) }
     viewModel { CreatingPlaylistViewModel(get()) }
     viewModel { MediaActivityViewModel() }
+    viewModel { PlaylistViewModel(get()) }
 }

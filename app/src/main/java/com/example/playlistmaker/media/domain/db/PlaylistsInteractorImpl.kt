@@ -1,6 +1,5 @@
 package com.example.playlistmaker.media.domain.db
 
-import android.app.Activity
 import android.net.Uri
 import com.example.playlistmaker.media.data.entity.TracksInPlaylistEntity
 import com.example.playlistmaker.player.domain.Track
@@ -42,5 +41,10 @@ class PlaylistsInteractorImpl(private val repository: PlaylistsRepository) : Pla
     override fun checkIfAlreadyInPlaylist(track: Track, playlist: Playlist): Boolean {
         val e = repository.checkIfAlreadyInPlaylist(track, playlist)
         return e
+    }
+
+    override fun getPlaylistData(id: Long): Playlist {
+        val pl = repository.getData(id)
+        return pl
     }
 }

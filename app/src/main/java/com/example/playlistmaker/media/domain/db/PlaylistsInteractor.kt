@@ -15,4 +15,5 @@ interface PlaylistsInteractor {
     fun insertTrack(track: Track)
     fun savePic(uri: Uri)
     fun checkIfAlreadyInPlaylist(track: Track, playlist: Playlist): Boolean
+    fun getPlaylistData(id: Long): Playlist
 }
