@@ -23,4 +23,5 @@ interface PlaylistsRepository {
     fun savePic(uri: Uri)
     fun checkIfAlreadyInPlaylist(track: Track, playlist: Playlist): Boolean
     fun getData(id: Long): Playlist
+    fun deleteTrack(track: Track, playlist: Playlist)
 }

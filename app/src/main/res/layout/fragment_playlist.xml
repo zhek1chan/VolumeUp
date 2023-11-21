@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".player.ui.activity.PlayerFragment">
+    tools:context=".player.ui.fragment.PlayerFragment">
 
     <RelativeLayout
         android:id="@+id/background"
@@ -52,16 +52,17 @@
                     android:visibility="gone" />
 
                 <ImageView
+                    android:scaleType="fitXY"
                     android:id="@+id/playlist_cover"
                     android:layout_width="match_parent"
                     android:layout_height="360dp"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintDimensionRatio="w, 1:1"
                     android:background="@drawable/background_rounded_corners"
-                    android:visibility="visible" />
+                    android:visibility="visible"
+                    app:layout_constraintDimensionRatio="w, 1:1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
             </LinearLayout>
 
             <TextView
@@ -94,13 +95,14 @@
 
             <TextView
                 android:id="@+id/time"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="@id/playlist_name"
                 app:layout_constraintEnd_toEndOf="@id/description"
                 app:layout_constraintTop_toBottomOf="@id/description"
                 android:layout_marginTop="8dp"
                 tools:text="@string/track_time"
+                android:layout_marginHorizontal="24dp"
                 style="@style/primary_text"
                 android:textSize="14sp"
                 android:maxLines="1"
@@ -114,7 +116,7 @@
                 app:layout_constraintTop_toBottomOf="@id/time"
                 android:layout_marginTop="16dp"
                 android:src="@drawable/share"
-                app:tint="@color/black_text" />
+                app:tint="?attr/colorOnPrimary" />
 
 
             <ImageView
@@ -126,7 +128,8 @@
                 app:layout_constraintStart_toStartOf="@id/playlist_name"
                 app:layout_constraintTop_toBottomOf="@id/time"
                 android:src="@drawable/thripledot"
-                android:visibility="visible" />
+                android:visibility="visible"
+                app:tint="?attr/colorOnPrimary" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -177,6 +180,7 @@
             android:layout_marginTop="8dp">
 
             <TextView
+                android:id="@+id/share_playlist"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fontFamily="@font/ys_display_regular"
@@ -193,6 +197,7 @@
             android:layout_height="61dp">
 
             <TextView
+                android:id="@+id/edit_info"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fontFamily="@font/ys_display_regular"
@@ -209,6 +214,7 @@
             android:layout_height="61dp">
 
             <TextView
+                android:id="@+id/delete_playlist"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fontFamily="@font/ys_display_regular"

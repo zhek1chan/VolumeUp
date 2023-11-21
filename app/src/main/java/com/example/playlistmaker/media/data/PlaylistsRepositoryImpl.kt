@@ -38,7 +38,8 @@ class PlaylistsRepositoryImpl(
     }
 
     override fun deletePlaylist(playlist: Playlist) {
-        convertor.map(playlist).let { db.playlistDao().deletePlaylist(playlist.playlistId) }
+        db.playlistDao().deletePlaylist(playlist.playlistId)
+        Log.d("Playlist ${playlist.playlistId}", "was deleted")
     }
 
     override fun checkPlaylist(id: Long): Flow<Boolean> = flow {
@@ -46,7 +47,8 @@ class PlaylistsRepositoryImpl(
     }
 
     override fun getTracks(id: Long): Flow<List<Track>> = flow {
-        db.playlistDao().getTracksFromPlaylist(id)
+        val tracks = db.playlistDao().getTracksFromPlaylist(id)
+        emit(convertFromTrackEntity(tracks.reversed()))
     }
 
     override fun putTrack(tracks: TracksInPlaylistEntity) {
@@ -87,6 +89,10 @@ class PlaylistsRepositoryImpl(
         return playlists.map { playlists -> convertor.map(playlists) }
     }
 
+    private fun convertFromTrackEntity(tracks: List<TrackInsidePlaylistEntity>): List<Track> {
+        return tracks.map { track -> convertorForTrack.map(track) }
+    }
+
     override fun checkIfAlreadyInPlaylist(track: Track, playlist: Playlist): Boolean {
         val e = db.playlistDao().checkIfTrackIsInPlaylist(playlist.playlistId, track.trackId)
         return e
@@ -97,6 +103,10 @@ class PlaylistsRepositoryImpl(
         val list = listOf(playlist)
         val pl = convertFromPlaylistEntity(list)
         return pl.first()
+    }
+
+    override fun deleteTrack(track: Track, playlist: Playlist) {
+        db.playlistDao().deleteTrack(track.trackId, playlist.playlistId)
     }
 
 

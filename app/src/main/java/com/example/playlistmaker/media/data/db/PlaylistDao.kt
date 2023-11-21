@@ -21,8 +21,28 @@ interface PlaylistDao {
     @Query("SELECT PlaylistId FROM playlists_table")
     fun getPlaylistId(): Flow<List<Integer>>
 
-    @Query("DELETE FROM playlists_table WHERE :playlistsId = PlaylistId")
-    fun deletePlaylist(playlistsId: Long): Integer
+    @Query("DELETE FROM tracksinplaylist WHERE PlaylistId = :playlistsId AND TrackId = :trackId")
+    fun deleteTrack(trackId: Long, playlistsId: Long) {
+        //decreaseQuantity(playlistsId)
+    }
+
+    @Query(
+        """
+            DELETE FROM playlists_table WHERE PlaylistId = :playlistsId;
+    """
+    )
+    fun deletePlaylist(playlistsId: Long) {
+        deleteTracksInPlaylist(playlistsId)
+    }
+
+    @Query(
+        """
+            DELETE FROM tracksinplaylist WHERE PlaylistId = :playlistId;
+    """
+    )
+    fun deleteTracksInPlaylist(playlistId: Long) {
+        decreaseAllQuantity(playlistId)
+    }
 
     @Query("SELECT * FROM playlists_table WHERE :searchId = PlaylistId")
     fun queryPlaylistId(searchId: Long): PlaylistEntity
@@ -32,6 +52,12 @@ interface PlaylistDao {
 
     @Insert(entity = TrackInsidePlaylistEntity::class, onConflict = OnConflictStrategy.IGNORE)
     fun insertTrack(track: TrackInsidePlaylistEntity)
+
+    @Query("UPDATE playlists_table SET num = num - num WHERE playlistId = :playlistId")
+    fun decreaseAllQuantity(playlistId: Long): Int?
+
+    @Query("UPDATE playlists_table SET num = num - 1 WHERE playlistId = :playlistId")
+    fun decreaseQuantity(playlistId: Long): Int?
 
     @Query("UPDATE playlists_table SET num = num + 1 WHERE playlistId = :playlistId")
     fun updateQuantity(playlistId: Long): Int?
@@ -45,7 +71,7 @@ interface PlaylistDao {
         WHERE TracksInPlaylist.playlistId = :playlistId;
         """
     )
-    fun getTracksFromPlaylist(playlistId: Long): Flow<List<TrackInsidePlaylistEntity>>
+    fun getTracksFromPlaylist(playlistId: Long): List<TrackInsidePlaylistEntity>
 
 
     @Query("SELECT EXISTS (SELECT * FROM TracksInPlaylist WHERE playlistId = :playlistId AND trackId = :trackId)")

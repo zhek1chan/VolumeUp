@@ -47,4 +47,8 @@ class PlaylistsInteractorImpl(private val repository: PlaylistsRepository) : Pla
         val pl = repository.getData(id)
         return pl
     }
+
+    override fun deleteTrack(track: Track, playlist: Playlist) {
+        repository.deleteTrack(track, playlist)
+    }
 }

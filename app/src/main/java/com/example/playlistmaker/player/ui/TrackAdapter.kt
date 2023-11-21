@@ -7,7 +7,8 @@ import com.example.playlistmaker.databinding.SearchResultItemBinding
 import com.example.playlistmaker.player.domain.Track
 
 class TrackAdapter(
-    private val clickListener: TrackClick
+    private val clickListener: TrackClick,
+    private val longClickListener: LongDurationPress
 ) : RecyclerView.Adapter<TrackViewHolder>() {
 
     private var items: List<Track> = emptyList()
@@ -22,6 +23,11 @@ class TrackAdapter(
             clickListener.onClick(items[position])
             notifyDataSetChanged()
         }
+        holder.itemView.setOnLongClickListener {
+            longClickListener.onLongClick(items[position])
+            notifyDataSetChanged()
+            return@setOnLongClickListener true
+        }
 
     }
 
@@ -32,6 +38,11 @@ class TrackAdapter(
     fun interface TrackClick {
         fun onClick(track: Track)
     }
+
+    fun interface LongDurationPress {
+        fun onLongClick(track: Track)
+    }
+
 
     fun setItems(items: List<Track>) {
         this.items = items
