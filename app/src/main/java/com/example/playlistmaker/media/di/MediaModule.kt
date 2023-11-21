@@ -1,6 +1,7 @@
 package com.example.playlistmaker.media.di
 
 import com.example.playlistmaker.media.ui.viewmodel.CreatingPlaylistViewModel
+import com.example.playlistmaker.media.ui.viewmodel.EditPlaylistViewModel
 import com.example.playlistmaker.media.ui.viewmodel.FavouriteTracksViewModel
 import com.example.playlistmaker.media.ui.viewmodel.MediaActivityViewModel
 import com.example.playlistmaker.media.ui.viewmodel.PlaylistViewModel
@@ -14,4 +15,5 @@ val mediaModule = module {
     viewModel { CreatingPlaylistViewModel(get()) }
     viewModel { MediaActivityViewModel() }
     viewModel { PlaylistViewModel(get()) }
+    viewModel { EditPlaylistViewModel(get()) }
 }

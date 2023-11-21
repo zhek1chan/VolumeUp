@@ -173,7 +173,6 @@ class PlaylistFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        findNavController().navigate(R.id.mediaFragment)
         super.onDestroyView()
     }
 

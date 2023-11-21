@@ -49,6 +49,12 @@ class EditPlaylistFragment : Fragment() {
         var pl = arguments?.getParcelable<Playlist>("playlist")!!
         var nameText = pl.name
         var descriptionText = pl.description
+        playlist.name = pl.name
+        playlist.description = pl.description
+        playlist.description = pl.artworkUrl100
+        playlist.trackId = pl.trackId
+        playlist.playlistId = pl.playlistId
+        playlist.num = pl.num
         binding.nameOfAlbum.setText(nameText)
         binding.descriptionOfAlbum.setText(descriptionText)
         var uriString = pl.artworkUrl100
@@ -117,10 +123,7 @@ class EditPlaylistFragment : Fragment() {
         onDescriptionTextChange()
 
         binding.createPlaylist.setOnClickListener {
-            pl.name = playlist.name
-            pl.description = playlist.description
-            pl.artworkUrl100 = playlist.description
-            viewModel.savePlayList(pl)
+            viewModel.savePlayList(playlist)
             val customSnackBar = Snackbar.make(binding.snackBar, "", 2000)
             val layout = customSnackBar.view as Snackbar.SnackbarLayout
             val bind: CreatingAlbumAlertBinding = CreatingAlbumAlertBinding.inflate(layoutInflater)
@@ -128,7 +131,10 @@ class EditPlaylistFragment : Fragment() {
             layout.setPadding(0, 0, 0, 0)
             layout.addView(bind.root, 0)
             customSnackBar.show()
-            findNavController().navigateUp()
+            val bundle = Bundle()
+            bundle.putParcelable("playlist", playlist)
+            val navController = findNavController()
+            navController.navigate(R.id.action_editPlaylistFragment_to_playlistFragment, bundle)
         }
         val pickMedia =
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -146,6 +152,8 @@ class EditPlaylistFragment : Fragment() {
                             RoundedCorners(resources.getDimensionPixelSize(R.dimen.player_album_cover_corner_radius))
                         )
                         .into(binding.albumCoverage)
+                    binding.createPlaylist.isClickable = true
+                    binding.createPlaylist.setBackgroundResource(R.drawable.button_create_playlist_active);
                 } else {
                     binding.albumCoverageAdd.visibility = View.VISIBLE
                     Glide.with(binding.albumCoverage)
@@ -157,6 +165,7 @@ class EditPlaylistFragment : Fragment() {
                         )
                         .into(binding.albumCoverage)
                     Log.d("PhotoPicker", "No media selected")
+                    pl.artworkUrl100 = uriString
                 }
             }
         //по нажатию на кнопку pickImage запускаем photo picker
@@ -194,8 +203,8 @@ class EditPlaylistFragment : Fragment() {
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 nText = binding.nameOfAlbum.text.toString()
-                saveText(nText, dText)
                 if (nText.isNotEmpty()) {
+                    playlist.name = nText
                     binding.createPlaylist.isClickable = true
                     binding.createPlaylist.setBackgroundResource(R.drawable.button_create_playlist_active);
                 } else {
@@ -218,8 +227,11 @@ class EditPlaylistFragment : Fragment() {
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 dText = binding.descriptionOfAlbum.text.toString()
-                Log.d("Input", "$dText")
-                saveText(nText, dText)
+                if (dText.isNotEmpty()) {
+                    playlist.description = dText
+                    binding.createPlaylist.isClickable = true
+                    binding.createPlaylist.setBackgroundResource(R.drawable.button_create_playlist_active);
+                }
             }
 
             override fun afterTextChanged(p0: Editable?) {
@@ -228,10 +240,6 @@ class EditPlaylistFragment : Fragment() {
         })
     }
 
-    private fun saveText(n: String, d: String) {
-        playlist.name = n
-        playlist.description = d
-    }
 
     private fun requestPermission() {
         ActivityCompat.requestPermissions(
