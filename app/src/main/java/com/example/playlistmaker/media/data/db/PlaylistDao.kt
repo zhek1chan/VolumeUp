@@ -21,25 +21,13 @@ interface PlaylistDao {
     @Query("SELECT PlaylistId FROM playlists_table")
     fun getPlaylistId(): Flow<List<Integer>>
 
-    @Query("DELETE FROM tracksinplaylist WHERE PlaylistId = :playlistsId AND TrackId = :trackId")
-    fun deleteTrack(trackId: Long, playlistsId: Long) {
-        //decreaseQuantity(playlistsId)
-    }
+    @Query("DELETE FROM TracksInPlaylist WHERE playlistId = :playlistsId AND trackId = :trackId")
+    fun deleteTrack(trackId: Long, playlistsId: Long)
 
-    @Query(
-        """
-            DELETE FROM playlists_table WHERE PlaylistId = :playlistsId;
-    """
-    )
-    fun deletePlaylist(playlistsId: Long) {
-        deleteTracksInPlaylist(playlistsId)
-    }
+    @Query("DELETE FROM playlists_table WHERE PlaylistId = :playlistsId")
+    fun deletePlaylist(playlistsId: Long)
 
-    @Query(
-        """
-            DELETE FROM tracksinplaylist WHERE PlaylistId = :playlistId;
-    """
-    )
+    @Query("DELETE FROM tracksinplaylist WHERE PlaylistId = :playlistId")
     fun deleteTracksInPlaylist(playlistId: Long) {
         decreaseAllQuantity(playlistId)
     }

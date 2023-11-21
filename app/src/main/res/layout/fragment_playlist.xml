@@ -139,9 +139,41 @@
         android:id="@+id/overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#99000000"
+        android:background="#55AEAFB4"
         android:visibility="gone" />
 
+
+
+
+    <LinearLayout
+        android:id="@+id/playlist_songs"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@drawable/background_rounded_corners"
+        app:behavior_hideable="true"
+        app:behavior_peekHeight="250dp"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+        android:visibility="visible">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="4dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/rectangle_bottom" />
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_marginTop="24dp"
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="?attr/colorPrimary"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            android:visibility="visible" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:backgroundTint="?attr/colorPrimary"
@@ -225,36 +257,6 @@
                 android:textSize="19sp" />
         </LinearLayout>
 
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/playlist_songs"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="@drawable/background_rounded_corners"
-        app:behavior_hideable="true"
-        app:behavior_peekHeight="266dp"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
-        android:visibility="visible">
-
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="4dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/rectangle_bottom" />
-
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:layout_marginTop="24dp"
-            android:id="@+id/recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="?attr/colorPrimary"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            android:visibility="visible" />
 
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

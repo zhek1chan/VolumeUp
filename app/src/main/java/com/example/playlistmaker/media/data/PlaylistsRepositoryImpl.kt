@@ -40,6 +40,7 @@ class PlaylistsRepositoryImpl(
     override fun deletePlaylist(playlist: Playlist) {
         db.playlistDao().deletePlaylist(playlist.playlistId)
         Log.d("Playlist ${playlist.playlistId}", "was deleted")
+        db.playlistDao().decreaseAllQuantity(playlist.playlistId)
     }
 
     override fun checkPlaylist(id: Long): Flow<Boolean> = flow {
@@ -107,6 +108,7 @@ class PlaylistsRepositoryImpl(
 
     override fun deleteTrack(track: Track, playlist: Playlist) {
         db.playlistDao().deleteTrack(track.trackId, playlist.playlistId)
+        db.playlistDao().decreaseQuantity(playlist.playlistId)
     }
 
 

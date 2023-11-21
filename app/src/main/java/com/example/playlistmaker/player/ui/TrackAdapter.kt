@@ -28,7 +28,13 @@ class TrackAdapter(
             notifyDataSetChanged()
             return@setOnLongClickListener true
         }
+        getPos(position)
 
+
+    }
+
+    fun getPos(l: Int): Int {
+        return l
     }
 
     override fun getItemCount(): Int {

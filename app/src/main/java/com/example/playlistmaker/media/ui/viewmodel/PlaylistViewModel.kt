@@ -45,11 +45,13 @@ class PlaylistViewModel(private val interactor: PlaylistsInteractor) : ViewModel
 
     fun deleteTrack(t: Track, pl: Playlist) {
         interactor.deleteTrack(t, pl)
+        Log.d("track", "$t was deleted")
     }
 
     fun getTimeSum(tracks: List<Track>): String {
         var sum = 0
         for (track in tracks) {
+            Log.d("Length of string", "${track.trackTimeMillis.length}")
             Log.d("Sum", "$sum")
             sum += Character.getNumericValue(track.trackTimeMillis[0]) * 600
             Log.d("Sum", "$sum")

@@ -1,5 +1,6 @@
 package com.example.playlistmaker.media.ui.fragments
 
+import android.Manifest
 import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
@@ -7,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.addCallback
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
@@ -41,6 +43,7 @@ class PlaylistFragment : Fragment() {
     ): View {
         binding = FragmentPlaylistBinding.inflate(inflater, container, false)
         return binding.root
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -57,6 +60,8 @@ class PlaylistFragment : Fragment() {
             binding.playlistPlaceholder.visibility = View.VISIBLE
             binding.buttonBack.visibility = View.VISIBLE
         } else {
+
+
             binding.playlistPlaceholder.visibility = View.GONE
             binding.buttonBack.visibility = View.GONE
             binding.playlistCover.visibility = View.VISIBLE
@@ -65,6 +70,7 @@ class PlaylistFragment : Fragment() {
                 .load(uri)
                 .fitCenter()
                 .into(binding.playlistCover)
+
         }
         binding.buttonBack.setOnClickListener {
             findNavController().navigateUp()
@@ -78,13 +84,13 @@ class PlaylistFragment : Fragment() {
             render(it)
             Log.d("Render func", "I have started")
         }
-
+        val overlay = binding.overlay
         val bottomSheetContainerTracks = binding.playlistSongs
         var bottomSheetBehaviorSettings =
             BottomSheetBehavior.from(bottomSheetContainerTracks).apply {
                 state = BottomSheetBehavior.STATE_HIDDEN
+                overlay.visibility = View.VISIBLE
             }
-
         binding.buttonEdit.setOnClickListener {
             binding.playlistShare.visibility = View.VISIBLE
             val bottomSheetContainerSettings = binding.playlistShare
@@ -102,10 +108,9 @@ class PlaylistFragment : Fragment() {
             bottomSheetBehaviorSettings =
                 BottomSheetBehavior.from(bottomSheetContainerSettings).apply {
                     state = BottomSheetBehavior.STATE_HALF_EXPANDED
-                    bottomSheetContainerTracks.visibility = View.GONE
+                    overlay.visibility = View.VISIBLE
                 }
         }
-
 
         recyclerViewPlaylist = binding.rvPlaylist
         val list: List<Playlist> = (listOf(pl))
@@ -117,24 +122,28 @@ class PlaylistFragment : Fragment() {
             clickAdapting(it)
         },
             longClickListener = {
-                suggestTrackDeleting(it, pl)
+                suggestTrackDeleting(it, pl, 0)
             }
         )
         recyclerView.adapter = trackAdapter
 
         val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainerTracks).apply {
             state = BottomSheetBehavior.STATE_HALF_EXPANDED
+            overlay.visibility = View.VISIBLE
         }
         bottomSheetBehavior.isHideable = false
-        val overlay = binding.overlay
         bottomSheetBehavior.addBottomSheetCallback(object :
             BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        overlay.visibility = View.GONE
+                    }
+
                     else -> {
                         bottomSheetContainerTracks.visibility = View.VISIBLE
                         recyclerView.visibility = View.VISIBLE
-                        overlay.visibility = View.GONE
+                        overlay.visibility = View.VISIBLE
                     }
                 }
             }
@@ -148,11 +157,12 @@ class PlaylistFragment : Fragment() {
                     BottomSheetBehavior.STATE_HIDDEN -> {
                         overlay.visibility = View.GONE
                         bottomSheetContainerTracks.visibility = View.VISIBLE
+                        binding.playlistSongs.visibility = View.VISIBLE
                     }
 
                     else -> {
                         recyclerViewPlaylist.visibility = View.VISIBLE
-                        overlay.visibility = View.GONE
+                        overlay.visibility = View.VISIBLE
                         bottomSheetContainerTracks.visibility = View.VISIBLE
                     }
                 }
@@ -181,7 +191,7 @@ class PlaylistFragment : Fragment() {
             clickAdapting(it)
         },
             longClickListener = {
-                suggestTrackDeleting(it, playlist)
+                suggestTrackDeleting(it, playlist, tracks.indexOf(it))
             }
         )
         trackAdapter.setItems(tracks)
@@ -192,17 +202,17 @@ class PlaylistFragment : Fragment() {
         sum = viewModel.getTimeSum(tracks)
     }
 
-    private fun deleteTrackByClick(item: Track, playlist: Playlist) {
+    private fun deleteTrackByClick(item: Track, playlist: Playlist, pos: Int) {
         viewModel.deleteTrack(item, playlist)
         viewModel.observeState().observe(viewLifecycleOwner) {
             render(it)
             Log.d("New render func", "I have started")
         }
         binding.time.text = "${sum} минут ·  ${pl.num}"
-        recyclerView.adapter?.notifyDataSetChanged()
+        trackAdapter.notifyDataSetChanged()
     }
 
-    private fun suggestTrackDeleting(track: Track, playlist: Playlist) {
+    private fun suggestTrackDeleting(track: Track, playlist: Playlist, pos: Int) {
 
         val dialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle(getString(R.string.question_to_delete))
@@ -210,7 +220,7 @@ class PlaylistFragment : Fragment() {
                 return@setNegativeButton
             }
             .setPositiveButton(getString(R.string.yes)) { _, _ ->
-                deleteTrackByClick(track, playlist)
+                deleteTrackByClick(track, playlist, pos)
             }
             .show()
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
@@ -235,5 +245,12 @@ class PlaylistFragment : Fragment() {
         binding.recyclerView.visibility = View.GONE
     }
 
+    private fun requestPermission() {
+        ActivityCompat.requestPermissions(
+            requireActivity(),
+            arrayOf<String>(Manifest.permission.MANAGE_EXTERNAL_STORAGE),
+            255
+        )
+    }
 
 }
