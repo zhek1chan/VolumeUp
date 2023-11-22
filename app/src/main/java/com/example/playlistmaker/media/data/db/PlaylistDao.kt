@@ -27,10 +27,9 @@ interface PlaylistDao {
     @Query("DELETE FROM playlists_table WHERE PlaylistId = :playlistsId")
     fun deletePlaylist(playlistsId: Long)
 
-    @Query("DELETE FROM tracksinplaylist WHERE PlaylistId = :playlistId")
-    fun deleteTracksInPlaylist(playlistId: Long) {
-        decreaseAllQuantity(playlistId)
-    }
+    @Query("DELETE FROM TracksInPlaylist WHERE PlaylistId = :playlistId")
+    fun deleteTracksInPlaylist(playlistId: Long)
+
 
     @Query("SELECT * FROM playlists_table WHERE :searchId = PlaylistId")
     fun queryPlaylistId(searchId: Long): PlaylistEntity
@@ -79,4 +78,14 @@ interface PlaylistDao {
             false
         }
     }
+
+
+    @Query("INSERT INTO RestoredTracksInPlaylist (playlistId, TrackId) VALUES (:pl, :tr)")
+    fun insertRestoredTrack(pl: Long, tr: Long)
+
+    @Query("INSERT INTO TracksInPlaylist SELECT * FROM RestoredTracksInPlaylist")
+    fun restoreTrack()
+
+    @Query("DELETE FROM restoredtracksinplaylist WHERE playlistId = :playlistId")
+    fun clearRestoredTracks(playlistId: Long)
 }

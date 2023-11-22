@@ -32,9 +32,23 @@ class PlaylistsRepositoryImpl(
         emit(convertFromPlaylistEntity(playlists.reversed()))
     }
 
-    override fun putPlaylist(playlist: Playlist) {
+    override fun putPlaylist(playlist: Playlist, tracks: List<Track>) {
+        //Восстанавливаем таблицу треков
+        Log.d("getting tracks", "$tracks")
+        for (track in tracks) {
+            if (track.trackId != 0.toLong()) {
+                insertTrack(track)
+                db.playlistDao().insertRestoredTrack(playlist.playlistId, track.trackId)
+            }
+        }
         var converted: PlaylistEntity = convertor.map(playlist)
+        Log.d("changed playlist", "successfully")
         db.playlistDao().insertPlaylist(converted)
+        Log.d("inserted to restored tracks", "successfully")
+        db.playlistDao().restoreTrack()
+        Log.d("restoring tracks", "successfully")
+        db.playlistDao().clearRestoredTracks(playlist.playlistId)
+        Log.d("clearing restored tracks", "successfully")
     }
 
     override fun deletePlaylist(playlist: Playlist) {

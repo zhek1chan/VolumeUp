@@ -25,8 +25,10 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.CreatingAlbumAlertBinding
 import com.example.playlistmaker.databinding.FragmentEditPlaylistBinding
+import com.example.playlistmaker.media.data.TracksState
 import com.example.playlistmaker.media.domain.db.Playlist
 import com.example.playlistmaker.media.ui.viewmodel.EditPlaylistViewModel
+import com.example.playlistmaker.player.domain.Track
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -51,7 +53,6 @@ class EditPlaylistFragment : Fragment() {
         var descriptionText = pl.description
         playlist.name = pl.name
         playlist.description = pl.description
-        playlist.description = pl.artworkUrl100
         playlist.trackId = pl.trackId
         playlist.playlistId = pl.playlistId
         playlist.num = pl.num
@@ -123,7 +124,11 @@ class EditPlaylistFragment : Fragment() {
         onDescriptionTextChange()
 
         binding.createPlaylist.setOnClickListener {
-            viewModel.savePlayList(playlist)
+            viewModel.observeState().observe(viewLifecycleOwner) {
+                val tracks = render(it)
+                viewModel.savePlayList(playlist, tracks)
+                Log.d("Render func", "I have started")
+            }
             val customSnackBar = Snackbar.make(binding.snackBar, "", 2000)
             val layout = customSnackBar.view as Snackbar.SnackbarLayout
             val bind: CreatingAlbumAlertBinding = CreatingAlbumAlertBinding.inflate(layoutInflater)
@@ -195,6 +200,20 @@ class EditPlaylistFragment : Fragment() {
 
     var nText: String = ""
     var dText: String = ""
+    private fun render(state: TracksState): List<Track> {
+        var track: List<Track>
+        when (state) {
+            is TracksState.Tracks -> {
+                track = state.tracks
+            }
+
+            is TracksState.Empty -> {
+                track = emptyList()
+            }
+        }
+        return track
+    }
+
     private fun onNameTextChange() {
         binding.nameOfAlbum.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {

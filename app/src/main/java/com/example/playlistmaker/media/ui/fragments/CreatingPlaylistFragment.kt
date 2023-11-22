@@ -26,6 +26,7 @@ import com.example.playlistmaker.databinding.CreatingAlbumAlertBinding
 import com.example.playlistmaker.databinding.FragmentPlaylistCreatingBinding
 import com.example.playlistmaker.media.domain.db.Playlist
 import com.example.playlistmaker.media.ui.viewmodel.CreatingPlaylistViewModel
+import com.example.playlistmaker.player.domain.Track
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -35,6 +36,7 @@ class CreatingPlaylistFragment : Fragment() {
     private lateinit var binding: FragmentPlaylistCreatingBinding
     private val viewModel by viewModel<CreatingPlaylistViewModel>()
     private var playlist = Playlist(0, "", "", "", 0, 0)
+    private var track = Track("", "", "", "", 0, "", "", "", "", "")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -99,7 +101,8 @@ class CreatingPlaylistFragment : Fragment() {
         onDescriptionTextChange()
 
         binding.createPlaylist.setOnClickListener {
-            viewModel.onCreateClick(playlist)
+            val list = listOf<Track>(track)
+            viewModel.onCreateClick(playlist, list)
             val customSnackBar = Snackbar.make(binding.snackBar, "", 2000)
             val layout = customSnackBar.view as Snackbar.SnackbarLayout
             val bind: CreatingAlbumAlertBinding = CreatingAlbumAlertBinding.inflate(layoutInflater)

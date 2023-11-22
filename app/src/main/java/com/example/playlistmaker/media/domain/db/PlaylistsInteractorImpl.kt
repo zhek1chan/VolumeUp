@@ -6,8 +6,8 @@ import com.example.playlistmaker.player.domain.Track
 import kotlinx.coroutines.flow.Flow
 
 class PlaylistsInteractorImpl(private val repository: PlaylistsRepository) : PlaylistsInteractor {
-    override fun playlistAdd(playlist: Playlist) {
-        repository.putPlaylist(playlist)
+    override fun playlistAdd(playlist: Playlist, tracks: List<Track>) {
+        repository.putPlaylist(playlist, tracks)
     }
 
     override suspend fun playlistGet(): Flow<List<Playlist>> {
