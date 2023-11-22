@@ -1,4 +1,4 @@
-package com.example.playlistmaker.media.ui.viewmodel
+package com.example.playlistmaker.media.ui.viewmodel.playlists
 
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -48,7 +48,7 @@ class PlaylistViewModel(private val interactor: PlaylistsInteractor) : ViewModel
         Log.d("track", "$t was deleted")
     }
 
-    fun getTimeSum(tracks: List<Track>): String {
+    fun getTimeSum(tracks: List<Track>): Long {
         var sum = 0
         for (track in tracks) {
             Log.d("Length of string", "${track.trackTimeMillis.length}")
@@ -64,7 +64,7 @@ class PlaylistViewModel(private val interactor: PlaylistsInteractor) : ViewModel
 
 
         }
-        var res = "${round((sum / 60).toDouble())}"
-        return res
+        return round((sum / 60).toDouble())
+
     }
 }

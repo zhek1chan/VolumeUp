@@ -57,5 +57,10 @@
     <string name="question_to_delete">Уверены, что хотите удалить трек из плейлиста?</string>
     <string name="no">Нет</string>
     <string name="yes">Да</string>
-
+    <string name="sharePlaylist">Поделиться плейлистом</string>
+    <string name="look_what_i_did">Смотри какой я сделал(а) плейлист!</string>
+    <string name="playlist">плейлист c названием - </string>
+    <string name="naming">Название трека </string>
+    <string name="message_no_tracks">В данном плейлисте нет списка треков, которым можно поделиться.</string>
+    <string name="quantityTracks">С таким количеством</string>
 </resources>

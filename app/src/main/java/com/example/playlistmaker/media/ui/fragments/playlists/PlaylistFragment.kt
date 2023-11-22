@@ -1,12 +1,14 @@
-package com.example.playlistmaker.media.ui.fragments
+package com.example.playlistmaker.media.ui.fragments.playlists
 
 import android.Manifest
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -20,12 +22,13 @@ import com.example.playlistmaker.databinding.FragmentPlaylistBinding
 import com.example.playlistmaker.media.data.TracksState
 import com.example.playlistmaker.media.domain.db.Playlist
 import com.example.playlistmaker.media.ui.PlaylistsBottomAdapter
-import com.example.playlistmaker.media.ui.viewmodel.PlaylistViewModel
+import com.example.playlistmaker.media.ui.viewmodel.playlists.PlaylistViewModel
 import com.example.playlistmaker.player.domain.Track
 import com.example.playlistmaker.player.ui.TrackAdapter
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
+
 
 class PlaylistFragment : Fragment() {
     private val viewModel by viewModel<PlaylistViewModel>()
@@ -91,10 +94,77 @@ class PlaylistFragment : Fragment() {
                 state = BottomSheetBehavior.STATE_HIDDEN
                 overlay.visibility = View.VISIBLE
             }
+        binding.buttonSharePlaylist.setOnClickListener {
+            viewModel.observeState().observe(viewLifecycleOwner) {
+                var tracks = render(it)
+                Log.d("Render func", "I have started")
+                if (pl.num == 0.toLong()) {
+                    val message = getString(R.string.message_no_tracks)
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                } else {
+                    var trackInfo =
+                        "${getString(R.string.look_what_i_did)}\n${getString(R.string.playlist)} ${pl.name}\n${pl.description}\n${
+                            getString(
+                                R.string.quantityTracks
+                            )
+                        }${getString(R.string.tracks)} - ${pl.num}"
+                    var i = 0
+                    tracks.forEach { track ->
+                        i += 1
+                        val name = track.trackName
+                        val duration = track.trackTimeMillis
+                        trackInfo =
+                            "$trackInfo\n$i. ${getString(R.string.naming)}: $name - ($duration)\n"
+                    }
+
+                    val intentSend = Intent().apply {
+                        action = Intent.ACTION_SEND
+                        type = "text/plain"
+                        putExtra(Intent.EXTRA_TEXT, trackInfo)
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        Intent.createChooser(this, null)
+                    }
+                    requireContext().startActivity(intentSend, null)
+                }
+            }
+        }
         binding.buttonEdit.setOnClickListener {
             binding.playlistShare.visibility = View.VISIBLE
             val bottomSheetContainerSettings = binding.playlistShare
-            binding.share.setOnClickListener { }
+            binding.share.setOnClickListener {
+                viewModel.observeState().observe(viewLifecycleOwner) {
+                    var tracks = render(it)
+                    Log.d("Render func", "I have started")
+                    if (pl.num == 0.toLong()) {
+                        val message = getString(R.string.message_no_tracks)
+                        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                    } else {
+                        var trackInfo =
+                            "${getString(R.string.look_what_i_did)}\n${getString(R.string.playlist)} ${pl.name}\n${pl.description}\n${
+                                getString(
+                                    R.string.quantityTracks
+                                )
+                            }${getString(R.string.tracks)} - ${pl.num}"
+                        var i = 0
+                        tracks.forEach { track ->
+                            i += 1
+                            val name = track.trackName
+                            val duration = track.trackTimeMillis
+                            trackInfo =
+                                "$trackInfo\n$i. ${getString(R.string.naming)}: $name - ($duration)\n"
+                        }
+
+                        val intentSend = Intent().apply {
+                            action = Intent.ACTION_SEND
+                            type = "text/plain"
+                            putExtra(Intent.EXTRA_TEXT, trackInfo)
+                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            Intent.createChooser(this, null)
+                        }
+                        requireContext().startActivity(intentSend, null)
+                    }
+                }
+            }
             binding.edit.setOnClickListener {
                 val bundle = Bundle()
                 bundle.putParcelable("playlist", pl)
@@ -176,10 +246,17 @@ class PlaylistFragment : Fragment() {
         super.onDestroyView()
     }
 
-    private fun render(state: TracksState) {
+    private fun render(state: TracksState): List<Track> {
         when (state) {
-            is TracksState.Tracks -> showContent(state.tracks, pl)
-            is TracksState.Empty -> showEmpty()
+            is TracksState.Tracks -> {
+                showContent(state.tracks, pl)
+                return state.tracks
+            }
+
+            is TracksState.Empty -> {
+                showEmpty()
+                return emptyList()
+            }
         }
     }
 
@@ -197,9 +274,28 @@ class PlaylistFragment : Fragment() {
         trackAdapter.notifyDataSetChanged()
         recyclerView.adapter = trackAdapter
         recyclerView.adapter?.notifyDataSetChanged()
-        binding.time.text = "${viewModel.getTimeSum(tracks)} минуты  ·  ${pl.num}"
-        sum = viewModel.getTimeSum(tracks)
+        if (pl.num.toInt() == 2) {
+            binding.time.text = "${viewModel.getTimeSum(tracks)} ${
+                resources.getQuantityString(
+                    R.plurals.minutes,
+                    viewModel.getTimeSum(tracks).toInt()
+                )
+            }  ·  ${pl.num} трека"
+        } else {
+            binding.time.text = "${viewModel.getTimeSum(tracks)} ${
+                resources.getQuantityString(
+                    R.plurals.minutes,
+                    viewModel.getTimeSum(tracks).toInt()
+                )
+            }  ·  ${pl.num} ${
+                resources.getQuantityString(
+                    R.plurals.numberOfTracksAvailable,
+                    pl.num.toInt()
+                )
+            } "
+        }
     }
+
 
     private fun deleteTrackByClick(item: Track, playlist: Playlist, pos: Int) {
         viewModel.deleteTrack(item, playlist)

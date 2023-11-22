@@ -1,4 +1,4 @@
-package com.example.playlistmaker.media.ui.fragments
+package com.example.playlistmaker.media.ui.fragments.playlists
 
 import android.Manifest
 import android.app.AlertDialog
@@ -25,7 +25,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.CreatingAlbumAlertBinding
 import com.example.playlistmaker.databinding.FragmentPlaylistCreatingBinding
 import com.example.playlistmaker.media.domain.db.Playlist
-import com.example.playlistmaker.media.ui.viewmodel.CreatingPlaylistViewModel
+import com.example.playlistmaker.media.ui.viewmodel.playlists.CreatingPlaylistViewModel
 import com.example.playlistmaker.player.domain.Track
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar

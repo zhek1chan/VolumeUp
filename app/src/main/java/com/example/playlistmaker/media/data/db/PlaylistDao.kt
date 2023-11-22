@@ -19,7 +19,7 @@ interface PlaylistDao {
     fun getPlaylist(): List<PlaylistEntity>
 
     @Query("SELECT PlaylistId FROM playlists_table")
-    fun getPlaylistId(): Flow<List<Integer>>
+    fun getPlaylistId(): Flow<List<Int>>
 
     @Query("DELETE FROM TracksInPlaylist WHERE playlistId = :playlistsId AND trackId = :trackId")
     fun deleteTrack(trackId: Long, playlistsId: Long)
@@ -86,6 +86,6 @@ interface PlaylistDao {
     @Query("INSERT INTO TracksInPlaylist SELECT * FROM RestoredTracksInPlaylist")
     fun restoreTrack()
 
-    @Query("DELETE FROM restoredtracksinplaylist WHERE playlistId = :playlistId")
+    @Query("DELETE FROM RestoredTracksInPlaylist WHERE playlistId = :playlistId")
     fun clearRestoredTracks(playlistId: Long)
 }

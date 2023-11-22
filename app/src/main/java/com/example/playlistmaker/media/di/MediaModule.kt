@@ -1,11 +1,11 @@
 package com.example.playlistmaker.media.di
 
-import com.example.playlistmaker.media.ui.viewmodel.CreatingPlaylistViewModel
-import com.example.playlistmaker.media.ui.viewmodel.EditPlaylistViewModel
+import com.example.playlistmaker.media.ui.viewmodel.playlists.CreatingPlaylistViewModel
+import com.example.playlistmaker.media.ui.viewmodel.playlists.EditPlaylistViewModel
 import com.example.playlistmaker.media.ui.viewmodel.FavouriteTracksViewModel
 import com.example.playlistmaker.media.ui.viewmodel.MediaActivityViewModel
-import com.example.playlistmaker.media.ui.viewmodel.PlaylistViewModel
-import com.example.playlistmaker.media.ui.viewmodel.PlaylistsViewModel
+import com.example.playlistmaker.media.ui.viewmodel.playlists.PlaylistViewModel
+import com.example.playlistmaker.media.ui.viewmodel.playlists.PlaylistsViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 

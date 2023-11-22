@@ -14,7 +14,7 @@ import com.example.playlistmaker.media.data.entity.TrackInsidePlaylistEntity
 import com.example.playlistmaker.media.data.entity.TracksInPlaylistEntity
 import com.example.playlistmaker.media.domain.db.Playlist
 import com.example.playlistmaker.media.domain.db.PlaylistsRepository
-import com.example.playlistmaker.media.ui.fragments.CreatingPlaylistFragment
+import com.example.playlistmaker.media.ui.fragments.playlists.CreatingPlaylistFragment
 import com.example.playlistmaker.player.domain.Track
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

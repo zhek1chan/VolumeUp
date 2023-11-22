@@ -1,4 +1,4 @@
-package com.example.playlistmaker.media.ui.fragments
+package com.example.playlistmaker.media.ui.fragments.playlists
 
 import android.os.Bundle
 import android.util.Log
@@ -14,7 +14,7 @@ import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.example.playlistmaker.media.data.PlaylistsState
 import com.example.playlistmaker.media.domain.db.Playlist
 import com.example.playlistmaker.media.ui.PlaylistsAdapter
-import com.example.playlistmaker.media.ui.viewmodel.PlaylistsViewModel
+import com.example.playlistmaker.media.ui.viewmodel.playlists.PlaylistsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistsFragment : Fragment() {

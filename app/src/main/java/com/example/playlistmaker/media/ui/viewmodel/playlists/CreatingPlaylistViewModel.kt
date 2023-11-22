@@ -1,4 +1,4 @@
-package com.example.playlistmaker.media.ui.viewmodel
+package com.example.playlistmaker.media.ui.viewmodel.playlists
 
 import android.net.Uri
 import android.util.Log
