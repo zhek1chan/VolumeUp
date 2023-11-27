@@ -9,7 +9,7 @@
     </plurals>
     <plurals name="numberOfTracksAvailable">
         <item quantity="one">трек</item>
-        <item quantity="few">треков</item>
+        <item quantity="few">трека</item>
         <item quantity="zero">треков</item>
         <item quantity="two">трека</item>
         <item quantity="other">треков</item>
