@@ -24,7 +24,7 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.CreatingAlbumAlertBinding
-import com.example.playlistmaker.databinding.FragmentEditPlaylistBinding
+import com.example.playlistmaker.databinding.FragmentPlaylistCreatingBinding
 import com.example.playlistmaker.media.data.TracksState
 import com.example.playlistmaker.media.domain.db.Playlist
 import com.example.playlistmaker.media.ui.viewmodel.playlists.EditPlaylistViewModel
@@ -34,20 +34,29 @@ import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class EditPlaylistFragment : Fragment() {
-    private lateinit var binding: FragmentEditPlaylistBinding
+    private lateinit var binding: FragmentPlaylistCreatingBinding
     private val viewModel by viewModel<EditPlaylistViewModel>()
     private var playlist = Playlist(0, "", "", "", 0, 0)
+    private var uriString: String = ""
+    private lateinit var tracks: List<Track>
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentEditPlaylistBinding.inflate(inflater, container, false)
+        viewModel.observeState().observe(viewLifecycleOwner) {
+            render(it)
+        }
+        binding = FragmentPlaylistCreatingBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.observeState().observe(viewLifecycleOwner) {
+            render(it)
+        }
         var pl = arguments?.getParcelable<Playlist>("playlist")!!
         var nameText = pl.name
         var descriptionText = pl.description
@@ -55,9 +64,12 @@ class EditPlaylistFragment : Fragment() {
         playlist.description = pl.description
         playlist.trackId = pl.trackId
         playlist.playlistId = pl.playlistId
+        viewModel.getTracks(playlist.playlistId)
         playlist.num = pl.num
         binding.nameOfAlbum.setText(nameText)
         binding.descriptionOfAlbum.setText(descriptionText)
+        binding.saveText.setText(getString(R.string.save))
+        binding.naming.setText(getString(R.string.edit))
         var uriString = pl.artworkUrl100
         if (uriString.isNotEmpty()) {
             binding.albumCoverageAdd.visibility = View.GONE
@@ -122,25 +134,6 @@ class EditPlaylistFragment : Fragment() {
 
         onNameTextChange()
         onDescriptionTextChange()
-
-        binding.createPlaylist.setOnClickListener {
-            viewModel.observeState().observe(viewLifecycleOwner) {
-                val tracks = render(it)
-                viewModel.savePlayList(playlist, tracks)
-                Log.d("Render func", "I have started")
-            }
-            val customSnackBar = Snackbar.make(binding.snackBar, "", 2000)
-            val layout = customSnackBar.view as Snackbar.SnackbarLayout
-            val bind: CreatingAlbumAlertBinding = CreatingAlbumAlertBinding.inflate(layoutInflater)
-            bind.text.setText("Плейлист $nameText сохранён")
-            layout.setPadding(0, 0, 0, 0)
-            layout.addView(bind.root, 0)
-            customSnackBar.show()
-            val bundle = Bundle()
-            bundle.putParcelable("playlist", playlist)
-            val navController = findNavController()
-            navController.navigate(R.id.action_editPlaylistFragment_to_playlistFragment, bundle)
-        }
         val pickMedia =
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
                 //обрабатываем событие выбора пользователем фотографии
@@ -158,6 +151,7 @@ class EditPlaylistFragment : Fragment() {
                         )
                         .into(binding.albumCoverage)
                     binding.createPlaylist.isClickable = true
+                    iAmBigButton(playlist.name, playlist.description)
                     binding.createPlaylist.setBackgroundResource(R.drawable.button_create_playlist_active);
                 } else {
                     binding.albumCoverageAdd.visibility = View.VISIBLE
@@ -200,18 +194,16 @@ class EditPlaylistFragment : Fragment() {
 
     var nText: String = ""
     var dText: String = ""
-    private fun render(state: TracksState): List<Track> {
-        var track: List<Track>
+    private fun render(state: TracksState) {
         when (state) {
             is TracksState.Tracks -> {
-                track = state.tracks
+                tracks = state.tracks
             }
 
             is TracksState.Empty -> {
-                track = emptyList()
+                tracks = emptyList()
             }
         }
-        return track
     }
 
     private fun onNameTextChange() {
@@ -225,15 +217,16 @@ class EditPlaylistFragment : Fragment() {
                 if (nText.isNotEmpty()) {
                     playlist.name = nText
                     binding.createPlaylist.isClickable = true
-                    binding.createPlaylist.setBackgroundResource(R.drawable.button_create_playlist_active);
+                    binding.createPlaylist.setBackgroundResource(R.drawable.button_create_playlist_active)
+                    iAmBigButton(nText, dText)
                 } else {
                     binding.createPlaylist.isClickable = false
-                    binding.createPlaylist.setBackgroundResource(R.drawable.button_create_playlist);
+                    binding.createPlaylist.setBackgroundResource(R.drawable.button_create_playlist)
                 }
             }
 
             override fun afterTextChanged(p0: Editable?) {
-
+                playlist.name = nText
             }
         })
     }
@@ -248,13 +241,14 @@ class EditPlaylistFragment : Fragment() {
                 dText = binding.descriptionOfAlbum.text.toString()
                 if (dText.isNotEmpty()) {
                     playlist.description = dText
+                    iAmBigButton(nText, dText)
                     binding.createPlaylist.isClickable = true
                     binding.createPlaylist.setBackgroundResource(R.drawable.button_create_playlist_active);
                 }
             }
 
             override fun afterTextChanged(p0: Editable?) {
-
+                playlist.description = dText
             }
         })
     }
@@ -266,5 +260,31 @@ class EditPlaylistFragment : Fragment() {
             arrayOf<String>(Manifest.permission.READ_EXTERNAL_STORAGE),
             255
         )
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        findNavController().popBackStack(R.id.editPlaylistFragment, true)
+    }
+
+    fun iAmBigButton(nameText: String, descriptionText: String) {
+        binding.createPlaylist.setOnClickListener {
+            playlist.name = nameText
+            playlist.description = descriptionText
+            val newPlaylist = playlist
+            Log.d("Playlist CHECK", "$newPlaylist")
+            viewModel.savePlayList(newPlaylist, tracks)
+            val customSnackBar = Snackbar.make(binding.snackBar, "", 2000)
+            val layout = customSnackBar.view as Snackbar.SnackbarLayout
+            val bind: CreatingAlbumAlertBinding = CreatingAlbumAlertBinding.inflate(layoutInflater)
+            bind.text.setText("Плейлист $nameText сохранён")
+            layout.setPadding(0, 0, 0, 0)
+            layout.addView(bind.root, 0)
+            customSnackBar.show()
+            val bundle = Bundle()
+            bundle.putParcelable("playlist", playlist)
+            val navController = findNavController()
+            navController.navigate(R.id.action_editPlaylistFragment_to_playlistFragment, bundle)
+        }
     }
 }

@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
@@ -32,7 +33,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistFragment : Fragment() {
     private val viewModel by viewModel<PlaylistViewModel>()
-    private lateinit var binding: FragmentPlaylistBinding
+    private var binding: FragmentPlaylistBinding? = null
     private lateinit var recyclerView: RecyclerView
     private lateinit var recyclerViewPlaylist: RecyclerView
     private lateinit var pl: Playlist
@@ -43,39 +44,39 @@ class PlaylistFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View {
+    ): CoordinatorLayout? {
         binding = FragmentPlaylistBinding.inflate(inflater, container, false)
-        return binding.root
+        return binding?.root
 
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         pl = arguments?.getParcelable<Playlist>("playlist")!!
-        binding.playlistName.text = pl.name
+        binding?.playlistName?.text = pl.name
         if (pl.description.isEmpty()) {
-            binding.description.text = "2023"
+            binding?.description?.text = "2023"
         } else {
-            binding.description.text = pl.description
+            binding?.description?.text = pl.description
         }
         if (pl.artworkUrl100.isEmpty()) {
-            binding.playlistCover.visibility = View.GONE
-            binding.playlistPlaceholder.visibility = View.VISIBLE
-            binding.buttonBack.visibility = View.VISIBLE
+            binding?.playlistCover?.visibility = View.GONE
+            binding?.playlistPlaceholder?.visibility = View.VISIBLE
+            binding?.buttonBack?.visibility = View.VISIBLE
         } else {
 
 
-            binding.playlistPlaceholder.visibility = View.GONE
-            binding.buttonBack.visibility = View.GONE
-            binding.playlistCover.visibility = View.VISIBLE
+            binding?.playlistPlaceholder?.visibility = View.GONE
+            binding?.buttonBack?.visibility = View.GONE
+            binding?.playlistCover?.visibility = View.VISIBLE
             val uri = pl.artworkUrl100.toUri()
             Glide.with(requireActivity())
                 .load(uri)
                 .fitCenter()
-                .into(binding.playlistCover)
+                .into(binding?.playlistCover!!)
 
         }
-        binding.buttonBack.setOnClickListener {
+        binding?.buttonBack?.setOnClickListener {
             findNavController().navigateUp()
         }
         requireActivity().onBackPressedDispatcher.addCallback(this) {
@@ -87,14 +88,14 @@ class PlaylistFragment : Fragment() {
             render(it)
             Log.d("Render func", "I have started")
         }
-        val overlay = binding.overlay
-        val bottomSheetContainerTracks = binding.playlistSongs
+        val overlay = binding?.overlay!!
+        val bottomSheetContainerTracks = binding?.playlistSongs!!
         var bottomSheetBehaviorSettings =
             BottomSheetBehavior.from(bottomSheetContainerTracks).apply {
                 state = BottomSheetBehavior.STATE_HIDDEN
                 overlay.visibility = View.VISIBLE
             }
-        binding.buttonSharePlaylist.setOnClickListener {
+        binding?.buttonSharePlaylist?.setOnClickListener {
             viewModel.observeState().observe(viewLifecycleOwner) {
                 var tracks = render(it)
                 Log.d("Render func", "I have started")
@@ -128,10 +129,10 @@ class PlaylistFragment : Fragment() {
                 }
             }
         }
-        binding.buttonEdit.setOnClickListener {
-            binding.playlistShare.visibility = View.VISIBLE
-            val bottomSheetContainerSettings = binding.playlistShare
-            binding.share.setOnClickListener {
+        binding?.buttonEdit?.setOnClickListener {
+            binding?.playlistShare?.visibility = View.VISIBLE
+            val bottomSheetContainerSettings = binding?.playlistShare
+            binding?.share?.setOnClickListener {
                 viewModel.observeState().observe(viewLifecycleOwner) {
                     var tracks = render(it)
                     Log.d("Render func", "I have started")
@@ -165,29 +166,29 @@ class PlaylistFragment : Fragment() {
                     }
                 }
             }
-            binding.edit.setOnClickListener {
+            binding?.edit?.setOnClickListener {
                 val bundle = Bundle()
                 bundle.putParcelable("playlist", pl)
                 val navController = findNavController()
                 navController.navigate(R.id.editPlaylistFragment, bundle)
             }
-            binding.delete.setOnClickListener {
+            binding?.delete?.setOnClickListener {
                 viewModel.deletePlaylist(pl)
                 findNavController().navigateUp()
             }
             bottomSheetBehaviorSettings =
-                BottomSheetBehavior.from(bottomSheetContainerSettings).apply {
+                BottomSheetBehavior.from(bottomSheetContainerSettings!!).apply {
                     state = BottomSheetBehavior.STATE_HALF_EXPANDED
                     overlay.visibility = View.VISIBLE
                 }
         }
 
-        recyclerViewPlaylist = binding.rvPlaylist
+        recyclerViewPlaylist = binding?.rvPlaylist!!
         val list: List<Playlist> = (listOf(pl))
         recyclerViewPlaylist.adapter = PlaylistsBottomAdapter(list) {
             clickAdapting(Track("", ' '.toString(), "", "", 0, "", "", "", "", "", false))
         }
-        recyclerView = binding.recyclerView
+        recyclerView = binding?.recyclerView!!
         trackAdapter = TrackAdapter({
             clickAdapting(it)
         },
@@ -227,7 +228,7 @@ class PlaylistFragment : Fragment() {
                     BottomSheetBehavior.STATE_HIDDEN -> {
                         overlay.visibility = View.GONE
                         bottomSheetContainerTracks.visibility = View.VISIBLE
-                        binding.playlistSongs.visibility = View.VISIBLE
+                        binding?.playlistSongs?.visibility = View.VISIBLE
                     }
 
                     else -> {
@@ -243,6 +244,7 @@ class PlaylistFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        binding = null
         super.onDestroyView()
     }
 
@@ -261,8 +263,9 @@ class PlaylistFragment : Fragment() {
     }
 
     private fun showContent(tracks: List<Track>, playlist: Playlist) {
+        binding?.textNoTracks?.visibility = View.GONE
         Log.d("Tracks", "Are shown")
-        binding.recyclerView.visibility = View.VISIBLE
+        binding?.recyclerView?.visibility = View.VISIBLE
         trackAdapter = TrackAdapter({
             clickAdapting(it)
         },
@@ -271,18 +274,17 @@ class PlaylistFragment : Fragment() {
             }
         )
         trackAdapter.setItems(tracks)
-        trackAdapter.notifyDataSetChanged()
         recyclerView.adapter = trackAdapter
         recyclerView.adapter?.notifyDataSetChanged()
         if (pl.num.toInt() == 2) {
-            binding.time.text = "${viewModel.getTimeSum(tracks)} ${
+            binding?.time?.text = "${viewModel.getTimeSum(tracks)} ${
                 resources.getQuantityString(
                     R.plurals.minutes,
                     viewModel.getTimeSum(tracks).toInt()
                 )
             }  ·  ${pl.num} трека"
         } else {
-            binding.time.text = "${viewModel.getTimeSum(tracks)} ${
+            binding?.time?.text = "${viewModel.getTimeSum(tracks)} ${
                 resources.getQuantityString(
                     R.plurals.minutes,
                     viewModel.getTimeSum(tracks).toInt()
@@ -299,12 +301,32 @@ class PlaylistFragment : Fragment() {
 
     private fun deleteTrackByClick(item: Track, playlist: Playlist, pos: Int) {
         viewModel.deleteTrack(item, playlist)
-        viewModel.observeState().observe(viewLifecycleOwner) {
-            render(it)
-            Log.d("New render func", "I have started")
+        recyclerView.adapter?.notifyItemRemoved(pos)
+        val time =
+            Integer.parseInt(item.trackTimeMillis[0].toString()) * 10 + Integer.parseInt(item.trackTimeMillis[1].toString())
+        pl.num = pl.num - 1
+        viewModel.observeNumState().observe(viewLifecycleOwner) {
+            if (pl.num.toInt() == 2) {
+                binding?.time?.text = "${it - time} ${
+                    resources.getQuantityString(
+                        R.plurals.minutes,
+                        it.toInt()
+                    )
+                }  ·  ${pl.num} трека"
+            } else {
+                binding?.time?.text = "${it - time} ${
+                    resources.getQuantityString(
+                        R.plurals.minutes,
+                        it.toInt()
+                    )
+                }  ·  ${pl.num} ${
+                    resources.getQuantityString(
+                        R.plurals.numberOfTracksAvailable,
+                        pl.num.toInt()
+                    )
+                } "
+            }
         }
-        binding.time.text = "${sum} минут ·  ${pl.num}"
-        trackAdapter.notifyDataSetChanged()
     }
 
     private fun suggestTrackDeleting(track: Track, playlist: Playlist, pos: Int) {
@@ -337,7 +359,8 @@ class PlaylistFragment : Fragment() {
 
     private fun showEmpty() {
         Log.d("Tracks", "ARE NOT shown")
-        binding.recyclerView.visibility = View.GONE
+        binding?.recyclerView?.visibility = View.GONE
+        binding?.textNoTracks?.visibility = View.VISIBLE
     }
 
     private fun requestPermission() {

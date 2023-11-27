@@ -63,4 +63,6 @@
     <string name="naming">Название трека </string>
     <string name="message_no_tracks">В данном плейлисте нет списка треков, которым можно поделиться.</string>
     <string name="quantityTracks">С таким количеством</string>
+    <string name="no_tracks">Вы ещё не добавили ни одного трека</string>
+    <string name="save">Сохранить</string>
 </resources>

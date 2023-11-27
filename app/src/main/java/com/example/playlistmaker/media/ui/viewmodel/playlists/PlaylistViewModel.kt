@@ -16,7 +16,9 @@ import java.lang.Math.round
 class PlaylistViewModel(private val interactor: PlaylistsInteractor) : ViewModel() {
 
     private val stateLiveData = MutableLiveData<TracksState>()
+    private val numStateData = MutableLiveData<Long>()
     fun observeState(): LiveData<TracksState> = stateLiveData
+    fun observeNumState(): LiveData<Long> = numStateData
     fun getTracks(id: Long) {
         Log.d("getTracksMethod", "started")
         viewModelScope.launch {
@@ -64,6 +66,7 @@ class PlaylistViewModel(private val interactor: PlaylistsInteractor) : ViewModel
 
 
         }
+        numStateData.postValue(round((sum / 60).toDouble()))
         return round((sum / 60).toDouble())
 
     }
