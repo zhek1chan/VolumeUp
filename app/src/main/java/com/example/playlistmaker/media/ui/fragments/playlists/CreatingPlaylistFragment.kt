@@ -2,7 +2,6 @@ package com.example.playlistmaker.media.ui.fragments.playlists
 
 import android.Manifest
 import android.app.AlertDialog
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.text.Editable
 import android.text.Html
@@ -143,26 +142,10 @@ class CreatingPlaylistFragment : Fragment() {
             }
         //по нажатию на кнопку pickImage запускаем photo picker
         binding.albumCoverage.setOnClickListener {
-            requestPermission()
-            if (ContextCompat.checkSelfPermission(
-                    requireActivity(),
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-                )
-                == PackageManager.PERMISSION_GRANTED
-            ) {
-                pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-            }
+            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
         binding.albumCoverageAdd.setOnClickListener {
-            requestPermission()
-            if (ContextCompat.checkSelfPermission(
-                    requireActivity(),
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-                )
-                == PackageManager.PERMISSION_GRANTED
-            ) {
-                pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-            }
+            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
     }
 

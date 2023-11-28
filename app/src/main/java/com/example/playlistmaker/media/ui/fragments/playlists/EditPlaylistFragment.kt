@@ -2,7 +2,6 @@ package com.example.playlistmaker.media.ui.fragments.playlists
 
 import android.Manifest
 import android.app.AlertDialog
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.text.Editable
 import android.text.Html
@@ -97,7 +96,10 @@ class EditPlaylistFragment : Fragment() {
                     .setPositiveButton(getString(R.string.cancel)) { dialog, _ ->
                         dialog.cancel()
                     }.setNegativeButton(getString(R.string.finish)) { dialog, _ ->
-                        findNavController().navigateUp()
+                        val bundle = Bundle()
+                        bundle.putParcelable("playlist", playlist)
+                        val navController = findNavController()
+                        navController.navigate(R.id.playlistFragment, bundle)
                     }.show()
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
                     .setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
@@ -105,7 +107,12 @@ class EditPlaylistFragment : Fragment() {
                     .setAllCaps(false)
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE)
                     .setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
-            } else findNavController().navigateUp()
+            } else {
+                val bundle = Bundle()
+                bundle.putParcelable("playlist", playlist)
+                val navController = findNavController()
+                navController.navigate(R.id.playlistFragment, bundle)
+            }
         }
         binding.backIcon.setOnClickListener {
             if ((nameText.isNotEmpty()) || (descriptionText.isNotEmpty()) || (uriString.isNotEmpty())) {
@@ -121,7 +128,10 @@ class EditPlaylistFragment : Fragment() {
                     .setPositiveButton(getString(R.string.cancel)) { dialog, which ->
                         dialog.cancel()
                     }.setNegativeButton(getString(R.string.finish)) { dialog, which ->
-                        findNavController().navigateUp()
+                        val bundle = Bundle()
+                        bundle.putParcelable("playlist", playlist)
+                        val navController = findNavController()
+                        navController.navigate(R.id.playlistFragment, bundle)
                     }.show()
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
                     .setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
@@ -129,7 +139,12 @@ class EditPlaylistFragment : Fragment() {
                     .setAllCaps(false)
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE)
                     .setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
-            } else findNavController().navigateUp()
+            } else {
+                val bundle = Bundle()
+                bundle.putParcelable("playlist", playlist)
+                val navController = findNavController()
+                navController.navigate(R.id.playlistFragment, bundle)
+            }
         }
 
         onNameTextChange()
@@ -169,26 +184,11 @@ class EditPlaylistFragment : Fragment() {
             }
         //по нажатию на кнопку pickImage запускаем photo picker
         binding.albumCoverage.setOnClickListener {
-            requestPermission()
-            if (ContextCompat.checkSelfPermission(
-                    requireActivity(),
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-                )
-                == PackageManager.PERMISSION_GRANTED
-            ) {
-                pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-            }
+            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+
         }
         binding.albumCoverageAdd.setOnClickListener {
-            requestPermission()
-            if (ContextCompat.checkSelfPermission(
-                    requireActivity(),
-                    Manifest.permission.READ_EXTERNAL_STORAGE
-                )
-                == PackageManager.PERMISSION_GRANTED
-            ) {
-                pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-            }
+            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
     }
 
@@ -269,8 +269,6 @@ class EditPlaylistFragment : Fragment() {
 
     fun iAmBigButton(nameText: String, descriptionText: String) {
         binding.createPlaylist.setOnClickListener {
-            playlist.name = nameText
-            playlist.description = descriptionText
             val newPlaylist = playlist
             Log.d("Playlist CHECK", "$newPlaylist")
             viewModel.savePlayList(newPlaylist, tracks)
@@ -284,7 +282,8 @@ class EditPlaylistFragment : Fragment() {
             val bundle = Bundle()
             bundle.putParcelable("playlist", playlist)
             val navController = findNavController()
-            navController.navigate(R.id.action_editPlaylistFragment_to_playlistFragment, bundle)
+            findNavController().popBackStack(R.id.playlistFragment, true)
+            navController.navigate(R.id.playlistFragment, bundle)
         }
     }
 }

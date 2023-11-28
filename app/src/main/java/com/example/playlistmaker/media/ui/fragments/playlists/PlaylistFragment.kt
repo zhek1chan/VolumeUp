@@ -64,10 +64,7 @@ class PlaylistFragment : Fragment() {
             binding?.playlistPlaceholder?.visibility = View.VISIBLE
             binding?.buttonBack?.visibility = View.VISIBLE
         } else {
-
-
             binding?.playlistPlaceholder?.visibility = View.GONE
-            binding?.buttonBack?.visibility = View.GONE
             binding?.playlistCover?.visibility = View.VISIBLE
             val uri = pl.artworkUrl100.toUri()
             Glide.with(requireActivity())
@@ -76,6 +73,22 @@ class PlaylistFragment : Fragment() {
                 .into(binding?.playlistCover!!)
 
         }
+
+        recyclerViewPlaylist = binding?.rvPlaylist!!
+        val list: List<Playlist> = (listOf(pl))
+        recyclerViewPlaylist.adapter = PlaylistsBottomAdapter(list) {
+            clickAdapting(Track("", ' '.toString(), "", "", 0, "", "", "", "", "", false))
+        }
+        recyclerView = binding?.recyclerView!!
+        trackAdapter = TrackAdapter({
+            clickAdapting(it)
+        },
+            longClickListener = {
+                suggestTrackDeleting(it, pl, 0)
+            }
+        )
+        recyclerView.adapter = trackAdapter
+
         binding?.buttonBack?.setOnClickListener {
             findNavController().navigateUp()
         }
@@ -88,12 +101,10 @@ class PlaylistFragment : Fragment() {
             render(it)
             Log.d("Render func", "I have started")
         }
-        val overlay = binding?.overlay!!
         val bottomSheetContainerTracks = binding?.playlistSongs!!
         var bottomSheetBehaviorSettings =
             BottomSheetBehavior.from(bottomSheetContainerTracks).apply {
                 state = BottomSheetBehavior.STATE_HIDDEN
-                overlay.visibility = View.VISIBLE
             }
         binding?.buttonSharePlaylist?.setOnClickListener {
             viewModel.observeState().observe(viewLifecycleOwner) {
@@ -179,28 +190,12 @@ class PlaylistFragment : Fragment() {
             bottomSheetBehaviorSettings =
                 BottomSheetBehavior.from(bottomSheetContainerSettings!!).apply {
                     state = BottomSheetBehavior.STATE_HALF_EXPANDED
-                    overlay.visibility = View.VISIBLE
                 }
         }
 
-        recyclerViewPlaylist = binding?.rvPlaylist!!
-        val list: List<Playlist> = (listOf(pl))
-        recyclerViewPlaylist.adapter = PlaylistsBottomAdapter(list) {
-            clickAdapting(Track("", ' '.toString(), "", "", 0, "", "", "", "", "", false))
-        }
-        recyclerView = binding?.recyclerView!!
-        trackAdapter = TrackAdapter({
-            clickAdapting(it)
-        },
-            longClickListener = {
-                suggestTrackDeleting(it, pl, 0)
-            }
-        )
-        recyclerView.adapter = trackAdapter
 
         val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainerTracks).apply {
             state = BottomSheetBehavior.STATE_HALF_EXPANDED
-            overlay.visibility = View.VISIBLE
         }
         bottomSheetBehavior.isHideable = false
         bottomSheetBehavior.addBottomSheetCallback(object :
@@ -208,13 +203,11 @@ class PlaylistFragment : Fragment() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 when (newState) {
                     BottomSheetBehavior.STATE_HIDDEN -> {
-                        overlay.visibility = View.GONE
                     }
 
                     else -> {
                         bottomSheetContainerTracks.visibility = View.VISIBLE
                         recyclerView.visibility = View.VISIBLE
-                        overlay.visibility = View.VISIBLE
                     }
                 }
             }
@@ -226,14 +219,12 @@ class PlaylistFragment : Fragment() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 when (newState) {
                     BottomSheetBehavior.STATE_HIDDEN -> {
-                        overlay.visibility = View.GONE
                         bottomSheetContainerTracks.visibility = View.VISIBLE
                         binding?.playlistSongs?.visibility = View.VISIBLE
                     }
 
                     else -> {
                         recyclerViewPlaylist.visibility = View.VISIBLE
-                        overlay.visibility = View.VISIBLE
                         bottomSheetContainerTracks.visibility = View.VISIBLE
                     }
                 }

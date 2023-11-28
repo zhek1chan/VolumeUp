@@ -21,7 +21,7 @@ class RootActivity : AppCompatActivity() {
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
         bottomNavigationView.setupWithNavController(navController)
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if (destination.id == R.id.playerActivity || destination.id == R.id.createPlaylistFragment || destination.id == R.id.editPlaylistFragment) {
+            if (destination.id == R.id.playerActivity || destination.id == R.id.createPlaylistFragment || destination.id == R.id.editPlaylistFragment || destination.id == R.id.playlistFragment) {
 
                 bottomNavigationView.visibility = View.GONE
             } else {
