@@ -65,4 +65,5 @@
     <string name="quantityTracks">С таким количеством</string>
     <string name="no_tracks">Вы ещё не добавили ни одного трека</string>
     <string name="save">Сохранить</string>
+    <string name="question_to_delete_playlist">Вы уверены, что хотите удалить плейлист?</string>
 </resources>

@@ -1,6 +1,5 @@
 package com.example.playlistmaker.media.ui.fragments.playlists
 
-import android.Manifest
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
@@ -11,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
@@ -184,8 +182,22 @@ class PlaylistFragment : Fragment() {
                 navController.navigate(R.id.editPlaylistFragment, bundle)
             }
             binding?.delete?.setOnClickListener {
-                viewModel.deletePlaylist(pl)
-                findNavController().navigateUp()
+                val dialog = MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(getString(R.string.question_to_delete_playlist))
+                    .setNegativeButton(getString(R.string.no)) { _, _ ->
+                        return@setNegativeButton
+                    }
+                    .setPositiveButton(getString(R.string.yes)) { _, _ ->
+                        viewModel.deletePlaylist(pl)
+                        findNavController().navigateUp()
+                    }
+                    .show()
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                    .setTextColor(ContextCompat.getColor(requireContext(), android.R.color.black))
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                    .setTextColor(ContextCompat.getColor(requireContext(), android.R.color.black))
+
             }
             bottomSheetBehaviorSettings =
                 BottomSheetBehavior.from(bottomSheetContainerSettings!!).apply {
@@ -352,14 +364,6 @@ class PlaylistFragment : Fragment() {
         Log.d("Tracks", "ARE NOT shown")
         binding?.recyclerView?.visibility = View.GONE
         binding?.textNoTracks?.visibility = View.VISIBLE
-    }
-
-    private fun requestPermission() {
-        ActivityCompat.requestPermissions(
-            requireActivity(),
-            arrayOf<String>(Manifest.permission.MANAGE_EXTERNAL_STORAGE),
-            255
-        )
     }
 
 }
