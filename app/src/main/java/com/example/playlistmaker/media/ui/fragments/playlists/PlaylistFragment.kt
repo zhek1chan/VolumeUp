@@ -3,6 +3,7 @@ package com.example.playlistmaker.media.ui.fragments.playlists
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.text.Html
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -183,7 +184,13 @@ class PlaylistFragment : Fragment() {
             }
             binding?.delete?.setOnClickListener {
                 val dialog = MaterialAlertDialogBuilder(requireContext())
-                    .setTitle(getString(R.string.question_to_delete_playlist))
+                    .setBackground(
+                        ContextCompat.getDrawable(
+                            requireContext(),
+                            android.R.color.background_dark
+                        )
+                    )
+                    .setTitle(Html.fromHtml("<font color='#FFFFFF'>${getString(R.string.question_to_delete_playlist)}"))
                     .setNegativeButton(getString(R.string.no)) { _, _ ->
                         return@setNegativeButton
                     }
@@ -193,10 +200,10 @@ class PlaylistFragment : Fragment() {
                     }
                     .show()
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-                    .setTextColor(ContextCompat.getColor(requireContext(), android.R.color.black))
+                    .setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                    .setTextColor(ContextCompat.getColor(requireContext(), android.R.color.black))
+                    .setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
 
             }
             bottomSheetBehaviorSettings =
@@ -335,7 +342,13 @@ class PlaylistFragment : Fragment() {
     private fun suggestTrackDeleting(track: Track, playlist: Playlist, pos: Int) {
 
         val dialog = MaterialAlertDialogBuilder(requireContext())
-            .setTitle(getString(R.string.question_to_delete))
+            .setBackground(
+                ContextCompat.getDrawable(
+                    requireContext(),
+                    android.R.color.background_dark
+                )
+            )
+            .setTitle(Html.fromHtml("<font color='#FFFFFF'>${getString(R.string.question_to_delete)}"))
             .setNegativeButton(getString(R.string.no)) { _, _ ->
                 return@setNegativeButton
             }
@@ -344,10 +357,10 @@ class PlaylistFragment : Fragment() {
             }
             .show()
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-            .setTextColor(ContextCompat.getColor(requireContext(), android.R.color.black))
+            .setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
         dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-            .setTextColor(ContextCompat.getColor(requireContext(), android.R.color.black))
+            .setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
 
     }
 
