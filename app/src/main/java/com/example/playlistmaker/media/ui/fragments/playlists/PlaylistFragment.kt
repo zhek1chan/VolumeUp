@@ -83,7 +83,7 @@ class PlaylistFragment : Fragment() {
             clickAdapting(it)
         },
             longClickListener = {
-                suggestTrackDeleting(it, pl, 0)
+                suggestTrackDeleting(it, pl, 0, list.size)
             }
         )
         recyclerView.adapter = trackAdapter
@@ -280,12 +280,12 @@ class PlaylistFragment : Fragment() {
             clickAdapting(it)
         },
             longClickListener = {
-                suggestTrackDeleting(it, playlist, tracks.indexOf(it))
+                suggestTrackDeleting(it, playlist, tracks.indexOf(it), tracks.size)
             }
         )
         trackAdapter.setItems(tracks)
         recyclerView.adapter = trackAdapter
-        recyclerView.adapter?.notifyDataSetChanged()
+        //recyclerView.adapter?.notifyDataSetChanged()
         if (pl.num.toInt() == 2) {
             binding?.time?.text = "${viewModel.getTimeSum(tracks)} ${
                 resources.getQuantityString(
@@ -309,7 +309,7 @@ class PlaylistFragment : Fragment() {
     }
 
 
-    private fun deleteTrackByClick(item: Track, playlist: Playlist, pos: Int) {
+    private fun deleteTrackByClick(item: Track, playlist: Playlist, pos: Int, size: Int) {
         viewModel.deleteTrack(item, playlist)
         recyclerView.adapter?.notifyItemRemoved(pos)
         val time =
@@ -339,8 +339,13 @@ class PlaylistFragment : Fragment() {
         }
     }
 
-    private fun suggestTrackDeleting(track: Track, playlist: Playlist, pos: Int) {
-
+    private fun suggestTrackDeleting(
+        track: Track,
+        playlist: Playlist,
+        pos: Int,
+        size: Int
+    ): String {
+        var res: String = "null"
         val dialog = MaterialAlertDialogBuilder(requireContext())
             .setBackground(
                 ContextCompat.getDrawable(
@@ -353,7 +358,8 @@ class PlaylistFragment : Fragment() {
                 return@setNegativeButton
             }
             .setPositiveButton(getString(R.string.yes)) { _, _ ->
-                deleteTrackByClick(track, playlist, pos)
+                deleteTrackByClick(track, playlist, pos, size)
+                res = "yes"
             }
             .show()
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
@@ -361,6 +367,7 @@ class PlaylistFragment : Fragment() {
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
         dialog.getButton(AlertDialog.BUTTON_POSITIVE)
             .setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
+        return res
 
     }
 

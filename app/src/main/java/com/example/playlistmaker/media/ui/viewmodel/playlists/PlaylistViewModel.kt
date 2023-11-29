@@ -47,6 +47,7 @@ class PlaylistViewModel(private val interactor: PlaylistsInteractor) : ViewModel
 
     fun deleteTrack(t: Track, pl: Playlist) {
         interactor.deleteTrack(t, pl)
+        getTracks(pl.playlistId)
         Log.d("track", "$t was deleted")
     }
 
