@@ -189,10 +189,10 @@ class PlaylistFragment : Fragment() {
                     .setBackground(
                         ContextCompat.getDrawable(
                             requireContext(),
-                            android.R.color.background_dark
+                            R.drawable.background_dialog
                         )
                     )
-                    .setTitle(Html.fromHtml("<font color='#FFFFFF'>${getString(R.string.question_to_delete_playlist)}"))
+                    .setTitle(Html.fromHtml("<font color='#000000'>${getString(R.string.question_to_delete_playlist)}"))
                     .setNegativeButton(getString(R.string.no)) { _, _ ->
                         return@setNegativeButton
                     }
@@ -202,10 +202,10 @@ class PlaylistFragment : Fragment() {
                     }
                     .show()
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-                    .setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
+                    .setTextColor(ContextCompat.getColor(requireContext(), R.color.yp_blue))
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                    .setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
+                    .setTextColor(ContextCompat.getColor(requireContext(), R.color.yp_blue))
 
             }
             bottomSheetBehaviorSettings =
@@ -243,12 +243,9 @@ class PlaylistFragment : Fragment() {
                 when (newState) {
                     BottomSheetBehavior.STATE_HIDDEN -> {
                         binding?.overlay?.visibility = View.GONE
-                        bottomSheetContainerTracks.visibility = View.VISIBLE
-                        binding?.playlistSongs?.visibility = View.VISIBLE
                     }
                     else -> {
                         recyclerViewPlaylist.visibility = View.VISIBLE
-                        bottomSheetContainerTracks.visibility = View.VISIBLE
                     }
                 }
             }
@@ -297,17 +294,33 @@ class PlaylistFragment : Fragment() {
                     viewModel.getTimeSum(tracks).toInt()
                 )
             }  ·  ${pl.num} трека"
-        } else {
-            binding?.time?.text = "${viewModel.getTimeSum(tracks)} ${
-                resources.getQuantityString(
-                    R.plurals.minutes,
-                    viewModel.getTimeSum(tracks).toInt()
-                )
-            }  ·  ${pl.num} ${
-                resources.getQuantityString(
-                    R.plurals.numberOfTracksAvailable,
-                    pl.num.toInt()
-                )
+        } else
+            if (pl.num.toInt() == 3) {
+                binding?.time?.text = "${viewModel.getTimeSum(tracks)} ${
+                    resources.getQuantityString(
+                        R.plurals.minutes,
+                        viewModel.getTimeSum(tracks).toInt()
+                    )
+                }  ·  ${pl.num} трека"
+            } else
+                if (pl.num.toInt() == 4) {
+                    binding?.time?.text = "${viewModel.getTimeSum(tracks)} ${
+                        resources.getQuantityString(
+                            R.plurals.minutes,
+                            viewModel.getTimeSum(tracks).toInt()
+                        )
+                    }  ·  ${pl.num} трека"
+                } else {
+                    binding?.time?.text = "${viewModel.getTimeSum(tracks)} ${
+                        resources.getQuantityString(
+                            R.plurals.minutes,
+                            viewModel.getTimeSum(tracks).toInt()
+                        )
+                    }  ·  ${pl.num} ${
+                        resources.getQuantityString(
+                            R.plurals.numberOfTracksAvailable,
+                            pl.num.toInt()
+                        )
             } "
         }
     }
@@ -327,19 +340,35 @@ class PlaylistFragment : Fragment() {
                         it.toInt()
                     )
                 }  ·  ${pl.num} трека"
-            } else {
-                binding?.time?.text = "${it - time} ${
-                    resources.getQuantityString(
-                        R.plurals.minutes,
-                        it.toInt()
-                    )
-                }  ·  ${pl.num} ${
-                    resources.getQuantityString(
-                        R.plurals.numberOfTracksAvailable,
-                        pl.num.toInt()
-                    )
-                } "
-            }
+            } else
+                if (pl.num.toInt() == 3) {
+                    binding?.time?.text = "${it - time} ${
+                        resources.getQuantityString(
+                            R.plurals.minutes,
+                            it.toInt()
+                        )
+                    }  ·  ${pl.num} трека"
+                } else
+                    if (pl.num.toInt() == 4) {
+                        binding?.time?.text = "${it - time} ${
+                            resources.getQuantityString(
+                                R.plurals.minutes,
+                                it.toInt()
+                            )
+                        }  ·  ${pl.num} трека"
+                    } else {
+                        binding?.time?.text = "${it - time} ${
+                            resources.getQuantityString(
+                                R.plurals.minutes,
+                                it.toInt()
+                            )
+                        }  ·  ${pl.num} ${
+                            resources.getQuantityString(
+                                R.plurals.numberOfTracksAvailable,
+                                pl.num.toInt()
+                            )
+                        } "
+                    }
         }
     }
 
@@ -354,10 +383,10 @@ class PlaylistFragment : Fragment() {
             .setBackground(
                 ContextCompat.getDrawable(
                     requireContext(),
-                    android.R.color.background_dark
+                    R.drawable.background_dialog
                 )
             )
-            .setTitle(Html.fromHtml("<font color='#FFFFFF'>${getString(R.string.question_to_delete)}"))
+            .setTitle(Html.fromHtml("<font color='#000000'>${getString(R.string.question_to_delete)}"))
             .setNegativeButton(getString(R.string.no)) { _, _ ->
                 return@setNegativeButton
             }
@@ -367,10 +396,10 @@ class PlaylistFragment : Fragment() {
             }
             .show()
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-            .setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
+            .setTextColor(ContextCompat.getColor(requireContext(), R.color.yp_blue))
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
         dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-            .setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
+            .setTextColor(ContextCompat.getColor(requireContext(), R.color.yp_blue))
         return res
 
     }
