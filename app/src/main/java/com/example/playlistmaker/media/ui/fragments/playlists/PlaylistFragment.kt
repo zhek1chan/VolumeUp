@@ -53,6 +53,9 @@ class PlaylistFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         pl = arguments?.getParcelable<Playlist>("playlist")!!
         binding?.playlistName?.text = pl.name
+        if (pl.num.toString().isEmpty()) {
+            pl.num = 0
+        }
         if (pl.description.isEmpty()) {
             binding?.description?.text = "2023"
         } else {
@@ -72,7 +75,6 @@ class PlaylistFragment : Fragment() {
                 .into(binding?.playlistCover!!)
 
         }
-
         recyclerViewPlaylist = binding?.rvPlaylist!!
         val list: List<Playlist> = (listOf(pl))
         recyclerViewPlaylist.adapter = PlaylistsBottomAdapter(list) {
@@ -209,6 +211,7 @@ class PlaylistFragment : Fragment() {
             bottomSheetBehaviorSettings =
                 BottomSheetBehavior.from(bottomSheetContainerSettings!!).apply {
                     state = BottomSheetBehavior.STATE_HALF_EXPANDED
+                    binding?.overlay?.visibility = View.VISIBLE
                 }
         }
 
@@ -225,6 +228,7 @@ class PlaylistFragment : Fragment() {
                     }
 
                     else -> {
+                        binding?.overlay?.visibility = View.GONE
                         bottomSheetContainerTracks.visibility = View.VISIBLE
                         recyclerView.visibility = View.VISIBLE
                     }
@@ -238,10 +242,10 @@ class PlaylistFragment : Fragment() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 when (newState) {
                     BottomSheetBehavior.STATE_HIDDEN -> {
+                        binding?.overlay?.visibility = View.GONE
                         bottomSheetContainerTracks.visibility = View.VISIBLE
                         binding?.playlistSongs?.visibility = View.VISIBLE
                     }
-
                     else -> {
                         recyclerViewPlaylist.visibility = View.VISIBLE
                         bottomSheetContainerTracks.visibility = View.VISIBLE
@@ -382,6 +386,7 @@ class PlaylistFragment : Fragment() {
 
     private fun showEmpty() {
         Log.d("Tracks", "ARE NOT shown")
+        binding?.time?.text = "0 минут  ·  0 треков"
         binding?.recyclerView?.visibility = View.GONE
         binding?.textNoTracks?.visibility = View.VISIBLE
     }
