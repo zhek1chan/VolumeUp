@@ -104,7 +104,7 @@ class PlaylistFragment : Fragment() {
         }
         val bottomSheetContainerTracks = binding?.playlistSongs!!
         var bottomSheetBehaviorSettings =
-            BottomSheetBehavior.from(bottomSheetContainerTracks).apply {
+            BottomSheetBehavior.from(binding?.playlistShare!!).apply {
                 state = BottomSheetBehavior.STATE_HIDDEN
             }
         binding?.buttonSharePlaylist?.setOnClickListener {
@@ -144,6 +144,11 @@ class PlaylistFragment : Fragment() {
         binding?.buttonEdit?.setOnClickListener {
             binding?.playlistShare?.visibility = View.VISIBLE
             val bottomSheetContainerSettings = binding?.playlistShare
+            bottomSheetBehaviorSettings =
+                BottomSheetBehavior.from(bottomSheetContainerSettings!!).apply {
+                    state = BottomSheetBehavior.STATE_COLLAPSED
+
+                }
             binding?.share?.setOnClickListener {
                 viewModel.observeState().observe(viewLifecycleOwner) {
                     var tracks = render(it)
@@ -208,14 +213,27 @@ class PlaylistFragment : Fragment() {
                     .setTextColor(ContextCompat.getColor(requireContext(), R.color.yp_blue))
 
             }
-            bottomSheetBehaviorSettings =
-                BottomSheetBehavior.from(bottomSheetContainerSettings!!).apply {
-                    state = BottomSheetBehavior.STATE_HALF_EXPANDED
-                    binding?.overlay?.visibility = View.VISIBLE
-                }
         }
 
+        val overlay = binding!!.overlay
 
+        bottomSheetBehaviorSettings.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        overlay.visibility = View.GONE
+                    }
+
+                    else -> {
+                        recyclerViewPlaylist.visibility = View.VISIBLE
+                        overlay.visibility = View.VISIBLE
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+        })
         val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainerTracks).apply {
             state = BottomSheetBehavior.STATE_HALF_EXPANDED
         }
@@ -231,21 +249,6 @@ class PlaylistFragment : Fragment() {
                         binding?.overlay?.visibility = View.GONE
                         bottomSheetContainerTracks.visibility = View.VISIBLE
                         recyclerView.visibility = View.VISIBLE
-                    }
-                }
-            }
-
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
-        })
-        bottomSheetBehaviorSettings.addBottomSheetCallback(object :
-            BottomSheetBehavior.BottomSheetCallback() {
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                when (newState) {
-                    BottomSheetBehavior.STATE_HIDDEN -> {
-                        binding?.overlay?.visibility = View.GONE
-                    }
-                    else -> {
-                        recyclerViewPlaylist.visibility = View.VISIBLE
                     }
                 }
             }
