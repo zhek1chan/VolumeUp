@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "0fca6d519030db0b3e4d3c90c30c6a9a",
+    "identityHash": "d8cc936f50866552dc5819c318e2b932",
     "entities": [
       {
         "tableName": "tracks_table",
@@ -259,7 +259,7 @@
         "foreignKeys": []
       },
       {
-        "tableName": "RestoredTracksInPlaylist",
+        "tableName": "restored_tracks_in_playlist",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`playlistId` INTEGER NOT NULL, `trackId` INTEGER NOT NULL, PRIMARY KEY(`playlistId`, `trackId`), FOREIGN KEY(`trackId`) REFERENCES `track_in_playlist_table`(`trackId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
@@ -301,7 +301,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0fca6d519030db0b3e4d3c90c30c6a9a')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd8cc936f50866552dc5819c318e2b932')"
     ]
   }
 }

@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 
 @Entity(
-    tableName = "RestoredTracksInPlaylist",
+    tableName = "restored_tracks_in_playlist",
     primaryKeys = ["playlistId", "trackId"],
     foreignKeys = [
         ForeignKey(

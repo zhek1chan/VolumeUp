@@ -80,12 +80,12 @@ interface PlaylistDao {
     }
 
 
-    @Query("INSERT INTO RestoredTracksInPlaylist (playlistId, TrackId) VALUES (:pl, :tr)")
+    @Query("INSERT INTO restored_tracks_in_playlist (playlistId, TrackId) VALUES (:pl, :tr)")
     fun insertRestoredTrack(pl: Long, tr: Long)
 
-    @Query("INSERT INTO TracksInPlaylist SELECT * FROM RestoredTracksInPlaylist")
+    @Query("INSERT INTO TracksInPlaylist SELECT * FROM restored_tracks_in_playlist")
     fun restoreTrack()
 
-    @Query("DELETE FROM RestoredTracksInPlaylist WHERE playlistId = :playlistId")
+    @Query("DELETE FROM restored_tracks_in_playlist WHERE playlistId = :playlistId")
     fun clearRestoredTracks(playlistId: Long)
 }

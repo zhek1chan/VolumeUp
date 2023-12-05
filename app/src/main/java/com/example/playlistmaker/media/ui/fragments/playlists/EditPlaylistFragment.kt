@@ -1,6 +1,5 @@
 package com.example.playlistmaker.media.ui.fragments.playlists
 
-import android.Manifest
 import android.app.AlertDialog
 import android.os.Bundle
 import android.text.Editable
@@ -13,7 +12,6 @@ import android.view.ViewGroup
 import androidx.activity.addCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
@@ -166,7 +164,7 @@ class EditPlaylistFragment : Fragment() {
                         )
                         .into(binding.albumCoverage)
                     binding.createPlaylist.isClickable = true
-                    iAmBigButton(playlist.name, playlist.description)
+                    iAmBigButton(playlist.name)
                     binding.createPlaylist.setBackgroundResource(R.drawable.button_create_playlist_active);
                 } else {
                     binding.albumCoverageAdd.visibility = View.VISIBLE
@@ -218,7 +216,7 @@ class EditPlaylistFragment : Fragment() {
                     playlist.name = nText
                     binding.createPlaylist.isClickable = true
                     binding.createPlaylist.setBackgroundResource(R.drawable.button_create_playlist_active)
-                    iAmBigButton(nText, dText)
+                    iAmBigButton(nText)
                 } else {
                     binding.createPlaylist.isClickable = false
                     binding.createPlaylist.setBackgroundResource(R.drawable.button_create_playlist)
@@ -241,7 +239,7 @@ class EditPlaylistFragment : Fragment() {
                 dText = binding.descriptionOfAlbum.text.toString()
                 if (dText.isNotEmpty()) {
                     playlist.description = dText
-                    iAmBigButton(nText, dText)
+                    iAmBigButton(nText)
                     binding.createPlaylist.isClickable = true
                     binding.createPlaylist.setBackgroundResource(R.drawable.button_create_playlist_active);
                 }
@@ -254,20 +252,12 @@ class EditPlaylistFragment : Fragment() {
     }
 
 
-    private fun requestPermission() {
-        ActivityCompat.requestPermissions(
-            requireActivity(),
-            arrayOf<String>(Manifest.permission.READ_EXTERNAL_STORAGE),
-            255
-        )
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         findNavController().popBackStack(R.id.editPlaylistFragment, true)
     }
 
-    fun iAmBigButton(nameText: String, descriptionText: String) {
+    fun iAmBigButton(nameText: String) {
         binding.createPlaylist.setOnClickListener {
             val newPlaylist = playlist
             Log.d("Playlist CHECK", "$newPlaylist")

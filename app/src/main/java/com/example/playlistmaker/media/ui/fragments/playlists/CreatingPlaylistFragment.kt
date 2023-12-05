@@ -53,22 +53,22 @@ class CreatingPlaylistFragment : Fragment() {
                     .setBackground(
                         ContextCompat.getDrawable(
                             requireContext(),
-                            android.R.color.background_dark
+                            R.color.white
                         )
                     )
-                    .setTitle(Html.fromHtml("<font color='#FFFFFF'>${getString(R.string.exit_question)}</font>"))
-                    .setMessage(Html.fromHtml("<font color='#FFFFFF'>${getString(R.string.all_data_would_be_lost)}</font>"))
+                    .setTitle(Html.fromHtml("<font color='#000000'>${getString(R.string.exit_question)}</font>"))
+                    .setMessage(Html.fromHtml("<font color='#000000'>${getString(R.string.all_data_would_be_lost)}</font>"))
                     .setPositiveButton(getString(R.string.cancel)) { dialog, _ ->
                         dialog.cancel()
                     }.setNegativeButton(getString(R.string.finish)) { dialog, _ ->
                         findNavController().navigateUp()
                     }.show()
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-                    .setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
+                    .setTextColor(ContextCompat.getColor(requireContext(), R.color.yp_blue))
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
                     .setAllCaps(false)
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                    .setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
+                    .setTextColor(ContextCompat.getColor(requireContext(), R.color.yp_blue))
             } else findNavController().navigateUp()
         }
         binding.backIcon.setOnClickListener {
@@ -77,22 +77,22 @@ class CreatingPlaylistFragment : Fragment() {
                     .setBackground(
                         ContextCompat.getDrawable(
                             requireContext(),
-                            android.R.color.background_dark
+                            R.color.white
                         )
                     )
-                    .setTitle(Html.fromHtml("<font color='#FFFFFF'>${getString(R.string.exit_question)}</font>"))
-                    .setMessage(Html.fromHtml("<font color='#FFFFFF'>${getString(R.string.all_data_would_be_lost)}</font>"))
+                    .setTitle(Html.fromHtml("<font color='#000000'>${getString(R.string.exit_question)}</font>"))
+                    .setMessage(Html.fromHtml("<font color='#000000'>${getString(R.string.all_data_would_be_lost)}</font>"))
                     .setPositiveButton(getString(R.string.cancel)) { dialog, which ->
                         dialog.cancel()
                     }.setNegativeButton(getString(R.string.finish)) { dialog, which ->
                         findNavController().navigateUp()
                     }.show()
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-                    .setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
+                    .setTextColor(ContextCompat.getColor(requireContext(), R.color.yp_blue))
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
                     .setAllCaps(false)
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                    .setTextColor(ContextCompat.getColor(requireContext(), android.R.color.white))
+                    .setTextColor(ContextCompat.getColor(requireContext(), R.color.yp_blue))
             } else findNavController().navigateUp()
         }
 
