@@ -24,7 +24,7 @@ import com.example.playlistmaker.databinding.CreatingAlbumAlertBinding
 import com.example.playlistmaker.databinding.FragmentPlaylistCreatingBinding
 import com.example.playlistmaker.media.data.TracksState
 import com.example.playlistmaker.media.domain.db.Playlist
-import com.example.playlistmaker.media.ui.viewmodel.playlists.EditPlaylistViewModel
+import com.example.playlistmaker.media.ui.viewmodel.playlists.CreatingPlaylistViewModel
 import com.example.playlistmaker.player.domain.Track
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -32,7 +32,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class EditPlaylistFragment : Fragment() {
     private lateinit var binding: FragmentPlaylistCreatingBinding
-    private val viewModel by viewModel<EditPlaylistViewModel>()
+    private val viewModel by viewModel<CreatingPlaylistViewModel>()
     private var playlist = Playlist(0, "", "", "", 0, 0)
     private var uriString: String = ""
     private lateinit var tracks: List<Track>
