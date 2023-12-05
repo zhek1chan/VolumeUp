@@ -59,8 +59,8 @@
             app:destination="@id/playlistsFragment"
             app:popUpToSaveState="true"></action>
         <action
-            android:id="@+id/action_playlistFragment_to_editPlaylistFragment"
-            app:destination="@id/editPlaylistFragment" />
+            android:id="@+id/action_playlistFragment_to_createPlaylistFragment"
+            app:destination="@id/createPlaylistFragment" />
     </fragment>
     <fragment
         android:id="@+id/playlistsFragment"
@@ -71,14 +71,6 @@
             app:destination="@id/createPlaylistFragment" />
         <action
             android:id="@+id/action_playlistsFragment_to_playlistFragment"
-            app:destination="@id/playlistFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/editPlaylistFragment"
-        android:name="com.example.playlistmaker.media.ui.fragments.playlists.EditPlaylistFragment"
-        android:label="EditPlaylistFragment">
-        <action
-            android:id="@+id/action_editPlaylistFragment_to_playlistFragment"
             app:destination="@id/playlistFragment" />
     </fragment>
 </navigation>

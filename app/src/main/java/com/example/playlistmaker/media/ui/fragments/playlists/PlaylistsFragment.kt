@@ -35,8 +35,10 @@ class PlaylistsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.newPlaylist.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putParcelable("playlist", Playlist(0, "", "", "", 0, 0))
             Log.d("NewPlaylist", "tap tap")
-            findNavController().navigate(R.id.createPlaylistFragment)
+            findNavController().navigate(R.id.createPlaylistFragment, bundle)
         }
 
 

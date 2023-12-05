@@ -187,7 +187,7 @@ class PlaylistFragment : Fragment() {
                 val bundle = Bundle()
                 bundle.putParcelable("playlist", pl)
                 val navController = findNavController()
-                navController.navigate(R.id.editPlaylistFragment, bundle)
+                navController.navigate(R.id.createPlaylistFragment, bundle)
             }
             binding?.delete?.setOnClickListener {
                 val dialog = MaterialAlertDialogBuilder(requireContext())
