@@ -15,7 +15,7 @@
     <string name="settings_title">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
     <string name="settings_email">evg.ermolov@ya.ru</string>
     <string name="settings_url">https://practicum.yandex.ru/android-developer/</string>
-    <string name="setting_agreement">https://yandex.ru/legal/practicum_offer/</string>
+    <string name="setting_agreement">https://t.me/zhekichan</string>
     <string name="track_title">Название трека</string>
     <string name="track_artist">Исполнитель</string>
     <string name="track_time">13:37</string>
