@@ -28,19 +28,19 @@
 ## Примеры использования
 
 ### Поиск и прослушивание трека
-<img src="https://github.com/zhek1chan/PlaylistMaker/blob/dev/example_gifs/search.gif" alt="поиск">
+<img src="https://github.com/zhek1chan/PlaylistMaker/blob/dev/example_gifs/search.gif" alt="поиск" width="270" height="600">
 
 ### Добавление трека в избранное
-<img src="https://github.com/zhek1chan/PlaylistMaker/blob/dev/example_gifs/favs.gif" alt="избранное">
+<img src="https://github.com/zhek1chan/PlaylistMaker/blob/dev/example_gifs/favs.gif" alt="избранное" width="270" height="600">
 
 ### Создание плейлиста
-<img src="https://github.com/zhek1chan/PlaylistMaker/blob/dev/example_gifs/new_playlist.gif" alt="создание плейлиста">
+<img src="https://github.com/zhek1chan/PlaylistMaker/blob/dev/example_gifs/new_playlist.gif" alt="создание плейлиста" width="270" height="600">
 
 ### Редактирование и удаление плейлиста
-<img src="https://github.com/zhek1chan/PlaylistMaker/blob/dev/example_gifs/work_with_playlist.gif" alt="работа с плейлистом">
+<img src="https://github.com/zhek1chan/PlaylistMaker/blob/dev/example_gifs/work_with_playlist.gif" alt="работа с плейлистом" width="270" height="600"> 
 
 ### Настройки
-<img src="https://github.com/zhek1chan/PlaylistMaker/blob/dev/example_gifs/settings.gif" alt="настройки">
+<img src="https://github.com/zhek1chan/PlaylistMaker/blob/dev/example_gifs/settings.gif" alt="настройки" width="270" height="600">
 
 ## Установка
 тут установка
