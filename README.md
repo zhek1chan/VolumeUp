@@ -27,7 +27,7 @@
 ## Примеры использования
 
 ### Поиск трека
-тут ссылка на гифку
+<img src="https://github.com/zhek1chan/PlaylistMaker/blob/dev/example_gifs/search.gif" alt="поиск">
 
 ### Добавление в избранное
 тут ссылка на гифку
