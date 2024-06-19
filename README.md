@@ -5,6 +5,7 @@
 - Kotlin
 - Room
 - Retrofit
+- OkHttp
 - Kotlin Coroutines
 - Koin
 - ViewBinding
@@ -13,6 +14,7 @@
 - SharedPreferences
 - Clean Architecture (MVVM)
 - Custom View
+- Glide
 - Broadcast Receiver
 
 ## Основной функционал приложения
